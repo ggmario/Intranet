@@ -107,10 +107,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String psMname = null;
     private String sTelephone = null;
     private String  sToken = null;
-
     private ListView mListView = null;
     private ListViewAdapter mAdapter = null;
-
     private ListView mListViewOutside = null;
     private ListViewAdapterOutside mAdapterOutside = null;
 

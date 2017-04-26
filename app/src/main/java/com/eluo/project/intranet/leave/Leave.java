@@ -94,7 +94,7 @@ public class Leave extends AppCompatActivity implements NavigationView.OnNavigat
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);  // 전체화면 만들기
         setContentView(R.layout.activity_leave_view_all);   //작성 화면 구성 xml
 
-        // wifi 또는 모바일 네트워크 어느 하나라도 연결이 되어있다면,
+
         if (NetworkUtil.isNetworkConnected(this)) {
             psMidx = intent.getStringExtra("idx");    // 키값(PRIMARY KEY)
             psMid = intent.getStringExtra("id");
@@ -243,15 +243,11 @@ public class Leave extends AppCompatActivity implements NavigationView.OnNavigat
 
         DefaultHttpClient client = new DefaultHttpClient();
         try {
-			/* 체크할 id와 pwd값 서버로 전송 */
             HttpPost post = new HttpPost(URL+"?seq="+msg);
-
-			/* 지연시간 최대 5초 */
             HttpParams params = client.getParams();
             HttpConnectionParams.setConnectionTimeout(params, 3000);
             HttpConnectionParams.setSoTimeout(params, 3000);
 
-			/* 데이터 보낸 뒤 서버에서 데이터를 받아오는 과정 */
             HttpResponse response = null;
             try{
                 ConnectivityManager conManager =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -287,7 +283,6 @@ public class Leave extends AppCompatActivity implements NavigationView.OnNavigat
             JSONObject json = new JSONObject(pRecvServerPage);
             JSONArray jArr = json.getJSONArray("vacation");
 
-            // 받아온 pRecvServerPage를 분석하는 부분
             String jsonName[];
             if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
                 String[] jsonName1 = {"RESULT"};

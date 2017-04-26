@@ -276,13 +276,13 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Naviga
         int id = item.getItemId();
         if (NetworkUtil.isNetworkConnected(Map.this)) {
             if (id == R.id.action_home) {         //메인 화면
-                Intent intent = new Intent(Map.this, MainActivity.class);//엑티비티 생성 작성 화면
-                startActivity(intent);  //액티비티 시작
+                Intent intent = new Intent(Map.this, MainActivity.class);
+                startActivity(intent);
                 overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
-                finish();//현재 실행중인 엑티비티 종료(엑티비티가 계속 쌓이게 되면 메모리 및 OS전체 부담을 줌)
+                finish();
             } else if (id == R.id.action_notice) {    //공지사항
                 Intent intent = new Intent(Map.this, Notice.class);
-                intent.putExtra("idx", psMidx); //조회 키 값을 넘겨준다
+                intent.putExtra("idx", psMidx);
                 intent.putExtra("id", psMid);
                 intent.putExtra("name", psMname);
                 intent.putExtra("path", psMpath);

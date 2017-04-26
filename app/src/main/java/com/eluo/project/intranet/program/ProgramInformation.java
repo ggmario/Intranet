@@ -145,8 +145,8 @@ public class ProgramInformation  extends AppCompatActivity implements Navigation
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.program_info) {
-            Intent intent = new Intent(ProgramInformation.this, ProgramInformation.class);//엑티비티 생성 작성 화면
-            intent.putExtra("idx",psMidx); //조회 키 값을 넘겨준다
+            Intent intent = new Intent(ProgramInformation.this, ProgramInformation.class);
+            intent.putExtra("idx",psMidx);
             intent.putExtra("id",psMid);
             intent.putExtra("name",psMname);
             intent.putExtra("path",psMpath);
@@ -156,8 +156,7 @@ public class ProgramInformation  extends AppCompatActivity implements Navigation
             finish();
         }
         if (id == R.id.action_exit) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);     // 여기서 this는 Activity의 this
-            // 여기서 부터는 알림창의 속성 설정
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.D_TitleName)        // 제목 설정
                     .setMessage(R.string.D_Question)        // 메세지 설정
                     .setCancelable(false)        // 뒤로 버튼 클릭시 취소 가능 설정
@@ -187,7 +186,7 @@ public class ProgramInformation  extends AppCompatActivity implements Navigation
             Intent intent = new Intent(ProgramInformation.this, MainActivity.class);//엑티비티 생성 작성 화면
             startActivity(intent);  //액티비티 시작
             overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
-            finish();//현재 실행중인 엑티비티 종료(엑티비티가 계속 쌓이게 되면 메모리 및 OS전체 부담을 줌)
+            finish();
         } else if (id == R.id.action_notice) {    //공지사항
             Intent intent = new Intent(ProgramInformation.this, Notice.class);
             intent.putExtra("idx",psMidx); //조회 키 값을 넘겨준다
@@ -251,7 +250,7 @@ public class ProgramInformation  extends AppCompatActivity implements Navigation
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    //스마트 폰에서 뒤로가기 버튼 선택시 처리 이벤트 (클릭시 종료 여부 확인 메시지 처리)
+
     public boolean onKeyDown( int KeyCode, KeyEvent event ){
         if( KeyCode == KeyEvent.KEYCODE_BACK ){
             if (NetworkUtil.isNetworkConnected(this)) {

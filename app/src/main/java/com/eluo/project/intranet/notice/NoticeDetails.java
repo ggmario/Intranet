@@ -182,7 +182,6 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
             }
         }
     }
-    //메뉴 생성
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -209,13 +208,12 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
         }
     }
 
-    //옵션 메뉴
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
             if (id == R.id.program_info) {
                 if (NetworkUtil.isNetworkConnected(this)) {
-                Intent intent = new Intent(NoticeDetails.this, ProgramInformation.class);//엑티비티 생성 작성 화면
+                Intent intent = new Intent(NoticeDetails.this, ProgramInformation.class);
                 intent.putExtra("idx", psMidx); //조회 키 값을 넘겨준다
                 intent.putExtra("id", psMid);
                 intent.putExtra("name", psMname);
@@ -229,8 +227,7 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
             }
         }
         if (id == R.id.action_exit) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);     // 여기서 this는 Activity의 this
-            // 여기서 부터는 알림창의 속성 설정
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.D_TitleName)        // 제목 설정
                     .setMessage(R.string.D_Question)        // 메세지 설정
                     .setCancelable(false)        // 뒤로 버튼 클릭시 취소 가능 설정
@@ -259,19 +256,19 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
         int id = item.getItemId();
         if (NetworkUtil.isNetworkConnected(this)) {
             if (id == R.id.action_home) {         //메인 화면
-                Intent intent = new Intent(NoticeDetails.this, MainActivity.class);//엑티비티 생성 작성 화면
-                startActivity(intent);  //액티비티 시작
+                Intent intent = new Intent(NoticeDetails.this, MainActivity.class);
+                startActivity(intent);
                 overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
-                finish();//현재 실행중인 엑티비티 종료(엑티비티가 계속 쌓이게 되면 메모리 및 OS전체 부담을 줌)
+                finish();
             } else if (id == R.id.action_notice) {    //공지사항
                 Intent intent = new Intent(NoticeDetails.this, Notice.class);
-                intent.putExtra("idx", psMidx); //조회 키 값을 넘겨준다
+                intent.putExtra("idx", psMidx);
                 intent.putExtra("id", psMid);
                 intent.putExtra("name", psMname);
                 intent.putExtra("path", psMpath);
                 intent.putExtra("dept", psMdept);
                 intent.putExtra("sTelephone", sTelephone);
-                startActivityForResult(intent, 1); // Sub_Activity 호출
+                startActivityForResult(intent, 1);
                 overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
                 finish();
             } else if (id == R.id.action_member) {   //직원 조회
@@ -328,7 +325,7 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    //스마트 폰에서 뒤로가기 버튼 선택시 처리 이벤트 (클릭시 종료 여부 확인 메시지 처리)
+
     public boolean onKeyDown( int KeyCode, KeyEvent event ){
         if( KeyCode == KeyEvent.KEYCODE_BACK ){
             if (NetworkUtil.isNetworkConnected(this)) {
@@ -369,15 +366,12 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
 
         DefaultHttpClient client = new DefaultHttpClient();
         try {
-			/* 체크할 id와 pwd값 서버로 전송 */
             HttpPost post = new HttpPost(URL+"?gb=not&idx="+msg);
 
-			/* 지연시간 최대 5초 */
             HttpParams params = client.getParams();
             HttpConnectionParams.setConnectionTimeout(params, 3000);
             HttpConnectionParams.setSoTimeout(params, 3000);
 
-			/* 데이터 보낸 뒤 서버에서 데이터를 받아오는 과정 */
             HttpResponse response = null;
             try{
                 ConnectivityManager conManager =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -413,7 +407,6 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
             JSONObject json = new JSONObject(pRecvServerPage);
             JSONArray jArr = json.getJSONArray("bbs");
 
-            // 받아온 pRecvServerPage를 분석하는 부분
             String jsonName[];
             if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
                 String[] jsonName1 = {"RESULT"};
@@ -436,12 +429,6 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
                             e.printStackTrace();
                         }
                     }
-                }
-            }
-            // 분해 된 데이터를 확인하기 위한 부분
-            if(parseredData.length > 0){
-                for(int i=0; i<parseredData.length; i++){
-                    String sText = parseredData[i][0];
                 }
             }
             return parseredData;

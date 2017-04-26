@@ -38,8 +38,7 @@ public class IntroActivity extends Activity {
             Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
             shortcutIntent.addCategory(Intent.CATEGORY_LAUNCHER);
             shortcutIntent.setClassName(this, getClass().getName());
-            shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|
-                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             Intent intent = new Intent();
 
             intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);

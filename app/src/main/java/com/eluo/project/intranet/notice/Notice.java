@@ -96,7 +96,6 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
         setSupportActionBar(toolbar);
 
         if (NetworkUtil.isNetworkConnected(Notice.this)) {
-            //3G 또는 WiFi 에 연결되어 있을 경우
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -135,7 +134,6 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
 
             // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
             m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
-
             m_ListView = (ListView) findViewById(R.id.listview);
             m_ListView.setAdapter(m_Adapter);
             m_ListView.setOnItemClickListener(onClickListItem);
@@ -172,7 +170,7 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
             }
         }
     }
-    //스마트 폰에서 뒤로가기 버튼 선택시 처리 이벤트 (클릭시 종료 여부 확인 메시지 처리)
+
     public boolean onKeyDown( int KeyCode, KeyEvent event ){
         if( KeyCode == KeyEvent.KEYCODE_BACK ){
             if (NetworkUtil.isNetworkConnected(Notice.this)) {
@@ -206,15 +204,12 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
         String URL ="http://www.eluocnc.com/GW_V3/app/bbsList.asp";
         DefaultHttpClient client = new DefaultHttpClient();
         try {
-			/* 체크할 id와 pwd값 서버로 전송 */
             HttpPost post = new HttpPost(URL+"?gb=not&page="+msg+"&pageUnit=20");
 
-			/* 지연시간 최대 5초 */
             HttpParams params = client.getParams();
             HttpConnectionParams.setConnectionTimeout(params, 3000);
             HttpConnectionParams.setSoTimeout(params, 3000);
 
-			/* 데이터 보낸 뒤 서버에서 데이터를 받아오는 과정 */
             HttpResponse response = null;
             try{
                 ConnectivityManager conManager =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -286,22 +281,20 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
         }
     }
 
-    //메뉴 생성
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
-    //옵션 메뉴
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.program_info) {
             if (NetworkUtil.isNetworkConnected(this)) {
-                Intent intent = new Intent(Notice.this, ProgramInformation.class);//엑티비티 생성 작성 화면
-                intent.putExtra("idx", psMidx); //조회 키 값을 넘겨준다
+                Intent intent = new Intent(Notice.this, ProgramInformation.class);
+                intent.putExtra("idx", psMidx);
                 intent.putExtra("id", psMid);
                 intent.putExtra("name", psMname);
                 intent.putExtra("path", psMpath);
@@ -314,8 +307,7 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
             }
         }
         if (id == R.id.action_exit) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);     // 여기서 this는 Activity의 this
-            // 여기서 부터는 알림창의 속성 설정
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.D_TitleName)        // 제목 설정
                     .setMessage(R.string.D_Question)        // 메세지 설정
                     .setCancelable(false)        // 뒤로 버튼 클릭시 취소 가능 설정
@@ -344,19 +336,19 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
         int id = item.getItemId();
         if (NetworkUtil.isNetworkConnected(Notice.this)) {
             if (id == R.id.action_home) {         //메인 화면
-                Intent intent = new Intent(Notice.this, MainActivity.class);//엑티비티 생성 작성 화면
-                startActivity(intent);  //액티비티 시작
+                Intent intent = new Intent(Notice.this, MainActivity.class);
+                startActivity(intent);
                 overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
-                finish();//현재 실행중인 엑티비티 종료(엑티비티가 계속 쌓이게 되면 메모리 및 OS전체 부담을 줌)
+                finish();
             } else if (id == R.id.action_notice) {    //공지사항
                 Intent intent = new Intent(Notice.this, Notice.class);
-                intent.putExtra("idx", psMidx); //조회 키 값을 넘겨준다
+                intent.putExtra("idx", psMidx);
                 intent.putExtra("id", psMid);
                 intent.putExtra("name", psMname);
                 intent.putExtra("path", psMpath);
                 intent.putExtra("dept", psMdept);
                 intent.putExtra("sTelephone", sTelephone);
-                startActivityForResult(intent, 1); // Sub_Activity 호출
+                startActivityForResult(intent, 1);
                 overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
                 finish();
             } else if (id == R.id.action_member) {   //직원 조회
@@ -378,7 +370,7 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
                 intent.putExtra("path", psMpath);
                 intent.putExtra("dept", psMdept);
                 intent.putExtra("sTelephone", sTelephone);
-                startActivityForResult(intent, 1); // Sub_Activity 호출
+                startActivityForResult(intent, 1);
                 overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
                 finish();
             } else if (id == R.id.action_leave) {   //휴가 조회

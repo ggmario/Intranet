@@ -198,8 +198,6 @@ public class MeetingBookingList  extends AppCompatActivity {
                     }else{
                         Toast.makeText(MeetingBookingList.this, mData.mTitle, Toast.LENGTH_SHORT).show();
                     }
-
-//                    Snackbar.make(v, mData.mTitle+"회의실 예약 가능합니다\n 회의실 예약 하시겠습니까?",  Snackbar.LENGTH_LONG).show();
                 }
             });
         }
@@ -310,9 +308,6 @@ public class MeetingBookingList  extends AppCompatActivity {
             // 스레드 생성하고 시작
             new ThreadPolicy();
             if (NetworkUtil.isNetworkConnected(MeetingBookingList.this)) {
-
-
-
             }else{
                 Toast.makeText(MeetingBookingList.this, R.string.network_error_chk, Toast.LENGTH_SHORT).show();
             }
@@ -375,7 +370,6 @@ public class MeetingBookingList  extends AppCompatActivity {
             JSONObject json = new JSONObject(pRecvServerPage);
             JSONArray jArr = json.getJSONArray("meeting");
 
-            // 받아온 pRecvServerPage를 분석하는 부분
             String jsonName[];
             if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
                 String[] jsonName1 = {"RESULT"};

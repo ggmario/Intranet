@@ -207,7 +207,6 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
     private AdapterView.OnItemClickListener onClickListItem = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            int iChoice = arg2;
             Toast.makeText(Meeting.this, R.string.D_meeting, Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
         }
     };
@@ -267,8 +266,6 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
         try {
             JSONObject json = new JSONObject(pRecvServerPage);
             JSONArray jArr = json.getJSONArray("meeting");
-
-            // 받아온 pRecvServerPage를 분석하는 부분
             String jsonName[];
             if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
                 String[] jsonName1 = {"RESULT"};
@@ -361,10 +358,10 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
         int id = item.getItemId();
         if (NetworkUtil.isNetworkConnected(Meeting.this)) {
             if (id == R.id.action_home) {         //메인 화면
-                Intent intent = new Intent(Meeting.this, MainActivity.class);//엑티비티 생성 작성 화면
-                startActivity(intent);  //액티비티 시작
+                Intent intent = new Intent(Meeting.this, MainActivity.class);
+                startActivity(intent);
                 overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
-                finish();//현재 실행중인 엑티비티 종료(엑티비티가 계속 쌓이게 되면 메모리 및 OS전체 부담을 줌)
+                finish();
             } else if (id == R.id.action_notice) {    //공지사항
                 Intent intent = new Intent(Meeting.this, Notice.class);
                 intent.putExtra("idx", psMidx); //조회 키 값을 넘겨준다

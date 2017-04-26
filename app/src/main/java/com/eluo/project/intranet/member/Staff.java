@@ -147,7 +147,6 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
             }
         }
         if (NetworkUtil.isNetworkConnected(this)) {
-            //3G 또는 WiFi 에 연결되어 있을 경우
             View nev_header_view = navigationView.getHeaderView(0);
             //네비게이터 사진
             ImageView nav_header_image = (ImageView) nev_header_view.findViewById(R.id.imageView);
@@ -285,29 +284,26 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
     private  AdapterView.OnItemLongClickListener onClickListItem1 = new AdapterView.OnItemLongClickListener(){
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View arg1, int arg2, long arg3) {
-            String sPhones ="";
-            // 스레드 생성하고 시작
-            new ThreadPolicy();
-
-            String sMessage = etMessage.getText().toString();
-
-             if(psViewsConditions.equals("Y")){
-                 int iChoice = arg2;
-                 String result = SendByHttp(sMessage); // 메시지를 서버에 보냄
-                 if (result != null) {
-                     String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
-                     if(parsedData.length > 0){
-                         for (int i = 0; i < parsedData.length; i++) {
-                             sPhones = parsedData[iChoice][4];
-                         }
-                     }
-                     final  CharSequence info[] = new CharSequence[] {sPhones};
-                     Intent intent;
-                     intent = new Intent("android.intent.action.CALL", Uri.parse("tel:"+info[0].subSequence(0,info[0].length())));
-                     startActivity(intent);
-                 }
-             }
-            return true;
+        String sPhones ="";
+        new ThreadPolicy();             // 스레드 생성하고 시작
+        String sMessage = etMessage.getText().toString();
+        if(psViewsConditions.equals("Y")){
+            int iChoice = arg2;
+            String result = SendByHttp(sMessage); // 메시지를 서버에 보냄
+            if (result != null) {
+                String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
+                if(parsedData.length > 0){
+                    for (int i = 0; i < parsedData.length; i++) {
+                        sPhones = parsedData[iChoice][4];
+                    }
+                }
+                final  CharSequence info[] = new CharSequence[] {sPhones};
+                Intent intent;
+                intent = new Intent("android.intent.action.CALL", Uri.parse("tel:"+info[0].subSequence(0,info[0].length())));
+                startActivity(intent);
+            }
+        }
+        return true;
         }
     };
 
@@ -588,20 +584,20 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (NetworkUtil.isNetworkConnected(Staff.this)) {
-            if (id == R.id.action_home) {         //메인 화면
-                Intent intent = new Intent(Staff.this, MainActivity.class);//엑티비티 생성 작성 화면
-                startActivity(intent);  //액티비티 시작
+            if (id == R.id.action_home) {
+                Intent intent = new Intent(Staff.this, MainActivity.class);
+                startActivity(intent);
                 overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
-                finish();//현재 실행중인 엑티비티 종료(엑티비티가 계속 쌓이게 되면 메모리 및 OS전체 부담을 줌)
+                finish();
             } else if (id == R.id.action_notice) {    //공지사항
                 Intent intent = new Intent(Staff.this, Notice.class);
-                intent.putExtra("idx", psMidx); //조회 키 값을 넘겨준다
+                intent.putExtra("idx", psMidx);
                 intent.putExtra("id", psMid);
                 intent.putExtra("name", psMname);
                 intent.putExtra("path", psMpath);
                 intent.putExtra("dept", psMdept);
                 intent.putExtra("sTelephone", sTelephone);
-                startActivityForResult(intent, 1); // Sub_Activity 호출
+                startActivityForResult(intent, 1);
                 overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
                 finish();
             } else if (id == R.id.action_member) {   //직원 조회
