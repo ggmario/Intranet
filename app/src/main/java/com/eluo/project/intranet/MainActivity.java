@@ -248,7 +248,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }else{
             Toast.makeText(MainActivity.this, R.string.network_error_retry,Toast.LENGTH_SHORT).show();
         }
-
         //이미지 넣기
         toolbar.setLogo(R.mipmap.h1_logo); //상단 중안 메뉴바에 이미지 출력
     }
@@ -489,7 +488,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }else {
                     Log.i("디바이스 전화번호 : ", getPhoneNumber());
 //            sTelephone = "010-6248-3985";
-//            sTelephone = "010-2726-2050";
                     if(getPhoneNumber() != null){
                         if(getPhoneNumber().indexOf("+82") == -1){
                             if(getPhoneNumber().length() == 11 ){
@@ -506,7 +504,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
                         }
 //                    sTelephone = "010-6248-3985";
-//                    sTelephone = "010-2726-2050";
                     }else{
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
