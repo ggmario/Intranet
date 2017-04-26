@@ -447,8 +447,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //오버레이(전화수신 팝업 목적)
     @TargetApi(Build.VERSION_CODES.M) //M 버전 이상 API를 타겟으로,
     public void PermissionOverlay() {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + getPackageName()));
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,Uri.parse("package:" + getPackageName())); // 현재 패키지 명을 넘겨 설정화면을 노출하게 됩니다.
         startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
     }
 
@@ -475,6 +474,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     sVer = "Y";
                 }
             }
+
             if(sVer.equals("Y")){
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)  != PackageManager.PERMISSION_GRANTED) {
                     if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)){
@@ -485,13 +485,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }else {
                     Log.i("디바이스 전화번호 : ", getPhoneNumber());
-
+            sTelephone = "010-6248-3985";
                     if(getPhoneNumber() != null){
                         if(getPhoneNumber().indexOf("+82") == -1){
                             if(getPhoneNumber().length() == 11 ){
                                 sTelephone = getPhoneNumber().substring(0, 3) + "-" + getPhoneNumber().substring(3, 7) + "-" + getPhoneNumber().substring(7, 11);
                             }else if (getPhoneNumber().length() == 10) {
                                 sTelephone = getPhoneNumber().substring(0, 3) + "-" + getPhoneNumber().substring(3, 6) + "-" + getPhoneNumber().substring(6, 10);
+                            }else{
+                                Log.e("err82","length err: "+sTelephone);
                             }
                         }else{
                             String sTemp = "0"+getPhoneNumber().substring(3, getPhoneNumber().length());
@@ -499,9 +501,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 sTelephone = sTemp.substring(0, 3) + "-" + sTemp.substring(3, 7) + "-" + sTemp.substring(7, 11);
                             }else if (sTemp.length() == 10) {
                                 sTelephone = sTemp.substring(0, 3) + "-" + sTemp.substring(3, 6) + "-" + sTemp.substring(6, 10);
+                            }else{
+                                Log.e("err10","length err: "+sTelephone);
                             }
                         }
-
+                    sTelephone = "010-6248-3985";
                     }else{
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
@@ -520,7 +524,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if(sTelephone != null){
                         if (REQUEST_CODE_LOCATION == 2) {
                             String result = SendByHttp(sTelephone,"1"); // 메시지를 서버에 보냄
-
                             if (result != null) {
                                 String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
                                 if(parsedData != null){
@@ -544,14 +547,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     Log.e("JSON 데이터 파싱 에러", parsedData[0][0].toString());
                                 }
                             } else {
-                                Log.v("JSON 데이터 파싱 실패", "");
+                                Log.e("JSON 데이터 파싱 실패", "");
                             }
                         }
                         if(!sMidx.equals("ERR")){
                             new ThreadPolicy();
                             loadScore();
-                            Log.d("로그인  되었습니다.","");
-
+                            Log.d("로그인  되었습니다.",sTelephone);
                             String result = SendByHttp(sTelephone,"1"); // 메시지를 서버에 보냄
                             String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
 
@@ -603,7 +605,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
-
     /**
      * 서버에 데이터를 보내는 메소드
      * @param msg
