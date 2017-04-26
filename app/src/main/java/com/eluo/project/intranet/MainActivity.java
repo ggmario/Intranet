@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String result = SendByHttp(" ","2"); // 메시지를 서버에 보냄
             String[][] parsedData = jsonParserList1(result); // JSON 데이터 파싱
 
-            m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.main_item_type01);   // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
+            m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.main_item_type01);   // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
             m_ListView = (ListView) findViewById(R.id.listNotice);  // Xml에서 추가한 ListView 연결
             m_ListView.setAdapter(m_Adapter);    // ListView에 어댑터 연결
             m_ListView.setOnItemClickListener(onClickListItem); // ListView 아이템 터치 시 이벤트
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             parsedData = jsonParserList1(result); // JSON 데이터 파싱
 
             // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
-            m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.main_item_type02);
+            m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.main_item_type02);
 
             // Xml에서 추가한 ListView 연결
             m_ListView = (ListView) findViewById(R.id.listGoOut);
@@ -485,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }else {
                     Log.i("디바이스 전화번호 : ", getPhoneNumber());
-//            sTelephone = "010-6248-3985";
+
                     if(getPhoneNumber() != null){
                         if(getPhoneNumber().indexOf("+82") == -1){
                             if(getPhoneNumber().length() == 11 ){
@@ -501,7 +501,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 sTelephone = sTemp.substring(0, 3) + "-" + sTemp.substring(3, 6) + "-" + sTemp.substring(6, 10);
                             }
                         }
-//                    sTelephone = "010-6248-3985";
+
                     }else{
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
