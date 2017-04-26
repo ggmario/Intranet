@@ -1,0 +1,96 @@
+<resources>
+    <string name="app_name">エルオ\nイントラネット</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- 엑션바-->
+    <string name="action_login">ログイン</string>
+    <string name="action_logout">ログアウト</string>
+    <string name="action_home">ホーム</string>
+    <string name="action_member">スタッフ検索</string>
+    <string name="action_notice">お知らせ</string>
+    <string name="action_meeting">会議室の予約状況</string>
+    <string name="action_outside">外勤照会</string>
+    <string name="action_leave">私の休暇照会</string>
+    <string name="action_map">会社所在地</string>
+    <string name="action_exit">終了</string>
+    <string name="action_myeluo">MY ELUO</string>
+    <string name="action_meeting_reg">会議室の予約</string>
+    <!-- 오버플러-->
+    <string name="rep_mail">master@eluocnc.com</string>
+    <string name="company_name">Android Studio Dev App</string>
+    <string name="app_info">アプリ情報</string>
+    <string name="facebook">FaeceBook</string>
+    <string name="naver_blog">Naver Blog</string>
+    <string name="tumblr">Tumblr</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="menu_telephone">Phone</string>
+    <string name="menu_emaile">Maile</string>
+    <string name="company_map">EluoC&#38;C 本社</string>
+    <string name="governor_kt_map">KT 冠岳支社</string>
+    <string name="governor_map">Company Location</string>
+    <string name="program_info">プログラム情報</string>
+
+    <!-- 알림  -->
+    <string name="D_TitleName">通知</string>
+    <string name="D_Approval">確認</string>
+    <string name="D_Canceled">キャンセル</string>
+    <string name="D_Question">終了しますか？</string>
+    <string name="D_Question_Meeting">ご希望の項目をタッチしてください</string>
+    <string name="D_Approval_Meeting">予約</string>
+    <string name="D_Canceled_Meeting">予約のキャンセル</string>
+    <string name="D_View_again">もう一度照会してください</string>
+    <string name="D_aspiration_chip">ユシムルル確認してください</string>
+    <string name="D_account">イントラネットにアカウント情報と一致していません。\nイントラネットにアカウント情報を確認してください。</string>
+    <string name="D_meeting">7階の会議室の予約です</string>
+    <string name="D_not_available">会議室予約できません。</string>
+
+    <string name="T_meeting_name">議室の予約名を入力してください。</string>
+    <string name="T_meeting_booking">会議室予約者の名前を入力してください。</string>
+    <string name="T_booking_warning">当日一日にのみ予約可能です。</string>
+    <string name="T_booking_name_impossible">申請者の名前は変更されません。</string>
+    <string name="T_exit_meg">もう一度押す終了します。</string>
+    <string name="T_search_no">検索内容を入力してください。</string>
+
+    <!-- 네트워크오류 문구 -->
+    <string name="network_error">ネットワークエラー</string>
+    <string name="network_error_msg">ネットワーク接続が失敗しました。\n確認を選択する際、アプリケーションが終了します。</string>
+    <string name="network_error_chk">ネットワークの状態を確認してください。</string>
+    <string name="network_error_retry">もう一度試してください。</string>
+
+    <!-- 가타 -->
+    <string name="voice_search_name">ELUO 音声検索</string>
+    <string name="search">検索</string>
+    <string name="ok">確認</string>
+    <string name="retry">再び挑戦</string>
+    <string name="message">文字</string>
+    <string name="telephone_connection">通貨</string>
+    <string name="employee_information">職員の情報</string>
+    <string name="available">予約可能</string>
+    <string name="not_available">予約不可</string>
+    <string name="com_mail">master@eluocnc.com</string>
+    <string name="com_eluo">eluo</string>
+    <string name="search_text">ID,電話,名前</string>
+
+
+    <!-- 메인 화면 -->
+    <string name="main_notice">公知の現況</string>
+    <string name="main_leave">休暇の現状</string>
+    <string name="main_outside">外勤の現状</string>
+
+    <!-- 정보 -->
+    <string name="app_info_v">アプリ情報 Alpha 1.4(Development Test Version)</string>
+
+    <!-- 정보 표기 -->
+    <string name="info_name">名前</string>
+    <string name="info_dept">部門</string>
+    <string name="info_telephone">電話</string>
+    <string name="info_email">メール</string>
+    <string name="info_img">画像</string>
+    <string name="info_data">データ</string>
+    <string name="info_date">日</string>
+    <string name="info_text">テキスト</string>
+    <string name="info_title">タイトル</string>
+
+</resources>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:layout_width="319dp"
+        android:layout_height="0dp"
+        android:background="@color/color_white"
+        android:orientation="vertical"
+        android:layout_weight="0.49"
+        tools:ignore="UselessParent">
+
+        <TextView
+            android:paddingTop="20dp"
+            android:textStyle="bold"
+            android:id="@+id/txt_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/content_color"
+            android:textSize="23sp" />
+
+        <TextView
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:lineSpacingExtra="6dp"
+            android:id="@+id/txt_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left|center"
+            android:textColor="@color/content_color"
+            android:textSize="20sp"
+            tools:ignore="RtlSymmetry" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="37dip"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btn_left"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:background="@color/colorPrimary"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="@string/D_Approval" />
+
+           <!-- <Button
+                android:id="@+id/btn_right"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="취소" />-->
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

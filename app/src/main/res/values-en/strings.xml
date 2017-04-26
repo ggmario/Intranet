@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">eluo\nintranet</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!-- 엑션바-->
+    <string name="action_login">LOGIN</string>
+    <string name="action_logout">LOGOUT</string>
+    <string name="action_home">HOME</string>
+    <string name="action_member">Employee Search</string>
+    <string name="action_notice">Notice</string>
+    <string name="action_meeting">Meeting Room</string>
+    <string name="action_outside">Outside Search</string>
+    <string name="action_leave">Check My Vacation</string>
+    <string name="action_map">Company location</string>
+    <string name="action_exit">Termination</string>
+    <string name="action_myeluo">MY ELUO</string>
+    <string name="action_meeting_reg">Meeting Room Booking</string>
+    <!-- 오버플러-->
+    <string name="rep_mail">master@eluocnc.com</string>
+    <string name="company_name">Android Studio Dev App</string>
+    <string name="app_info">About app</string>
+    <string name="facebook">FaeceBook</string>
+    <string name="naver_blog">Naver Blog</string>
+    <string name="tumblr">Tumblr</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="menu_telephone">Phone</string>
+    <string name="menu_emaile">Maile</string>
+    <string name="company_map">EluoC&#38;C Headquarters</string>
+    <string name="governor_kt_map">KT Branch office</string>
+    <string name="governor_map">Company Location</string>
+    <string name="program_info">Program information</string>
+
+    <!-- 알림  -->
+    <string name="D_TitleName">notice</string>
+    <string name="D_Approval">Confirm</string>
+    <string name="D_Canceled">cancel</string>
+    <string name="D_Question">Are you sure you want to quit?</string>
+    <string name="D_Question_Meeting">원하시는 항목을 터치 해주세요</string>
+    <string name="D_Approval_Meeting">예약 하기</string>
+    <string name="D_Canceled_Meeting">예약 취소</string>
+    <string name="D_View_again">Please check again.</string>
+    <string name="D_aspiration_chip">Please check USIM.</string>
+    <string name="D_account">The intranet does not match the account information\nPlease check your account information on the intranet.</string>
+    <string name="D_meeting">It s a 7th floor conference room reservation.</string>
+    <string name="D_not_available">I can"'"t book a conference room.</string>
+
+    <string name="T_meeting_name">회의실 예약 명을 입력 해주세요</string>
+    <string name="T_meeting_booking">회의실 예약자 이름을 입력 해주세요</string>
+    <string name="T_booking_warning">당일 하루에 대해서만 예약 가능합니다</string>
+    <string name="T_booking_name_impossible">신청자 이름은 변경이 되지 않습니다</string>
+    <string name="T_exit_meg">Press once to exit.</string>
+    <string name="T_search_no">Enter search contents.</string>
+
+    <!-- 네트워크오류 문구 -->
+    <string name="network_error">Network error</string>
+    <string name="network_error_msg">Network connection failed.\nApplications will be terminated when checking for confirmation.</string>
+    <string name="network_error_chk">Please check the status of the network.</string>
+    <string name="network_error_retry">Please try again.</string>
+
+    <!-- 가타 -->
+    <string name="voice_search_name">ELUO Voice search</string>
+    <string name="ok">OK</string>
+    <string name="retry">try again</string>
+    <string name="message">text</string>
+    <string name="telephone_connection">currency</string>
+    <string name="employee_information">Employee information</string>
+    <string name="available">Reservation is possible</string>
+    <string name="not_available">No Reservations</string>
+    <string name="com_mail">master@eluocnc.com</string>
+    <string name="com_eluo">eluo</string>
+    <string name="search_text">ID, phone, name</string>
+    <string name="search">Search</string>
+
+    <!-- 메인 화면 -->
+    <string name="main_notice">Notice</string>
+    <string name="main_leave">vacation</string>
+    <string name="main_outside">Outside</string>
+
+    <!-- 정보 -->
+    <string name="app_info_v">앱 정보 Alpha 1.4(Development Test Version)</string>
+
+    <!-- 정보 표기 -->
+    <string name="info_name">name</string>
+    <string name="info_dept">Department</string>
+    <string name="info_telephone">telephone</string>
+    <string name="info_email">Mail</string>
+    <string name="info_img">image</string>
+    <string name="info_data">data</string>
+    <string name="info_date">date</string>
+    <string name="info_text">text</string>
+    <string name="info_title">title</string>
+
+</resources>

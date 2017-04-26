@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "72626250403",
+    "firebase_url": "https://eluointranet.firebaseio.com",
+    "project_id": "eluointranet",
+    "storage_bucket": "eluointranet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72626250403:android:0f30292542edf4be",
+        "android_client_info": {
+          "package_name": "com.eluo.project.intranet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72626250403-qo84qkifir3he4tsq8qr4jdiq4s60hka.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eluo.project.intranet",
+            "certificate_hash": "401c3f6cd1f967c1c503d82661b4aca10b5c45e7"
+          }
+        },
+        {
+          "client_id": "72626250403-umpub1tm88as4e69too380403kepi8d5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAj6LVDwXA98MwU_OrT0leA7LHjB9Ey-K8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72626250403-umpub1tm88as4e69too380403kepi8d5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

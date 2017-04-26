@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="prog_info">
+        Service name:EluoC&#38;C Intranet\n\n
+        version: Release Version 1.6\n\n
+        Function:\n
+        - Top 5 list of notices on main screen\n
+        - Show holiday on Main Screen\n
+        - Show External Working Information Output List on Main Screen\n
+        - In the main screen, new announcements are displayed in the notification list for 7 days.\n
+        - Device user information sajin / department / department\n
+        - Provides contents of contents of 20 company notices\n
+        - In the search results of the company"'"s employee information search, click the Details link to send jeonhwa \n
+        - Search for search function with telephone / name / ID when searching for employees in the Company"'"s Search menu\n
+        - Touch and hold for longer than 3 seconds in the Company"'";s employee search results list to connect to the phone.\n
+        - Enable search for employees "'" search voice recognition\n
+        - Provides checking of my holiday history \n
+        - Meeting the contents of the conference room reservation function\n
+        - Provide contents of employee information when receiving phone call\n
+        - The push notification is received according to the scheduling time of the conference room.
+        \n\n
+        Around:\n
+        - The app includes ELUOC&#38;C If you are not an employee, it will not function normally during installation.\n
+        - The app includes ELUOC&#38;C Intranet The app will not be used as an additional purpose (2nd processing).\n
+        - The app includes ELUOC&#38;C  Here are some applications that have been developed during the internal learning process.\n
+        \n
+        \n
+        history\n
+Version:  Release Version 1.6\n
+1. Main screen is screen ratio processing by Android device.\n
+2. New announcement in main screen notice list added new display for 7 days
+3. 18:9 response. Additional support for 18.5:9 by adding additional support
+\n\n
+Version:  Release Version 1.5\n
+1. Add voice recognition search capability to search for employees\n
+2. The colour change has been changed according to the display of the main screen gongji information.\n
+3. Added animated effects for screen movement\n
+4. Screen inteuro Image Replacement
+\n\n
+Version:  Release Version 1.4\n
+1. Added function related to conference room scheduling function
+\n\n
+Version:  Release Version 1.3\n
+1. Added Push token acquisition function\n
+2. No employee information results processed error correction.\n\n
+
+Version:  Release Version 1.2\n
+1. Push function added\n
+2. Ability to deal with features related to Android 7.0\n\n
+
+Version:  Release Version 1.1\n
+1. Touch event error modified if no employee inquiry results\n\n
+
+Version:  Release Version 1.0\n
+1. Once Phone is received, a layer pop-up will occur, and when the phone terminates, it will disappear\n\n
+
+
+
+    </string>
+</resources>

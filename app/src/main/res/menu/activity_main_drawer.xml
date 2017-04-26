@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/text"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_home"
+            android:icon="@mipmap/icon_home"
+            android:title="@string/action_home" />
+        <item
+            android:id="@+id/action_leave"
+            android:icon="@mipmap/icon_my_eluo"
+            android:title="@string/action_myeluo" />
+    </group>
+
+    <group android:id="@+id/text2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_member"
+            android:icon="@mipmap/icon_staff"
+            android:title="@string/action_member" />
+        <item
+            android:id="@+id/action_meeting"
+            android:icon="@mipmap/icon_meeting"
+            android:title="@string/action_meeting"/>
+
+        <item
+            android:id="@+id/action_notice"
+            android:icon="@mipmap/icon_notice"
+            android:title="@string/action_notice" />
+    </group>
+    <group android:id="@+id/text3"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_map"
+            android:icon="@mipmap/icon_company"
+            android:title="@string/action_map" />
+    </group>
+
+</menu>

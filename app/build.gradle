@@ -1,0 +1,54 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.0"
+    defaultConfig {
+        applicationId "com.eluo.project.intranet"
+        minSdkVersion 21
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.6"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            // 개발용 KEY
+            resValue "string", "google_maps_key", "AIzaSyChZWDBTQskcDNWVyy1YpnJ6_yqEqVlUDc"
+        }
+
+        release {
+            //배포용 KEY
+            resValue "string", "google_maps_key", "AIzaSyAdVgtZ-6iIFOJV1ytuUgseyoeJQTaLWpM"
+
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:support-v4:25.1.0'
+    compile 'com.android.support:design:25.1.0'
+    testCompile 'junit:junit:4.12'
+    compile 'com.google.android.gms:play-services-maps:10.0.1' //구글지도
+
+//    compile 'com.jakewharton:butterknife:7.0.1' //(gradle추가)
+    compile 'com.jakewharton:butterknife:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'com.google.firebase:firebase-core:10.0.1'  //Analytics
+    //PUSH 목적 추가
+    compile "com.google.firebase:firebase-messaging:10.0.1" //클라우드 메시징 및 알림
+    compile 'com.firebase:firebase-jobdispatcher:0.5.2'
+
+}
+android {
+    useLibrary 'org.apache.http.legacy'  //아파치 http 모듈 6.0부터 지원 하지 않아 넣었음
+}
+//PUSH 목적 추가
+apply plugin: 'com.google.gms.google-services'

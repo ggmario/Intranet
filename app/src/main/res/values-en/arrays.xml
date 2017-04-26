@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string-array name="meeting_time">
+        <item>09:00~09:30</item>
+        <item>09:30~10:00</item>
+        <item>10:00~10:30</item>
+        <item>10:30~11:00</item>
+        <item>11:00~11:30</item>
+        <item>11:30~12:00</item>
+        <item>12:00~12:30</item>
+        <item>12:30~13:00</item>
+        <item>13:00~13:30</item>
+        <item>13:30~14:00</item>
+        <item>14:00~14:30</item>
+        <item>14:30~15:00</item>
+        <item>15:00~15:30</item>
+        <item>15:30~16:00</item>
+        <item>16:00~16:30</item>
+        <item>16:30~17:00</item>
+        <item>17:00~17:30</item>
+        <item>17:30~18:00</item>
+        <item>18:00~18:30</item>
+        <item>18:30~19:00</item>
+        <item>19:00~19:30</item>
+        <item>19:30~20:00</item>
+    </string-array>
+
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/text1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="10dip"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:gravity="left|center"
+    android:paddingLeft="2dip"
+    android:paddingRight="0dp"
+    android:textSize="8pt"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:textColor="@color/list_color"
+    />
