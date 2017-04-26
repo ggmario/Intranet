@@ -217,15 +217,12 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
      * @return
      */
     private String SendByHttp(String msg) {
-        if(msg == null)
-            msg = "";
+
         String URL ="http://www.eluocnc.com/GW_V3/app/meetList.asp";
 
         DefaultHttpClient client = new DefaultHttpClient();
         try {
-			/* 체크할 id와 pwd값 서버로 전송 */
             HttpPost post = new HttpPost(URL);
-
 			/* 지연시간 최대 3초 */
             HttpParams params = client.getParams();
             HttpConnectionParams.setConnectionTimeout(params, 3000);
@@ -299,7 +296,6 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
             return null;
         }
     }
-    //메뉴 생성
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -327,8 +323,7 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
             }
         }
         if (id == R.id.action_exit) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);     // 여기서 this는 Activity의 this
-            // 여기서 부터는 알림창의 속성 설정
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.D_TitleName)        // 제목 설정
                     .setMessage(R.string.D_Question)        // 메세지 설정
                     .setCancelable(false)        // 뒤로 버튼 클릭시 취소 가능 설정

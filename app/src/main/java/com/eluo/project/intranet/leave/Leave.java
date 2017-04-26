@@ -106,7 +106,7 @@ public class Leave extends AppCompatActivity implements NavigationView.OnNavigat
             // 스레드 생성하고 시작
             new ThreadPolicy();
             String result = SendByHttp(psMidx); // 메시지를 서버에 보냄
-            m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.leave_item);
+            m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.leave_item);
             m_ListView = (ListView) findViewById(R.id.leave_list_view);
             m_ListView.setAdapter(m_Adapter);
 

@@ -97,8 +97,7 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
 
         if (NetworkUtil.isNetworkConnected(Notice.this)) {
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawer.setDrawerListener(toggle);
             toggle.syncState();
 
@@ -133,7 +132,7 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
             String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
 
             // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
-            m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
+            m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.notice_item);
             m_ListView = (ListView) findViewById(R.id.listview);
             m_ListView.setAdapter(m_Adapter);
             m_ListView.setOnItemClickListener(onClickListItem);

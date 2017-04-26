@@ -246,8 +246,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Naviga
             }
         }
         if (id == R.id.action_exit) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);     // 여기서 this는 Activity의 this
-            // 여기서 부터는 알림창의 속성 설정
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.D_TitleName)        // 제목 설정
                     .setMessage(R.string.D_Question)        // 메세지 설정
                     .setCancelable(false)        // 뒤로 버튼 클릭시 취소 가능 설정

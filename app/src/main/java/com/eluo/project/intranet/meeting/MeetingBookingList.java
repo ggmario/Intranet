@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -21,7 +20,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -54,16 +52,12 @@ import java.util.List;
  */
 
 public class MeetingBookingList  extends AppCompatActivity {
-    private ArrayAdapter<String> m_Adapter;
-    private ListView m_ListView;
-    private Bitmap bmp;
     private String psMid = null;
     private String psMidx = null;
     private String psMpath = null;
     private String psMdept = null;
     private String psMname = null;
     private String sTelephone = null;
-    private String sMeetingTitle = null;
     private String sDate = null;
     private ListView mListView = null;
     private ListViewAdapter mAdapter = null;

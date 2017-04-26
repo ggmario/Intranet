@@ -116,8 +116,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -193,7 +192,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                         String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
 
                         // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
-                        m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.staff_item);
+                        m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.staff_item);
                         m_ListView = (ListView) findViewById(R.id.listview);
                         m_ListView.setAdapter(m_Adapter);
                         m_ListView.setOnItemClickListener(onClickListItem);
@@ -410,7 +409,6 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
         try {
 			/* 체크할 id와 pwd값 서버로 전송 */
             HttpPost post = new HttpPost(URL+"?searchValue="+msg+"&pageUnit=100");
-
 			/* 지연시간 최대 3초 */
             HttpParams params = client.getParams();
             HttpConnectionParams.setConnectionTimeout(params, 3000);
@@ -555,8 +553,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
              }
         }
         if (id == R.id.action_exit) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);     // 여기서 this는 Activity의 this
-            // 여기서 부터는 알림창의 속성 설정
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.D_TitleName)        // 제목 설정
                     .setMessage(R.string.D_Question)        // 메세지 설정
                     .setCancelable(false)        // 뒤로 버튼 클릭시 취소 가능 설정
