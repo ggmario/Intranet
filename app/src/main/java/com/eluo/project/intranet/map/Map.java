@@ -245,6 +245,21 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Naviga
                 Toast.makeText(this, R.string.network_error_chk,Toast.LENGTH_SHORT).show();
             }
         }
+        if(id == R.id.settings){
+            if (NetworkUtil.isNetworkConnected(this)) {
+                Intent intent = new Intent(this, com.eluo.project.intranet.settings.Settings.class);//엑티비티 생성 작성 화면
+                intent.putExtra("idx", psMidx); //조회 키 값을 넘겨준다
+                intent.putExtra("id", psMid);
+                intent.putExtra("name", psMname);
+                intent.putExtra("path", psMpath);
+                intent.putExtra("dept", psMdept);
+                intent.putExtra("sTelephone", sTelephone);
+                startActivityForResult(intent, 1); // Sub_Activity 호출
+                finish();//현재 실행중인 엑티비티 종료(엑티비티가 계속 쌓이게 되면 메모리 및 OS전체 부담을 줌)
+            }else{
+                Toast.makeText(this, R.string.network_error_chk,Toast.LENGTH_SHORT).show();
+            }
+        }
         if (id == R.id.action_exit) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.D_TitleName)        // 제목 설정

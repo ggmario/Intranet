@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -44,6 +45,7 @@ public class CallingService extends Service {
 
     public static String EXTRA_CALL_NUMBER = "call_number";
     protected View rootView;
+    private String sOverlay = null;
 
     TextView tv_call_number = null;
     String call_number = "";    //전화번호
@@ -148,7 +150,9 @@ public class CallingService extends Service {
         }
         // 스레드 생성하고 시작
         new ThreadPolicy();
-            if(!call_number.equals("")) {
+        if(!call_number.equals("")) {
+            loadScore();
+            if(sOverlay.equals("true")){
                 String result = SendByHttp(call_number); // 메시지를 서버에 보냄
                 String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
                 if(parsedData != null){
@@ -167,13 +171,16 @@ public class CallingService extends Service {
                     }
                 }
             }else{
-                if(intent.getStringExtra(EXTRA_CALL_NUMBER).equals("")){
-                    if(call_tb.equals("Y")){
-                        removePopup();
-                    }
+                call_tb = "Y";
+                removePopup();
+            }
+        }else{
+            if(intent.getStringExtra(EXTRA_CALL_NUMBER).equals("")){
+                if(call_tb.equals("Y")){
+                    removePopup();
                 }
             }
-//        }
+        }
     }
     @Override
     public void onDestroy() {
@@ -273,5 +280,12 @@ public class CallingService extends Service {
             return null;
         }
     }
+
+    /* 프리퍼런스 가져오기*/
+    private void loadScore() {
+        SharedPreferences pref = getSharedPreferences("Overlay", Activity.MODE_PRIVATE);
+        sOverlay = pref.getString("switch", "");
+    }
+
 }
 

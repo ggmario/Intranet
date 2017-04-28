@@ -32,6 +32,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -302,6 +303,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    //메뉴 생성
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
     //옵션 메뉴
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -311,6 +320,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.program_info) {
             if (NetworkUtil.isNetworkConnected(this)) {
                 Intent intent = new Intent(MainActivity.this, ProgramInformation.class);//엑티비티 생성 작성 화면
+                intent.putExtra("idx", psMidx); //조회 키 값을 넘겨준다
+                intent.putExtra("id", psMid);
+                intent.putExtra("name", psMname);
+                intent.putExtra("path", psMpath);
+                intent.putExtra("dept", psMdept);
+                intent.putExtra("sTelephone", sTelephone);
+                startActivityForResult(intent, 1); // Sub_Activity 호출
+                finish();//현재 실행중인 엑티비티 종료(엑티비티가 계속 쌓이게 되면 메모리 및 OS전체 부담을 줌)
+            }else{
+                Toast.makeText(this, R.string.network_error_chk,Toast.LENGTH_SHORT).show();
+            }
+        }
+        if(id == R.id.settings){
+            if (NetworkUtil.isNetworkConnected(this)) {
+                Intent intent = new Intent(MainActivity.this, com.eluo.project.intranet.settings.Settings.class);//엑티비티 생성 작성 화면
                 intent.putExtra("idx", psMidx); //조회 키 값을 넘겨준다
                 intent.putExtra("id", psMid);
                 intent.putExtra("name", psMname);
@@ -485,7 +509,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }else {
                     Log.i("디바이스 전화번호 : ", getPhoneNumber());
-
+            sTelephone = "010-6248-3985";
                     if(getPhoneNumber() != null){
                         if(getPhoneNumber().indexOf("+82") == -1){
                             if(getPhoneNumber().length() == 11 ){
@@ -505,7 +529,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Log.e("err10","length err: "+sTelephone);
                             }
                         }
-
+                    sTelephone = "010-6248-3985";
                     }else{
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
@@ -544,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     });
                                     alert.setMessage(R.string.network_error_msg);
                                     alert.show();
-                                    Log.e("JSON 데이터 파싱 에러", parsedData[0][0].toString());
+                                    Log.e("JSON 데이터 파싱 에러", "");
                                 }
                             } else {
                                 Log.e("JSON 데이터 파싱 실패", "");

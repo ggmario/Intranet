@@ -31,6 +31,11 @@
     <string name="governor_kt_map">KT 冠岳支社</string>
     <string name="governor_map">Company Location</string>
     <string name="program_info">プログラム情報</string>
+    <string name="settings">設定</string>
+    <string name="overlay">着信コールの通知</string>
+    <string name="overlay_title">オーバーレイ</string>
+    <string name="push_title">プッシュ</string>
+    <string name="push">プッシュ通知に同意</string>
 
     <!-- 알림  -->
     <string name="D_TitleName">通知</string>
@@ -72,6 +77,7 @@
     <string name="com_mail">master@eluocnc.com</string>
     <string name="com_eluo">eluo</string>
     <string name="search_text">ID,電話,名前</string>
+    <string name="appInfo">Ver: 1.6 </string>
 
 
     <!-- 메인 화면 -->
