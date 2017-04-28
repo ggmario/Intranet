@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="top|center"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
+        android:layout_weight="0.76"
+        android:background="@color/bg"
+        android:orientation="vertical"
+        android:scrollbars="none"
+        tools:ignore="InefficientWeight,UselessParent">
+
+        <!-- 타이틀-->
+        <LinearLayout
+            android:layout_width="172dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/titleNotice"
+                android:layout_width="161dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:paddingBottom="5dip"
+                android:paddingTop="5dip"
+                android:text="@string/overlay_title"
+                android:textSize="8pt" />
+        </LinearLayout>
+
+
+    <!-- 전화 수신 알림 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:gravity="center_vertical"
+            android:background="@color/bg"
+            >
+
+            <Switch
+                android:id="@+id/overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:background="@color/bg1"
+                android:textColor="@color/content_color"
+                android:gravity="center_vertical"
+                android:checked="true"
+                android:text="@string/overlay"
+                android:textSize="8pt"
+                 />
+        </LinearLayout>
+
+
+        <!-- 타이틀-->
+        <LinearLayout
+            android:layout_width="172dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/titleVer"
+                android:layout_width="161dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:paddingBottom="5dip"
+                android:paddingTop="5dip"
+                android:text="@string/app_info"
+                android:textSize="8pt" />
+        </LinearLayout>
+
+
+        <!-- 전화 수신 알림 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:gravity="center_vertical"
+            android:background="@color/bg"
+            >
+            <TextView
+                android:id="@+id/ver"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:paddingBottom="5dip"
+                android:paddingTop="5dip"
+                android:text="@string/appInfo"
+                android:gravity="center_vertical"
+                android:background="@color/bg1"
+                android:textColor="@color/content_color"
+                android:textSize="8pt" />
+
+        </LinearLayout>
+
+
+
+
+        <!-- 타이틀-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="172dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="4dp"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:weightSum="1">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/push_title"-->
+                <!--android:layout_width="161dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_marginTop="2dp"-->
+                <!--android:paddingBottom="5dip"-->
+                <!--android:paddingTop="5dip"-->
+                <!--android:text="@string/push_title"-->
+                <!--android:textSize="8pt" />-->
+        <!--</LinearLayout>-->
+
+
+        <!-- 푸시 수신 알림 -->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="53dp"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:background="@color/bg"-->
+            <!--&gt;-->
+
+            <!--<Switch-->
+                <!--android:id="@+id/push"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_marginTop="2dp"-->
+                <!--android:background="@color/bg1"-->
+                <!--android:textColor="@color/content_color"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:checked="false"-->
+                <!--android:text="@string/push"-->
+                <!--android:textSize="8pt" />-->
+            <!--/>-->
+        <!--</LinearLayout>-->
+    </LinearLayout>
+</LinearLayout>
