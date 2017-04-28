@@ -509,7 +509,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }else {
                     Log.i("디바이스 전화번호 : ", getPhoneNumber());
-            sTelephone = "010-6248-3985";
+
                     if(getPhoneNumber() != null){
                         if(getPhoneNumber().indexOf("+82") == -1){
                             if(getPhoneNumber().length() == 11 ){
@@ -529,7 +529,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Log.e("err10","length err: "+sTelephone);
                             }
                         }
-                    sTelephone = "010-6248-3985";
+
                     }else{
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
