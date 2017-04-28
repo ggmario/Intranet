@@ -529,7 +529,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Log.e("err10","length err: "+sTelephone);
                             }
                         }
-
                     }else{
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
