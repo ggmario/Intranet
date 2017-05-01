@@ -73,6 +73,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -166,6 +168,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     String sIDateTmp ="";
                     sIDateTmp = strCurYear+strCurMonth+strCurDay;
+
+                    DateFormat sdFormat = new SimpleDateFormat("yyyyMMdd");
+                    Date tempDate = null;
+                    Date tempDate2 = null;
+
                     for (int i = 0; i < parsedData.length; i++) {
                         if (parsedData[i][1].length() > 26) {
                             sTitle = parsedData[i][1].substring(0, 23) + "...";
@@ -174,9 +181,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                         sDate = parsedData[i][3].substring(0, 4) + "." + parsedData[i][3].substring(5, 7) + "." + parsedData[i][3].substring(8, 10);
                         sDateInt =  parsedData[i][3].substring(0, 4) +parsedData[i][3].substring(5, 7) + parsedData[i][3].substring(8, 10);
-                        int iDataDate = Integer.parseInt(sDateInt);
-                        int iSysDate = Integer.parseInt(sIDateTmp);
-                        if((iSysDate-iDataDate) <= 7 ){
+                        try {
+                            tempDate = sdFormat.parse(sDateInt);
+                            tempDate2 = sdFormat.parse(sIDateTmp);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        long diff = tempDate2.getTime() - tempDate.getTime();
+                        long diffDays = diff / (24 * 60 * 60 * 1000);
+
+                        if((diffDays) <= 7 ){
                             mAdapter.addItem(sTitle, sDate,getResources().getDrawable(R.mipmap.ic_new));
                         }else{
                             mAdapter.addItem(sTitle, sDate,null);
@@ -529,6 +544,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Log.e("err10","length err: "+sTelephone);
                             }
                         }
+
                     }else{
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
