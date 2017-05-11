@@ -187,7 +187,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-
                         long diff = tempDate2.getTime() - tempDate.getTime();
                         long diffDays = diff / (24 * 60 * 60 * 1000);
 
@@ -249,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mListViewOutside.setAdapter(mAdapterOutside);
 
             if (result.lastIndexOf("RESULT") > 0) {
-                mAdapterOutside.addItemOutside("등록된 외근정보가 없습니다", "","");
+                mAdapterOutside.addItemOutside("", "등록된 외근 없습니다","");
             } else {
                 if (parsedData.length > 0) {
                     for (int i = 0; i < parsedData.length; i++) {
@@ -357,6 +356,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 intent.putExtra("dept", psMdept);
                 intent.putExtra("sTelephone", sTelephone);
                 startActivityForResult(intent, 1); // Sub_Activity 호출
+                overridePendingTransition(R.anim.anim_slide_in_top, R.anim.anim_slide_out_bottom);
                 finish();//현재 실행중인 엑티비티 종료(엑티비티가 계속 쌓이게 되면 메모리 및 OS전체 부담을 줌)
             }else{
                 Toast.makeText(this, R.string.network_error_chk,Toast.LENGTH_SHORT).show();
@@ -492,10 +492,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 //    자기 자신의 전화 번호 가기 오기 위한 권한 확인 및 오버레이 설정 창 이동(M 마시멜로우 위한 조치)
     public void onResume() {
+
+        if(isInMultiWindowMode() == true){
+            Toast.makeText(this,R.string.T_multi_windowMode,Toast.LENGTH_SHORT).show();
+        }
+
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (tm.getSimState() == TelephonyManager.SIM_STATE_ABSENT){
             // 유심이 없는 경우
-            Toast.makeText(this, "유심이 없습니다.",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.D_aspiration_chip,Toast.LENGTH_LONG).show();
             finish(); //종료
         } else {
             // 유심이 존재하는 경우
@@ -518,7 +523,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)  != PackageManager.PERMISSION_GRANTED) {
                     if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)){
                         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},REQUEST_CODE_LOCATION );
-                        Toast.makeText(this, "앱 실행을 위해 전화 관리 권한을 설정해야 합니다",Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, R.string.T_app_permissions,Toast.LENGTH_LONG).show();
                     }else{
                         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},REQUEST_CODE_LOCATION );
                     }
