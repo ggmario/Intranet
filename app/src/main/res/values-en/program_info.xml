@@ -2,7 +2,7 @@
 <resources>
     <string name="prog_info">
         Service name:EluoC&#38;C Intranet\n\n
-        version: Release Version 1.6\n\n
+        version: Release Version 1.6.1\n\n
         Function:\n
         - Top 5 list of notices on main screen\n
         - Show holiday on Main Screen\n
@@ -26,6 +26,11 @@
         \n
         \n
         history\n
+        Version: Release Version 1.6.1\n
+1. No mobile status display on the main screen\n
+2. Corrected error on New list in main list\n
+3. Add multi-window related phrases\n\n
+
 Version:  Release Version 1.6\n
 1. Main screen is screen ratio processing by Android device.\n
 2. New announcement in main screen notice list added new display for 7 days

@@ -57,6 +57,8 @@
     <string name="T_booking_name_impossible">申請者の名前は変更されません。</string>
     <string name="T_exit_meg">もう一度押す終了します。</string>
     <string name="T_search_no">検索内容を入力してください。</string>
+    <string name="T_multi_windowMode">マルチウィンドウ使用時にスムーズに使用することはできません。</string>
+    <string name="T_app_permissions">アプリを起動するために携帯電話の管理者権限を設定する必要があります。</string>
 
     <!-- 네트워크오류 문구 -->
     <string name="network_error">ネットワークエラー</string>

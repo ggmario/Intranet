@@ -51,12 +51,14 @@
     <string name="D_meeting">It s a 7th floor conference room reservation.</string>
     <string name="D_not_available">I can"'"t book a conference room.</string>
 
-    <string name="T_meeting_name">회의실 예약 명을 입력 해주세요</string>
-    <string name="T_meeting_booking">회의실 예약자 이름을 입력 해주세요</string>
-    <string name="T_booking_warning">당일 하루에 대해서만 예약 가능합니다</string>
-    <string name="T_booking_name_impossible">신청자 이름은 변경이 되지 않습니다</string>
+    <string name="T_meeting_name">Please enter the room reservation name.</string>
+    <string name="T_meeting_booking">Please enter the name of the room reservation person.</string>
+    <string name="T_booking_warning">You can only book for the day.</string>
+    <string name="T_booking_name_impossible">Applicant"'"s name can not be changed.</string>
     <string name="T_exit_meg">Press once to exit.</string>
     <string name="T_search_no">Enter search contents.</string>
+    <string name="T_multi_windowMode">It can not be used smoothly when using multi-window.</string>
+    <string name="T_app_permissions">You need to set up phone administration permissions to run your app.</string>
 
     <!-- 네트워크오류 문구 -->
     <string name="network_error">Network error</string>

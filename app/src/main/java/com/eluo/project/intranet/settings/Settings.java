@@ -24,7 +24,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.eluo.project.intranet.MainActivity;
 import com.eluo.project.intranet.R;
@@ -178,19 +177,7 @@ public class Settings extends AppCompatActivity  implements NavigationView.OnNav
             finish();
         }
         if(id == R.id.settings){
-            if (NetworkUtil.isNetworkConnected(this)) {
-                Intent intent = new Intent(this, com.eluo.project.intranet.settings.Settings.class);//엑티비티 생성 작성 화면
-                intent.putExtra("idx", psMidx); //조회 키 값을 넘겨준다
-                intent.putExtra("id", psMid);
-                intent.putExtra("name", psMname);
-                intent.putExtra("path", psMpath);
-                intent.putExtra("dept", psMdept);
-                intent.putExtra("sTelephone", sTelephone);
-                startActivityForResult(intent, 1); // Sub_Activity 호출
-                finish();//현재 실행중인 엑티비티 종료(엑티비티가 계속 쌓이게 되면 메모리 및 OS전체 부담을 줌)
-            }else{
-                Toast.makeText(this, R.string.network_error_chk,Toast.LENGTH_SHORT).show();
-            }
+
         }
         if (id == R.id.action_exit) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -233,7 +220,7 @@ public class Settings extends AppCompatActivity  implements NavigationView.OnNav
             intent.putExtra("dept",psMdept);
             intent.putExtra("sTelephone",sTelephone);
             startActivityForResult(intent, 1); // Sub_Activity 호출
-            overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
+            overridePendingTransition(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top);
             finish();
         }else if (id == R.id.action_member) {   //직원 조회
             Intent intent = new Intent(this, Staff.class);
@@ -244,7 +231,7 @@ public class Settings extends AppCompatActivity  implements NavigationView.OnNav
             intent.putExtra("dept",psMdept);
             intent.putExtra("sTelephone",sTelephone);
             startActivityForResult(intent, 1);
-            overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
+            overridePendingTransition(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top);
             finish();
         }else if(id == R.id.action_meeting){   //회의실 예약
             Intent intent = new Intent(this, Meeting.class);
@@ -255,7 +242,7 @@ public class Settings extends AppCompatActivity  implements NavigationView.OnNav
             intent.putExtra("dept",psMdept);
             intent.putExtra("sTelephone",sTelephone);
             startActivityForResult(intent, 1);
-            overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
+            overridePendingTransition(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top);
             finish();
         }else if(id == R.id.action_leave){   //휴가 조회
             Intent intent = new Intent(this, Leave.class);
@@ -266,7 +253,7 @@ public class Settings extends AppCompatActivity  implements NavigationView.OnNav
             intent.putExtra("dept",psMdept);
             intent.putExtra("sTelephone",sTelephone);
             startActivityForResult(intent, 1);
-            overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
+            overridePendingTransition(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top);
             finish();
         }else if (id == R.id.action_map) {     //회사 위치
             Intent intent = new Intent(this, Map.class);
@@ -277,7 +264,7 @@ public class Settings extends AppCompatActivity  implements NavigationView.OnNav
             intent.putExtra("dept",psMdept);
             intent.putExtra("sTelephone",sTelephone);
             startActivityForResult(intent, 1);
-            overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
+            overridePendingTransition(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top);
             finish();
         }else{
             Log.e("Error","예외 발생");
@@ -293,7 +280,7 @@ public class Settings extends AppCompatActivity  implements NavigationView.OnNav
             if (NetworkUtil.isNetworkConnected(this)) {
                 Intent intent = new Intent(this, MainActivity.class);//엑티비티 생성 작성 화면
                 startActivity(intent); //엑티비티 시작
-                overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
+                overridePendingTransition(R.anim.anim_slide_in_bottom, R.anim.anim_slide_out_top);
                 finish();
             }else{
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);

@@ -562,6 +562,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                 intent.putExtra("dept", psMdept);
                 intent.putExtra("sTelephone", sTelephone);
                 startActivityForResult(intent, 1); // Sub_Activity 호출
+                overridePendingTransition(R.anim.anim_slide_in_top, R.anim.anim_slide_out_bottom);
                 finish();//현재 실행중인 엑티비티 종료(엑티비티가 계속 쌓이게 되면 메모리 및 OS전체 부담을 줌)
             }else{
                 Toast.makeText(this, R.string.network_error_chk,Toast.LENGTH_SHORT).show();

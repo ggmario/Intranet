@@ -54,6 +54,7 @@ public class CallingService extends Service {
     String call_nm = "";    //이름
     String call_tb = "";
 
+
     WindowManager.LayoutParams params;
     private WindowManager windowManager = null;
 
@@ -126,23 +127,33 @@ public class CallingService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(isServiceRunningCheck() == true){
-            if(!intent.getStringExtra(EXTRA_CALL_NUMBER).equals("") ){
-                windowManager.addView(rootView, params);
-            }
+        if(!intent.getStringExtra(EXTRA_CALL_NUMBER).equals("") ){
+            windowManager.addView(rootView, params);
+            loadScore();
             setExtra(intent);
             if (!TextUtils.isEmpty(call_number)) {
-                if(!call_nm.equals("")){
+//                System.out.println("-------------------------->>"+call_number);
+//                System.out.println("-------------------------->>"+call_nm);
+//                System.out.println("-------------------------->>"+call_job);
+                System.out.println("-------------------------->>"+sOverlay);
+
+                if(!call_nm.equals("") && sOverlay.equals("true")){
                     tv_call_number.setText(call_nm+call_job+"\n"+call_part);
                 }else{
-                    removePopup();
+                    if(!sOverlay.equals("true") ||  call_nm.equals("")) {
+                        call_tb = "Y";
+                        removePopup();
+                    }
                 }
             }
+        }else{
+            removePopup();
         }
         return START_REDELIVER_INTENT;
     }
     private void setExtra(Intent intent) {
         if (intent == null) {
+//            call_tb = "Y";
             removePopup();
             return;
         }else {
@@ -160,6 +171,7 @@ public class CallingService extends Service {
                         call_nm = "";
                         call_part = "";
                         call_job = "";
+                        call_tb = "Y";
                         if (parsedData[0][0].equals("N")) {
                             removePopup();
                         } else {
@@ -167,11 +179,9 @@ public class CallingService extends Service {
                             call_part = parsedData[0][6];
                             call_job = parsedData[0][7];
                         }
-                        call_tb = "Y";
                     }
                 }
             }else{
-                call_tb = "Y";
                 removePopup();
             }
         }else{
