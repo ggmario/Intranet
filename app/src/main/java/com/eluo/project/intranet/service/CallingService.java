@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.eluo.project.intranet.R;
 import com.eluo.project.intranet.utils.ThreadPolicy;
+import com.google.firebase.crash.FirebaseCrash;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -245,6 +246,7 @@ public class CallingService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
             client.getConnectionManager().shutdown();	// 연결 지연 종료
+            FirebaseCrash.report(new Exception("서버데이터 보내기 실패"));
             return "";
         }
     }
@@ -286,6 +288,7 @@ public class CallingService extends Service {
             }
             return parseredData;
         } catch (JSONException e) {
+            FirebaseCrash.report(new Exception("정보 조회 실패"));
             e.printStackTrace();
             return null;
         }
