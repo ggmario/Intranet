@@ -79,7 +79,8 @@
     <string name="com_eluo">eluo</string>
     <string name="search_text">ID, phone, name</string>
     <string name="search">Search</string>
-    <string name="appInfo">Ver: 1.6 </string>
+    <string name="appInfo">Ver: 1.6.3</string>
+    <string name="view_more">[View more]</string>
 
     <!-- 메인 화면 -->
     <string name="main_notice">Notice</string>
