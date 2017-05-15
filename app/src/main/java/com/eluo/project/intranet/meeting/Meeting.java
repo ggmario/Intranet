@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -60,7 +61,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /*
  * Project	    : Eluo Intranet
@@ -172,8 +175,24 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
             } else {
                 if(parsedData != null){
                     if (parsedData.length > 0) {
-                        for (int i = 0; i < parsedData.length; i++) {
-                            m_Adapter.add(parsedData[i][0] + "\n" + parsedData[i][1]);
+                        Resources res = getResources();
+                        String[] arrString = res.getStringArray(R.array.meeting_time);
+                        List<String> mArrayList = new ArrayList<String>();
+
+                        int iCk= 0;
+                        for(String s:arrString) {
+                            for (int i = 0; i < parsedData.length; i++) {
+                                if (s.equals(parsedData[i][0])) {
+                                    if (!parsedData[i][1].equals("")) {
+                                        m_Adapter.add(s + "\n" + parsedData[i][1]);
+                                        iCk = 1;
+                                    }
+                                }
+                            }
+                            if(iCk == 0){
+                                m_Adapter.add(s+"\n 예약 가능");
+                            }
+                            iCk = 0;
                         }
                     }
                 }else{
@@ -279,7 +298,7 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                         try{
                             if(parseredData[i][j] == null ){
                                 parseredData[i][j] = json.getString(jsonName[j]);
-                                Log.i("JSON을 분석한 데이터 " + i + " : ", parseredData[i][j] );
+                                Log.i("JSON을 분석한 데이터 " + i + " : ", parseredData[i][j] +">"+j);
                             }
                         }catch (Exception e){
                             e.printStackTrace();
