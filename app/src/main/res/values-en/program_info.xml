@@ -2,7 +2,7 @@
 <resources>
     <string name="prog_info">
         Service name:EluoC&#38;C Intranet\n\n
-        version: Release Version 1.6.1\n\n
+        version: Release Version 1.6.3\n\n
         Function:\n
         - Top 5 list of notices on main screen\n
         - Show holiday on Main Screen\n
@@ -26,39 +26,54 @@
         \n
         \n
         history\n
+        Version:  Release Version 1.6.3\n
+        1. Fix multimedia errors\n
+        \n\n
+
+        Version:  Release Version 1.6.2\n
+        1. Bug tracking added.\n
+        2. Add the top of the main screen, notice more features
+        \n\n
+
         Version: Release Version 1.6.1\n
-1. No mobile status display on the main screen\n
-2. Corrected error on New list in main list\n
-3. Add multi-window related phrases\n\n
+        1. No mobile status display on the main screen\n
+        2. Corrected error on New list in main list\n
+        3. Add multi-window related phrases\n\n
 
-Version:  Release Version 1.6\n
-1. Main screen is screen ratio processing by Android device.\n
-2. New announcement in main screen notice list added new display for 7 days
-3. 18:9 response. Additional support for 18.5:9 by adding additional support
-4. Layout setting function
-\n\n
-Version:  Release Version 1.5\n
-1. Add voice recognition search capability to search for employees\n
-2. The colour change has been changed according to the display of the main screen gongji information.\n
-3. Added animated effects for screen movement\n
-4. Screen inteuro Image Replacement
-\n\n
-Version:  Release Version 1.4\n
-1. Added function related to conference room scheduling function
-\n\n
-Version:  Release Version 1.3\n
-1. Added Push token acquisition function\n
-2. No employee information results processed error correction.\n\n
+        Version:  Release Version 1.6\n
+        1. Main screen is screen ratio processing by Android device.\n
+        2. New announcement in main screen notice list added new display for 7 days
+        3. 18:9 response. Additional support for 18.5:9 by adding additional support
+        4. Layout setting function
+        \n\n
 
-Version:  Release Version 1.2\n
-1. Push function added\n
-2. Ability to deal with features related to Android 7.0\n\n
+        Version:  Release Version 1.5\n
+        1. Add voice recognition search capability to search for employees\n
+        2. The colour change has been changed according to the display of the main screen gongji information.\n
+        3. Added animated effects for screen movement\n
+        4. Screen inteuro Image Replacement
+        \n\n
 
-Version:  Release Version 1.1\n
-1. Touch event error modified if no employee inquiry results\n\n
+        Version:  Release Version 1.4\n
+        1. Added function related to conference room scheduling function
+        \n\n
 
-Version:  Release Version 1.0\n
-1. Once Phone is received, a layer pop-up will occur, and when the phone terminates, it will disappear\n\n
+        Version:  Release Version 1.3\n
+        1. Added Push token acquisition function\n
+        2. No employee information results processed error correction.
+        \n\n
+
+        Version:  Release Version 1.2\n
+        1. Push function added\n
+        2. Ability to deal with features related to Android 7.0
+        \n\n
+
+        Version:  Release Version 1.1\n
+        1. Touch event error modified if no employee inquiry results
+        \n\n
+
+        Version:  Release Version 1.0\n
+        1. Once Phone is received, a layer pop-up will occur, and when the phone terminates, it will disappear\n\n
 
 
 
