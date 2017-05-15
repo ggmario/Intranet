@@ -34,6 +34,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private long backPressedTime = 0;   //뒤로가기 종료
     private Bitmap bmp = null;
     private ListView m_ListView;
-    private TextView TextView;
+    private TextView TextView,TextView1;
     private ArrayAdapter<String> m_Adapter;
     private String psMid = null;
     private String psMidx = null;
@@ -136,6 +137,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //공지 사항 리스트
             String result = SendByHttp(" ","2"); // 메시지를 서버에 보냄
             String[][] parsedData = jsonParserList1(result); // JSON 데이터 파싱
+
+            //공지사항 더보기 터치시 공지사항 리스트 이동
+            TextView1 = (TextView) findViewById(R.id.view_more);
+            TextView1.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    Intent intent = new Intent(MainActivity.this, Notice.class);
+                    intent.putExtra("idx", psMidx); //조회 키 값을 넘겨준다
+                    intent.putExtra("id", psMid);
+                    intent.putExtra("name", psMname);
+                    intent.putExtra("path", psMpath);
+                    intent.putExtra("dept", psMdept);
+                    intent.putExtra("sTelephone", sTelephone);
+                    startActivityForResult(intent, 1); // Sub_Activity 호출
+                    overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
+                    finish();
+                    return false;
+                }
+            });
 
             m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.main_item_type01);   // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
             m_ListView = (ListView) findViewById(R.id.listNotice);  // Xml에서 추가한 ListView 연결
@@ -172,6 +192,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     DateFormat sdFormat = new SimpleDateFormat("yyyyMMdd");
                     Date tempDate = null;
                     Date tempDate2 = null;
+
+
 
                     for (int i = 0; i < parsedData.length; i++) {
                         if (parsedData[i][1].length() > 26) {
@@ -493,8 +515,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //    자기 자신의 전화 번호 가기 오기 위한 권한 확인 및 오버레이 설정 창 이동(M 마시멜로우 위한 조치)
     public void onResume() {
 
-        if(isInMultiWindowMode() == true){
-            Toast.makeText(this,R.string.T_multi_windowMode,Toast.LENGTH_SHORT).show();
+        if (Build.VERSION.SDK_INT == 25) {
+            if (isInMultiWindowMode() == true) {
+                Toast.makeText(this, R.string.T_multi_windowMode, Toast.LENGTH_SHORT).show();
+            }
         }
 
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
@@ -529,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }else {
                     Log.i("디바이스 전화번호 : ", getPhoneNumber());
-
+//                    sTelephone = "010-6248-3985";
                     if(getPhoneNumber() != null){
                         if(getPhoneNumber().indexOf("+82") == -1){
                             if(getPhoneNumber().length() == 11 ){
@@ -549,7 +573,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Log.e("err10","length err: "+sTelephone);
                             }
                         }
-
+//                        sTelephone = "010-6248-3985";
                     }else{
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
