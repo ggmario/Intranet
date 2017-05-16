@@ -20,7 +20,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -193,8 +192,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Date tempDate = null;
                     Date tempDate2 = null;
 
-
-
                     for (int i = 0; i < parsedData.length; i++) {
                         if (parsedData[i][1].length() > 26) {
                             sTitle = parsedData[i][1].substring(0, 23) + "...";
@@ -263,7 +260,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             // ListView에 어댑터 연결
             m_ListView.setAdapter(m_Adapter);
-//            m_ListView.setOnItemLongClickListener(onClickListItem2);
 
             mListViewOutside = (ListView) findViewById(R.id.listGoOut);
             mAdapterOutside = new ListViewAdapterOutside(this);
@@ -912,20 +908,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     {
         super.onDestroy();
     }
-
-    //길게 눌러 참고:http://gandus.tistory.com/476
-    private  AdapterView.OnItemLongClickListener onClickListItem2 = new AdapterView.OnItemLongClickListener(){
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            Snackbar.make(view, "외근 등록 하시겠습니까?(개발 중!!!)", Snackbar.LENGTH_LONG).setAction("등록", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            }).show();
-            return false;
-        }
-    };
 
     //공지 리스트 커스텀 처리 부분 시작
     private class ViewHolder {
