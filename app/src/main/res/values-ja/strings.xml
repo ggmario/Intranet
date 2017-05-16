@@ -59,6 +59,11 @@
     <string name="T_search_no">検索内容を入力してください。</string>
     <string name="T_multi_windowMode">マルチウィンドウ使用時にスムーズに使用することはできません。</string>
     <string name="T_app_permissions">アプリを起動するために携帯電話の管理者権限を設定する必要があります。</string>
+    <string name="T_meeting_4floor">4階の会議室の予約状況です。</string>
+    <string name="T_meeting_7floor">7階の会議室の予約状況です。</string>
+    <string name="T_meeting_8floor">8階の会議室の予約状況です。</string>
+    <string name="T_meeting_not">予約された会議室がありません。</string>
+
 
     <!-- 네트워크오류 문구 -->
     <string name="network_error">ネットワークエラー</string>
@@ -79,7 +84,7 @@
     <string name="com_mail">master@eluocnc.com</string>
     <string name="com_eluo">eluo</string>
     <string name="search_text">ID,電話,名前</string>
-    <string name="appInfo">Ver: 1.6.3 </string>
+    <string name="appInfo">Ver: 1.7.0</string>
     <string name="view_more">[もっと見る]</string>
 
 
@@ -101,5 +106,7 @@
     <string name="info_date">日</string>
     <string name="info_text">テキスト</string>
     <string name="info_title">タイトル</string>
-
+    <string name="info_head_office_7">7階の会議室</string>
+    <string name="info_head_office_8">8階の会議室</string>
+    <string name="info_office_expansion_4">4階の会議室</string>
 </resources>

@@ -59,6 +59,10 @@
     <string name="T_search_no">Enter search contents.</string>
     <string name="T_multi_windowMode">It can not be used smoothly when using multi-window.</string>
     <string name="T_app_permissions">You need to set up phone administration permissions to run your app.</string>
+    <string name="T_meeting_4floor">4th floor conference room reservation status.</string>
+    <string name="T_meeting_7floor">7th floor conference room reservation status.</string>
+    <string name="T_meeting_8floor">8th floor conference room reservation status.</string>
+    <string name="T_meeting_not">There is no reserved meeting room.</string>
 
     <!-- 네트워크오류 문구 -->
     <string name="network_error">Network error</string>
@@ -79,7 +83,7 @@
     <string name="com_eluo">eluo</string>
     <string name="search_text">ID, phone, name</string>
     <string name="search">Search</string>
-    <string name="appInfo">Ver: 1.6.3</string>
+    <string name="appInfo">Ver: 1.7.0</string>
     <string name="view_more">[View more]</string>
 
     <!-- 메인 화면 -->
@@ -100,5 +104,8 @@
     <string name="info_date">date</string>
     <string name="info_text">text</string>
     <string name="info_title">title</string>
+    <string name="info_head_office_7">7th floor meeting room</string>
+    <string name="info_head_office_8">8th floor meeting room</string>
+    <string name="info_office_expansion_4">4th floor meeting room</string>
 
 </resources>
