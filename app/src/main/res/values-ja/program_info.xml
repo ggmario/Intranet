@@ -2,7 +2,7 @@
 <resources>
     <string name="prog_info">
         サービス名:EluoC&#38;C Intranet\n\n
-        バージョン: Release Version 1.6.3\n\n
+        バージョン: Release Version 1.7.0\n\n
         機能:\n
         - メイン画面でお知らせ確認5つのリスト方式。\n
         - メイン画面での休暇者見せる。\n
@@ -26,6 +26,12 @@
         \n
         \n
         ヒストリー\n
+
+        バージョン:  Release Version 1.7.0\n
+        1. 会議室の予約状況UIの変更（7階、8階、4階の会議室確認可能）\n
+        2. 従業員情報照会時写真、ブービー追加表示およびフォントを追加\n
+        3. 会議室の予約時間通知フレーズが変更されました。
+        \n\n
 
         バージョン:  Release Version 1.6.3\n
         1. マルチメディアのエラーの修正\n

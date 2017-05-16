@@ -2,7 +2,7 @@
 <resources>
     <string name="prog_info">
         Service name:EluoC&#38;C Intranet\n\n
-        version: Release Version 1.6.3\n\n
+        version: Release Version 1.7.0\n\n
         Function:\n
         - Top 5 list of notices on main screen\n
         - Show holiday on Main Screen\n
@@ -26,8 +26,15 @@
         \n
         \n
         history\n
+
+        Version:  Release Version 1.7.0\n
+        1. Change conference room reservation UI (7th floor, 8th floor, 4th floor meeting room can be checked)\n
+        2. Conference room reservation time lapse text has been modified.\n
+        3. View employee information, add photos, add bubbles, and add fonts
+        \n\n
+
         Version:  Release Version 1.6.3\n
-        1. Fix multimedia errors\n
+        1. Fix multimedia errors
         \n\n
 
         Version:  Release Version 1.6.2\n
