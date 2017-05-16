@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -22,14 +23,17 @@ import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -63,6 +67,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 
 
 /*
@@ -91,14 +97,15 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
     private String psPhone = "";
     private String psViewsConditions = "N";  //조회 상태
 
-    private ListView m_ListView;
+    private ListView m_ListView, m_ListView2;
     private ArrayAdapter<String> m_Adapter;
-
+    private ListViewAdapter mAdapter = null;
     private VoiceRecognition voiceRecognition;
 
     // 중복 클릭 방지 시간 설정
     private static final long MIN_CLICK_INTERVAL=600;
     private long mLastClickTime;
+
 
     /** Called when the activity is first created. */
     @Override
@@ -183,6 +190,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                     Toast.makeText(Staff.this, R.string.T_search_no, Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
                 }else {
                     if (NetworkUtil.isNetworkConnected(Staff.this)) {
+
                         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
 
@@ -198,14 +206,26 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                         m_ListView.setOnItemClickListener(onClickListItem);
                         m_ListView.setOnItemLongClickListener(onClickListItem1);
 
+                        //커스텀 처리 부분
+                        m_ListView = (ListView) findViewById(R.id.listview);
+                        mAdapter = new Staff.ListViewAdapter(Staff.this);
+                        m_ListView.setAdapter(mAdapter);
+
                         if (result.lastIndexOf("RESULT") > 0) {
-                            m_Adapter.add("조회 내용이 없습니다");
+//                            m_Adapter.add("조회 내용이 없습니다");
+                            mAdapter.addItem(null,"조회 내용이 없습니다","","");
                             psViewsConditions = "N";
                         } else {
                             if (parsedData.length > 0) {
                                 psViewsConditions = "Y";
                                 for (int i = 0; i < parsedData.length; i++) {
-                                    m_Adapter.add(parsedData[i][3] + " ( " + parsedData[i][7] + " ) / " + parsedData[i][4]);
+
+                                    bmp = getBitmapFromURL(parsedData[i][8]+parsedData[i][9]);
+                                    int width=(int)(getWindowManager().getDefaultDisplay().getWidth()/6.6); // 가로 사이즈 지정
+                                    int height=(int)(getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
+                                    Bitmap resizedbitmap=Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
+
+                                    mAdapter.addItem(resizedbitmap, parsedData[i][3]+"  "+parsedData[i][7], parsedData[i][6], parsedData[i][4]);
                                 }
                             }else{
                                 Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
@@ -256,14 +276,25 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                 m_ListView.setOnItemClickListener(onClickListItem);
                 m_ListView.setOnItemLongClickListener(onClickListItem1);
 
+                //커스텀 처리 부분
+                m_ListView = (ListView) findViewById(R.id.listview);
+                mAdapter = new Staff.ListViewAdapter(Staff.this);
+                m_ListView.setAdapter(mAdapter);
+
                 if (result.lastIndexOf("RESULT") > 0) {
-                    m_Adapter.add("조회 내용이 없습니다");
+                    mAdapter.addItem(null,"조회 내용이 없습니다","","");
                     psViewsConditions = "N";
                 } else {
                     if (parsedData.length > 0) {
                         psViewsConditions = "Y";
                         for (int i = 0; i < parsedData.length; i++) {
-                            m_Adapter.add(parsedData[i][3] + " ( " + parsedData[i][7] + " ) / " + parsedData[i][4]);
+
+                            bmp = getBitmapFromURL(parsedData[i][8]+parsedData[i][9]);
+                            int width=(int)(getWindowManager().getDefaultDisplay().getWidth()/6.6); // 가로 사이즈 지정
+                            int height=(int)(getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
+                            Bitmap resizedbitmap=Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
+
+                            mAdapter.addItem(resizedbitmap, parsedData[i][3]+"  "+parsedData[i][7], parsedData[i][6], parsedData[i][4]);
                         }
                     }else{
                         Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
@@ -340,16 +371,6 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                         sDept = parsedData[iChoice][6];
                         psPhone = parsedData[iChoice][4];
                         sPosition = parsedData[iChoice][7];
-                        /*액티비티 호출 하여 새로운 화면 호출 하여 상세 내용 출력*/
-                        //                Intent intent = new Intent(Staff.this, StaffDetails.class);//리스트에서 상세 화면으로
-                        //                intent.putExtra("_id",sMidx); //조회 키 값을 넘겨준다
-                        //                intent.putExtra("idx",psMidx);
-                        //                intent.putExtra("id",psMid);
-                        //                intent.putExtra("name",psMname);
-                        //                intent.putExtra("path",psMpath);
-                        //                intent.putExtra("dept",psMdept);
-                        //                startActivityForResult(intent, 1); // Sub_Activity 호출
-                        //                finish();
 
                         final CharSequence[] items = {sNm + " " + sPosition + "", sDept, sEmail, sPhone};
 
@@ -457,7 +478,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                 String[] jsonName1 = {"RESULT"};
                 jsonName = jsonName1;
             }else{
-                String[] jsonName1 = {"MIDX", "GUBUN", "USERID", "USERNM", "MOBILE", "EMAIL", "PART","JOB"};
+                String[] jsonName1 = {"MIDX", "GUBUN", "USERID", "USERNM", "MOBILE", "EMAIL", "PART","JOB", "USERPATH", "USERIMG"};
                 jsonName = jsonName1;
             }
 
@@ -695,4 +716,104 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
+    //직원정보 리스트 커스텀 처리 부분 시작
+    private class ViewHolder {
+        public ImageView mIcon;
+        public TextView mName;
+        public TextView mDept;
+        public TextView mTelephone;
+    }
+
+    private class ListViewAdapter extends BaseAdapter {
+        private Context mContext = null;
+        private ArrayList<StaffListData> mListData = new ArrayList<StaffListData>();
+
+        public ListViewAdapter(Context mContext) {
+            super();
+            this.mContext = mContext;
+        }
+
+        @Override
+        public int getCount() {
+            return mListData.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mListData.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        public void addItem(  Bitmap icon, String mName ,String mDept, String mTelephone){
+            StaffListData addInfo = null;
+            addInfo = new StaffListData();
+            addInfo.mIcon = icon;
+            addInfo.sName = mName;
+            addInfo.sDept = mDept;
+            addInfo.sTelephone = mTelephone;
+
+            mListData.add(addInfo); //주석 해제 예정
+        }
+
+        public void remove(int position){
+            mListData.remove(position);
+            dataChange();
+        }
+
+        public void sort(){
+            Collections.sort(mListData, StaffListData.ALPHA_COMPARATOR);
+            dataChange();
+        }
+
+        public void dataChange(){
+            m_Adapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Staff.ViewHolder holder;
+            if (convertView == null) {
+                holder = new Staff.ViewHolder();
+
+                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.activity_staff_list_item, null);
+
+                holder.mIcon = (ImageView) convertView.findViewById(R.id.staff_mImage_item);
+                holder.mName = (TextView) convertView.findViewById(R.id.staff_name_itme);
+                holder.mDept = (TextView) convertView.findViewById(R.id.staff_dept_item);
+                holder.mTelephone = (TextView) convertView.findViewById(R.id.staff_telephone_item);
+
+                convertView.setTag(holder);
+            }else{
+                holder = (Staff.ViewHolder) convertView.getTag();
+            }
+
+            StaffListData mData = mListData.get(position);
+            if (mData.mIcon != null) {
+                holder.mIcon.setVisibility(View.VISIBLE);
+                holder.mIcon.setImageBitmap(mData.mIcon);
+            }else{
+                holder.mIcon.setVisibility(View.GONE);
+            }
+
+            holder.mName.setText(mData.sName);  //이름
+
+            holder.mDept.setText(mData.sDept);  //부서
+            String strColor = "#4174D9";
+            holder.mDept.setTextColor(Color.parseColor(strColor));
+
+            holder.mTelephone.setText(mData.sTelephone); //전화번호
+            String strColor2 = "#AAAAAA";
+            holder.mTelephone.setTextColor(Color.parseColor(strColor2));
+
+            return convertView;
+        }
+    }
+
 }
