@@ -96,7 +96,6 @@
 
         <activity android:name=".map.Map" android:label="@string/action_map"  android:screenOrientation="portrait" android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".member.Staff" android:label="@string/action_member"  android:screenOrientation="portrait" android:theme="@style/AppTheme.NoActionBar"> </activity>
-        <activity android:name=".member.StaffDetails" android:label="@string/action_member" android:screenOrientation="portrait" android:theme="@style/AppTheme.NoActionBar" ></activity>
         <activity android:name=".notice.Notice" android:label="@string/action_notice"  android:screenOrientation="portrait" android:theme="@style/AppTheme.NoActionBar" android:launchMode="singleTask"></activity>
         <activity android:name=".notice.NoticeDetails" android:label="@string/action_notice" android:screenOrientation="portrait" android:theme="@style/AppTheme.NoActionBar" android:launchMode="singleTask"></activity>
         <activity android:name=".meeting.Meeting" android:label="@string/action_meeting" android:screenOrientation="portrait" android:theme="@style/AppTheme.NoActionBar"></activity>
