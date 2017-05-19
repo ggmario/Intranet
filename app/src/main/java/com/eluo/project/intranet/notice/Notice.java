@@ -136,7 +136,6 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
             m_ListView = (ListView) findViewById(R.id.listview);
             m_ListView.setAdapter(m_Adapter);
             m_ListView.setOnItemClickListener(onClickListItem);
-
                 if (result.lastIndexOf("RESULT") > 0) {
                     m_Adapter.add("조회 내용이 없습니다");
                 } else {
@@ -148,7 +147,6 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
                         Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
                     }
                 }
-
         }else {
             Log.i("연결 안 됨" , "연결이 다시 한번 확인해주세요");
             Toast.makeText(Notice.this, R.string.network_error_chk, Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
@@ -300,6 +298,7 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
                 intent.putExtra("dept", psMdept);
                 intent.putExtra("sTelephone", sTelephone);
                 startActivityForResult(intent, 1); // Sub_Activity 호출
+                overridePendingTransition(R.anim.anim_slide_in_top, R.anim.anim_slide_out_bottom);
                 finish();
             }else {
                 Toast.makeText(this, R.string.network_error_chk, Toast.LENGTH_SHORT).show();

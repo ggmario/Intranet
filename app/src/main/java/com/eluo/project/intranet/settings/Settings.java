@@ -70,11 +70,10 @@ public class Settings extends AppCompatActivity  implements NavigationView.OnNav
         psMpath = intent.getStringExtra("path");
         psMdept = intent.getStringExtra("dept");
         sTelephone = intent.getStringExtra("sTelephone");
-
         loadScore();
 
         swSound = (Switch)findViewById(R.id.overlay);
-        System.out.println("====>>"+sOverlay);
+
         if(sOverlay.equals("true")){
             swSound.setChecked(true);
         }else if (sOverlay.equals("false")){
@@ -91,13 +90,11 @@ public class Settings extends AppCompatActivity  implements NavigationView.OnNav
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("switch", "true");
                     editor.commit();
-//                    Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
                 }else{
                     SharedPreferences prefs = getSharedPreferences("Overlay", MODE_PRIVATE);
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("switch", "false");
                     editor.commit();
-//                    Toast.makeText(getApplicationContext(), "체크 해제", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -174,6 +171,7 @@ public class Settings extends AppCompatActivity  implements NavigationView.OnNav
             intent.putExtra("dept",psMdept);
             intent.putExtra("sTelephone",sTelephone);
             startActivityForResult(intent, 1); // Sub_Activity 호출
+            overridePendingTransition(R.anim.anim_slide_in_top, R.anim.anim_slide_out_bottom);
             finish();
         }
         if(id == R.id.settings){

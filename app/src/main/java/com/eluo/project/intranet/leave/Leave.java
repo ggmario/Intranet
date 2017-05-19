@@ -335,6 +335,7 @@ public class Leave extends AppCompatActivity implements NavigationView.OnNavigat
             intent.putExtra("dept", psMdept);
             intent.putExtra("sTelephone", sTelephone);
             startActivityForResult(intent, 1); // Sub_Activity 호출
+            overridePendingTransition(R.anim.anim_slide_in_top, R.anim.anim_slide_out_bottom);
             finish();
             }else{
                 Toast.makeText(this, R.string.network_error_chk,Toast.LENGTH_SHORT).show();

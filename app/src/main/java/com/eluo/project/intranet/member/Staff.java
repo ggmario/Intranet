@@ -1,6 +1,7 @@
 package com.eluo.project.intranet.member;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.NavigationView;
@@ -102,9 +104,31 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
     private ListViewAdapter mAdapter = null;
     private VoiceRecognition voiceRecognition;
 
+    private ProgressDialog mProgressDialog;
+    private Handler mHandler;
+
     // 중복 클릭 방지 시간 설정
     private static final long MIN_CLICK_INTERVAL=600;
     private long mLastClickTime;
+
+
+        public void run(int i) {
+            mProgressDialog = ProgressDialog.show(Staff.this, "리스트 생성 중..","잠시만 기다려 주세요.", true);
+            i=i*100;
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                            mProgressDialog.dismiss();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, i);
+        }
+
 
 
     /** Called when the activity is first created. */
@@ -112,6 +136,8 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         Intent intent = new Intent(getIntent());
+
+        mHandler = new Handler();
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);  // 화면위 타이틀 없애기
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -182,15 +208,16 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
 
         //버튼
         etMessage = (EditText) findViewById(R.id.et_message);
-        etMessage.setOnEditorActionListener(this); //키패드에 독보기 클릭시 조회 되게 하는...
+        etMessage.setOnEditorActionListener(Staff.this); //키패드에 독보기 클릭시 조회 되게 하는...
         btnSend = (Button) findViewById(R.id.btn_sendData);
         btnSend.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(etMessage.length() == 0){
-                    Toast.makeText(Staff.this, R.string.T_search_no, Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
+                if(etMessage.length() == 0) {
+                    Toast.makeText(Staff.this, R.string.T_search_no, Toast.LENGTH_SHORT).show();
+                }else if(etMessage.length() == 1){
+                    Toast.makeText(Staff.this, R.string.T_search_no2, Toast.LENGTH_SHORT).show();
                 }else {
                     if (NetworkUtil.isNetworkConnected(Staff.this)) {
-
                         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
 
@@ -199,27 +226,24 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                         String result = SendByHttp(sMessage); // 메시지를 서버에 보냄
                         String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
 
+                        run(parsedData.length); //ProgressDialog
                         // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
                         m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.staff_item);
                         m_ListView = (ListView) findViewById(R.id.listview);
-                        m_ListView.setAdapter(m_Adapter);
                         m_ListView.setOnItemClickListener(onClickListItem);
                         m_ListView.setOnItemLongClickListener(onClickListItem1);
 
                         //커스텀 처리 부분
-                        m_ListView = (ListView) findViewById(R.id.listview);
                         mAdapter = new Staff.ListViewAdapter(Staff.this);
                         m_ListView.setAdapter(mAdapter);
 
                         if (result.lastIndexOf("RESULT") > 0) {
-//                            m_Adapter.add("조회 내용이 없습니다");
                             mAdapter.addItem(null,"조회 내용이 없습니다","","");
                             psViewsConditions = "N";
                         } else {
                             if (parsedData.length > 0) {
                                 psViewsConditions = "Y";
                                 for (int i = 0; i < parsedData.length; i++) {
-
                                     bmp = getBitmapFromURL(parsedData[i][8]+parsedData[i][9]);
                                     int width=(int)(getWindowManager().getDefaultDisplay().getWidth()/6.6); // 가로 사이즈 지정
                                     int height=(int)(getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
@@ -255,50 +279,49 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         // TODO Auto-generated method stub
         //오버라이드한 onEditorAction() 메소드
-
         if(etMessage.length() == 0){
             Toast.makeText(Staff.this, "검색내용 입력 해주세요", Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
+        }else if(etMessage.length() == 1){
+            Toast.makeText(Staff.this, R.string.T_search_no2, Toast.LENGTH_SHORT).show();
         }else {
             if (NetworkUtil.isNetworkConnected(this)) {
-                //키패드 숨기기
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
+                if(actionId > 0){   // 키패드 이벤트를 받을때 두번씩 발생 대응 하기 위해 처리
+                    //키패드 숨기기
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
+                    String sMessage = etMessage.getText().toString(); // 보내는 메시지를 받아옴
+                    sMessage = sMessage.replaceAll(" ", "");/*공백 제거*/
+                    String result = SendByHttp(sMessage); // 메시지를 서버에 보냄
+                    String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
+                     run(parsedData.length);
+                    // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
+                    m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.staff_item);
+                    m_ListView = (ListView) findViewById(R.id.listview);
+                    m_ListView.setOnItemClickListener(onClickListItem);
+                    m_ListView.setOnItemLongClickListener(onClickListItem1);
 
-                String sMessage = etMessage.getText().toString(); // 보내는 메시지를 받아옴
-                sMessage = sMessage.replaceAll(" ","");/*공백 제거*/
-                String result = SendByHttp(sMessage); // 메시지를 서버에 보냄
-                String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
+                    //커스텀 처리 부분
+                    mAdapter = new Staff.ListViewAdapter(Staff.this);
+                    m_ListView.setAdapter(mAdapter);
 
-                // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
-                m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.staff_item);
-                m_ListView = (ListView) findViewById(R.id.listview);
-                m_ListView.setAdapter(m_Adapter);
-                m_ListView.setOnItemClickListener(onClickListItem);
-                m_ListView.setOnItemLongClickListener(onClickListItem1);
-
-                //커스텀 처리 부분
-                m_ListView = (ListView) findViewById(R.id.listview);
-                mAdapter = new Staff.ListViewAdapter(Staff.this);
-                m_ListView.setAdapter(mAdapter);
-
-                if (result.lastIndexOf("RESULT") > 0) {
-                    mAdapter.addItem(null,"조회 내용이 없습니다","","");
-                    psViewsConditions = "N";
-                } else {
-                    if (parsedData.length > 0) {
-                        psViewsConditions = "Y";
-                        for (int i = 0; i < parsedData.length; i++) {
-
-                            bmp = getBitmapFromURL(parsedData[i][8]+parsedData[i][9]);
-                            int width=(int)(getWindowManager().getDefaultDisplay().getWidth()/6.6); // 가로 사이즈 지정
-                            int height=(int)(getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
-                            Bitmap resizedbitmap=Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
-
-                            mAdapter.addItem(resizedbitmap, parsedData[i][3]+"  "+parsedData[i][7], parsedData[i][6], parsedData[i][4]);
-                        }
-                    }else{
-                        Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
+                    if (result.lastIndexOf("RESULT") > 0) {
+                        mAdapter.addItem(null, "조회 내용이 없습니다", "", "");
                         psViewsConditions = "N";
+                    } else {
+                        if (parsedData.length > 0) {
+                            psViewsConditions = "Y";
+                            for (int i = 0; i < parsedData.length; i++) {
+                                bmp = getBitmapFromURL(parsedData[i][8] + parsedData[i][9]);
+                                int width = (int) (getWindowManager().getDefaultDisplay().getWidth() / 6.6); // 가로 사이즈 지정
+                                int height = (int) (getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
+                                Bitmap resizedbitmap = Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
+
+                                mAdapter.addItem(resizedbitmap, parsedData[i][3] + "  " + parsedData[i][7], parsedData[i][6], parsedData[i][4]);
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
+                            psViewsConditions = "N";
+                        }
                     }
                 }
             }else{
@@ -568,6 +591,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                 intent.putExtra("dept", psMdept);
                 intent.putExtra("sTelephone", sTelephone);
                 startActivityForResult(intent, 1); // Sub_Activity 호출
+                overridePendingTransition(R.anim.anim_slide_in_top, R.anim.anim_slide_out_bottom);
                 finish();
             }else{
                 Toast.makeText(this, R.string.network_error_chk,Toast.LENGTH_SHORT).show();

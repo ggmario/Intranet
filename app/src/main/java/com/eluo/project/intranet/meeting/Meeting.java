@@ -64,10 +64,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 /*
  * Project	    : Eluo Intranet
@@ -97,9 +95,7 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
 
     /** Called when the activity is first created. */
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             //현재 날짜 구함
@@ -115,7 +111,6 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
             int iToMinute = Integer.parseInt(strCurMinute);
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    Toast.makeText(Meeting.this, R.string.T_meeting_7floor, Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
                     sFloor = "7";
                     String result7 = SendByHttp("1");
                     String[][] parsedData7 = jsonParserList(result7);
@@ -137,8 +132,6 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                             if (parsedData7.length > 0) {
                                 Resources res = getResources();
                                 String[] arrString = res.getStringArray(R.array.meeting_time);
-                                List<String> mArrayList = new ArrayList<String>();
-
                                 int iCk= 0;
                                 for(String s:arrString) {
                                     for (int i = 0; i < parsedData7.length; i++) {
@@ -175,43 +168,76 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                     }
                     return true;
                 case R.id.navigation_dashboard:
-                    Toast.makeText(Meeting.this, R.string.T_meeting_8floor, Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
                     sFloor = "8";
                     String result8 = SendByHttp("1");
                     String[][] parsedData8 = jsonParserList(result8);
                     m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
-
                     m_ListView = (ListView) findViewById(R.id.meeting_list_view);
-
                     ArrayAdapter adapter8 = (ArrayAdapter) m_ListView.getAdapter();
                     adapter8.notifyDataSetChanged();
                     m_ListView.setAdapter(m_Adapter);
-                    int icount = 0;
-                    for (int i = 0; i < parsedData8.length; i++) {
-                        if(!parsedData8[i][2].equals("")){
-                            m_Adapter.add(parsedData8[i][2]);
-                        }else{
-                            if(icount == 0){
-                                m_Adapter.add("예약된 회의실이 없습니다.");
+
+                    if (result8.lastIndexOf("RESULT") > 0) {
+                        m_Adapter.add("예약된 회의실이 없습니다");
+                    }else {
+                        int icount = 0;
+                        for (int i = 0; i < parsedData8.length; i++) {
+                            if (!parsedData8[i][2].equals("")) {
                                 icount++;
+                                Resources res = getResources();
+                                String[] arrString = res.getStringArray(R.array.meeting_time);
+                                int iCk = 0;
+                                for (String s : arrString) {
+                                    for (int is = 0; is < parsedData8.length; is++) {
+                                        if (s.equals(parsedData8[is][0])) {
+                                            if (!parsedData8[is][1].equals("")) {
+                                                m_Adapter.add(s + "\n" + parsedData8[is][2]);
+                                                iCk = 1;
+                                            }
+                                        }
+                                    }
+                                    if (iCk == 0) {
+                                        String sTmp = s.substring(0, 2);
+                                        String sTmp1 = s.substring(3, 5);
+                                        int iTime = Integer.parseInt(sTmp);
+                                        int iMinute = Integer.parseInt(sTmp1);
+                                        if (iToTime > iTime) {
+                                            m_Adapter.add(s + "\n 예약 불가");
+                                        } else if (iToTime == iTime) {
+                                            if (iToMinute <= iMinute) {
+                                                m_Adapter.add(s + "\n 예약 가능");
+                                            } else {
+                                                m_Adapter.add(s + "\n 예약 불가");
+                                            }
+                                        } else {
+                                            m_Adapter.add(s + "\n 예약 가능");
+                                        }
+                                    }
+                                    iCk = 0;
+                                }
+                            } else {
+                                if (icount == 0) {
+                                    m_Adapter.add("예약된 회의실이 없습니다.");
+                                    icount++;
+                                }
                             }
                         }
                     }
                     return true;
-                case R.id.navigation_notifications:
-                    Toast.makeText(Meeting.this, "준비 중...", Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
-                    sFloor = "4";
-                    String result4 = SendByHttp("1");
-                    String[][] parsedData4 = jsonParserList(result4);
-                    m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
-
-                    m_ListView = (ListView) findViewById(R.id.meeting_list_view);
-
-                    ArrayAdapter adapter4 = (ArrayAdapter) m_ListView.getAdapter();
-                    adapter4.notifyDataSetChanged();
-                    m_ListView.setAdapter(m_Adapter);
-                    m_Adapter.add("예약된 회의실이 없습니다.");
-                    return true;
+//                case R.id.navigation_notifications:
+//                    Toast.makeText(Meeting.this, "준비 중...", Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
+//                    sFloor = "4";
+//                    String result4 = SendByHttp("1");
+//                    String[][] parsedData4 = jsonParserList(result4);
+//                    m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
+//
+//                    m_ListView = (ListView) findViewById(R.id.meeting_list_view);
+//
+//                    ArrayAdapter adapter4 = (ArrayAdapter) m_ListView.getAdapter();
+//                    adapter4.notifyDataSetChanged();
+//                    m_ListView.setAdapter(m_Adapter);
+//                    m_Adapter.add("예약된 회의실이 없습니다.");
+//                    return true;
             }
             return false;
         }
@@ -321,8 +347,6 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                     if (parsedData.length > 0) {
                         Resources res = getResources();
                         String[] arrString = res.getStringArray(R.array.meeting_time);
-                        List<String> mArrayList = new ArrayList<String>();
-
                         int iCk= 0;
                         for(String s:arrString) {
                             for (int i = 0; i < parsedData.length; i++) {
@@ -493,6 +517,7 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                 intent.putExtra("dept", psMdept);
                 intent.putExtra("sTelephone", sTelephone);
                 startActivityForResult(intent, 1); // Sub_Activity 호출
+                overridePendingTransition(R.anim.anim_slide_in_top, R.anim.anim_slide_out_bottom);
                 finish();
             }else{
                 Toast.makeText(this, R.string.network_error_chk,Toast.LENGTH_SHORT).show();

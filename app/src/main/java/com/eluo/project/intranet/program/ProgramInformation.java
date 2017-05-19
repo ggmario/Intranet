@@ -101,7 +101,6 @@ public class ProgramInformation  extends AppCompatActivity implements Navigation
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View nev_header_view = navigationView.getHeaderView(0);
-
         ImageView nav_header_image = (ImageView) nev_header_view.findViewById(R.id.imageView);
 
         bmp = getBitmapFromURL(psMpath);
@@ -154,6 +153,7 @@ public class ProgramInformation  extends AppCompatActivity implements Navigation
             intent.putExtra("dept",psMdept);
             intent.putExtra("sTelephone",sTelephone);
             startActivityForResult(intent, 1); // Sub_Activity 호출
+            overridePendingTransition(R.anim.anim_slide_in_top, R.anim.anim_slide_out_bottom);
             finish();
         }
         if(id == R.id.settings){
