@@ -111,25 +111,23 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
     private static final long MIN_CLICK_INTERVAL=600;
     private long mLastClickTime;
 
-
-        public void run(int i) {
-            mProgressDialog = ProgressDialog.show(Staff.this, "리스트 생성 중..","잠시만 기다려 주세요.", true);
-            i=i*100;
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                            mProgressDialog.dismiss();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+    //프로그레스 다이얼로그(데이터 서버 조회 후 리스트 생성 시간동안 노출)
+    public void run(int i) {
+        mProgressDialog = ProgressDialog.show(Staff.this, "리스트 생성 중..","잠시만 기다려 주세요.", true);
+        i=i*100;
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                        mProgressDialog.dismiss();
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }, i);
-        }
-
-
+            }
+        }, i);
+    }
 
     /** Called when the activity is first created. */
     @Override
@@ -216,6 +214,8 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                     Toast.makeText(Staff.this, R.string.T_search_no, Toast.LENGTH_SHORT).show();
                 }else if(etMessage.length() == 1){
                     Toast.makeText(Staff.this, R.string.T_search_no2, Toast.LENGTH_SHORT).show();
+                }else if(etMessage.equals("010")){
+                    Toast.makeText(Staff.this, R.string.T_search_no3, Toast.LENGTH_SHORT).show();
                 }else {
                     if (NetworkUtil.isNetworkConnected(Staff.this)) {
                         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -248,7 +248,6 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                                     int width=(int)(getWindowManager().getDefaultDisplay().getWidth()/6.6); // 가로 사이즈 지정
                                     int height=(int)(getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
                                     Bitmap resizedbitmap=Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
-
                                     mAdapter.addItem(resizedbitmap, parsedData[i][3]+"  "+parsedData[i][7], parsedData[i][6], parsedData[i][4]);
                                 }
                             }else{
@@ -281,8 +280,10 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
         //오버라이드한 onEditorAction() 메소드
         if(etMessage.length() == 0){
             Toast.makeText(Staff.this, "검색내용 입력 해주세요", Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
-        }else if(etMessage.length() == 1){
+        }else if(etMessage.length() == 1) {
             Toast.makeText(Staff.this, R.string.T_search_no2, Toast.LENGTH_SHORT).show();
+        }else if(etMessage.equals("010")){
+            Toast.makeText(Staff.this, R.string.T_search_no3, Toast.LENGTH_SHORT).show();
         }else {
             if (NetworkUtil.isNetworkConnected(this)) {
                 if(actionId > 0){   // 키패드 이벤트를 받을때 두번씩 발생 대응 하기 위해 처리
@@ -315,7 +316,6 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                                 int width = (int) (getWindowManager().getDefaultDisplay().getWidth() / 6.6); // 가로 사이즈 지정
                                 int height = (int) (getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
                                 Bitmap resizedbitmap = Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
-
                                 mAdapter.addItem(resizedbitmap, parsedData[i][3] + "  " + parsedData[i][7], parsedData[i][6], parsedData[i][4]);
                             }
                         } else {
@@ -376,7 +376,6 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
             new ThreadPolicy();
             if (NetworkUtil.isNetworkConnected(Staff.this)) {
                 if (psViewsConditions.equals("Y")) {
-                    String sMidx = "";
                     String sDept = "";
                     String sEmail = "";
                     String sPhone = "";
@@ -386,8 +385,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                     int iChoice = arg2;
                     String result = SendByHttp(sMessage); // 메시지를 서버에 보냄
                     if (result != null) {
-                        String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
-                        sMidx = parsedData[iChoice][0];
+                        String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱;
                         sNm = parsedData[iChoice][3];
                         sPhone = parsedData[iChoice][4];
                         sEmail = parsedData[iChoice][5];
@@ -839,5 +837,4 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
             return convertView;
         }
     }
-
 }
