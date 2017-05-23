@@ -7,56 +7,70 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="57dp"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/navigation" >
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <ListView
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:id="@+id/meeting_list_view"
+            android:gravity="right|center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="57dp"
+            tools:ignore="ObsoleteLayoutParam,UnknownIdInLayout"
+            android:layout_below="@+id/navigation"
+            android:layout_alignParentStart="true" />
 
-    </android.support.design.widget.BottomNavigationView>
+    </LinearLayout>
 
-    <ListView
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:id="@+id/meeting_list_view"
-        android:gravity="right|center"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_below="@+id/et_message"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="114dp"
-        android:layout_height="1024dp"
-        tools:ignore="UnknownIdInLayout" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="407dp"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="57dp"
+            android:background="?android:attr/windowBackground"
+            app:menu="@menu/navigation" >
 
 
+        </android.support.design.widget.BottomNavigationView>
+
+
+    </LinearLayout>
 
 
     <!--<ListView-->
-        <!--android:paddingLeft="10dp"-->
-        <!--android:paddingRight="10dp"-->
-        <!--android:id="@+id/meeting_list_view"-->
-        <!--android:gravity="right|center"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_below="@+id/et_message"-->
-        <!--android:layout_alignParentStart="true"-->
-        <!--android:layout_marginTop="64dp"-->
-        <!--android:layout_height="1024dp"-->
-        <!--android:layout_alignEnd="@+id/meeting_fab"-->
-        <!--/>-->
+    <!--android:paddingLeft="10dp"-->
+    <!--android:paddingRight="10dp"-->
+    <!--android:id="@+id/meeting_list_view"-->
+    <!--android:gravity="right|center"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_below="@+id/et_message"-->
+    <!--android:layout_alignParentStart="true"-->
+    <!--android:layout_marginTop="64dp"-->
+    <!--android:layout_height="1024dp"-->
+    <!--android:layout_alignEnd="@+id/meeting_fab"-->
+    <!--/>-->
 
     <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/meeting_fab"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|end"-->
-        <!--app:srcCompat="@android:drawable/ic_menu_edit"-->
-        <!--android:layout_marginLeft="@dimen/fab_margin"-->
-        <!--android:layout_marginBottom="6dp"-->
-        <!--android:layout_marginRight="2dp"-->
-        <!--android:layout_marginEnd="16dp"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_alignParentBottom="true" />-->
-    </RelativeLayout>
+    <!--android:id="@+id/meeting_fab"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="bottom|end"-->
+    <!--app:srcCompat="@android:drawable/ic_menu_edit"-->
+    <!--android:layout_marginLeft="@dimen/fab_margin"-->
+    <!--android:layout_marginBottom="6dp"-->
+    <!--android:layout_marginRight="2dp"-->
+    <!--android:layout_marginEnd="16dp"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_alignParentBottom="true" />-->
+</RelativeLayout>
 
