@@ -1,12 +1,21 @@
 package com.eluo.project.intranet.member;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-
-
 
 import java.text.Collator;
 import java.util.Comparator;
+/*
+ * Project	    : Eluo Intranet
+ * Program    : 표기 하지 않음
+ * Description	: 엘루오 씨엔시 리스트 커스텀(직원 정보 조회 리스트)
+ * Environment	:
+ * Notes	    : Developed by
+ *
+ * @(#) StaffListData.java
+ * @since 2017-05-16
+ * History	    : [DATE][Programmer][Description]
+ * 		        : [2017-05-16][ggmario@eluocnc.com][CREATE: STATEMENT]
+ */
 
 /**
  * Created by gogumario on 2017-05-16.

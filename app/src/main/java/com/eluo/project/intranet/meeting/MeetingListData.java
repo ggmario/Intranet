@@ -4,6 +4,18 @@ import android.graphics.drawable.Drawable;
 
 import java.text.Collator;
 import java.util.Comparator;
+/*
+ * Project	    : Eluo Intranet
+ * Program    : 표기 하지 않음
+ * Description	: 엘루오 씨엔시 리스트 커스텀(회의실 예약 현황)
+ * Environment	:
+ * Notes	    : Developed by
+ *
+ * @(#) MeetingListData.java
+ * @since 2017-04-13
+ * History	    : [DATE][Programmer][Description]
+ * 		        : [2017-04-13][ggmario@eluocnc.com][CREATE: STATEMENT]
+ */
 
 /**
  * Created by gogumario on 2017-04-13.

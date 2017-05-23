@@ -1,3 +1,15 @@
+/*
+ * Project	    : Eluo Intranet
+ * Program    : 표기 하지 않음
+ * Description	: 엘루오 씨엔시 설정(전화정보 수신여부)
+ * Environment	:
+ * Notes	    : Developed by
+ *
+ * @(#) Settings.java
+ * @since 2017-04-27
+ * History	    : [DATE][Programmer][Description]
+ * 		        : [2017-04-27][ggmario@eluocnc.com][CREATE: STATEMENT]
+ */
 package com.eluo.project.intranet.settings;
 
 import android.app.Activity;

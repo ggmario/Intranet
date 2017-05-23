@@ -1,5 +1,16 @@
+/*
+ * Project	    : Eluo Intranet
+ * Program    : 표기 하지 않음
+ * Description	: 엘루오 씨엔시 유틸
+ * Environment	:
+ * Notes	    : Developed by
+ *
+ * @(#) Util.java
+ * @since 2017-01-14
+ * History	    : [DATE][Programmer][Description]
+ * 		        : [2017-01-14][ggmario@eluocnc.com][CREATE: STATEMENT]
+ */
 package com.eluo.project.intranet.utils;
-
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,6 +23,10 @@ import java.util.UUID;
 
 /**
  * Created by gogumario on 2017-01-14.
+ * 유틸
+ * @author gogumario
+ * @version 1.0
+ * @since  2017-01-14
  */
 
 public class Util  extends Activity {

@@ -1,3 +1,15 @@
+/*
+ * Project	    : Eluo Intranet
+ * Program    : 표기 하지 않음
+ * Description	: 엘루오 씨엔시 음성 인식 검색
+ * Environment	:
+ * Notes	    : Developed by
+ *
+ * @(#) VoiceRecognition.java
+ * @since 2017-04-17
+ * History	    : [DATE][Programmer][Description]
+ * 		        : [2017-04-17][ggmario@eluocnc.com][CREATE: STATEMENT]
+ */
 package com.eluo.project.intranet.utils;
 
 import android.content.Context;
@@ -10,15 +22,14 @@ import java.util.List;
 
 /**
  * Created by gogumario on 2017-04-17.
+ * 음성 인식
+ * @author gogumario
+ * @version 1.0
+ * @since  2017-01-17
  */
-
 public class VoiceRecognition {
-
     private PackageManager pm;
-
-
     public final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
-
     public VoiceRecognition(Context ctx) {
         this.pm = ctx.getPackageManager();
     }

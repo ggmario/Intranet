@@ -5,6 +5,18 @@ import android.graphics.drawable.Drawable;
 import java.text.Collator;
 import java.util.Comparator;
 
+/*
+ * Project	    : Eluo Intranet
+ * Program    : 표기 하지 않음
+ * Description	: 엘루오 씨엔시 리스트 커스텀(메인 화면에 공지사항)
+ * Environment	:
+ * Notes	    : Developed by
+ *
+ * @(#) MainNoticeListData.java
+ * @since 2017-04-20
+ * History	    : [DATE][Programmer][Description]
+ * 		        : [2017-04-20][ggmario@eluocnc.com][CREATE: STATEMENT]
+ */
 /**
  * Created by gogumario on 2017-04-20.
  */
