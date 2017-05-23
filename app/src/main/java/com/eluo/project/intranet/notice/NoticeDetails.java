@@ -115,6 +115,7 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
                             Log.i("JSON을 분석한 데이터 " + i + " : ", parsedData[i][2] );
                             sTitle = parsedData[i][1];
                             sContent = parsedData[i][2];
+                            sContent = sContent.replaceAll("&amp;","&");
                             sName = parsedData[i][3];
                             sDate = parsedData[i][4];
                         }

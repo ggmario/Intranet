@@ -71,6 +71,7 @@
             android:scrollbars="vertical"
             android:textColor="@color/content_color"
             android:textIsSelectable="true"
-            android:textSize="8pt" />
+            android:textSize="8pt"
+            android:autoLink="web|email"/>
     </TableLayout>
 </LinearLayout>
