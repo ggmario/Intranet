@@ -99,7 +99,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
     private String psPhone = "";
     private String psViewsConditions = "N";  //조회 상태
 
-    private ListView m_ListView, m_ListView2;
+    private ListView m_ListView;
     private ArrayAdapter<String> m_Adapter;
     private ListViewAdapter mAdapter = null;
     private VoiceRecognition voiceRecognition;
@@ -214,8 +214,6 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                     Toast.makeText(Staff.this, R.string.T_search_no, Toast.LENGTH_SHORT).show();
                 }else if(etMessage.length() == 1){
                     Toast.makeText(Staff.this, R.string.T_search_no2, Toast.LENGTH_SHORT).show();
-                }else if(etMessage.equals("010")){
-                    Toast.makeText(Staff.this, R.string.T_search_no3, Toast.LENGTH_SHORT).show();
                 }else {
                     if (NetworkUtil.isNetworkConnected(Staff.this)) {
                         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -282,8 +280,6 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
             Toast.makeText(Staff.this, "검색내용 입력 해주세요", Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
         }else if(etMessage.length() == 1) {
             Toast.makeText(Staff.this, R.string.T_search_no2, Toast.LENGTH_SHORT).show();
-        }else if(etMessage.equals("010")){
-            Toast.makeText(Staff.this, R.string.T_search_no3, Toast.LENGTH_SHORT).show();
         }else {
             if (NetworkUtil.isNetworkConnected(this)) {
                 if(actionId > 0){   // 키패드 이벤트를 받을때 두번씩 발생 대응 하기 위해 처리
@@ -837,4 +833,5 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
             return convertView;
         }
     }
+
 }
