@@ -121,6 +121,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                 try {
                     if (mProgressDialog != null && mProgressDialog.isShowing()) {
                         mProgressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), R.string.T_search_complete, Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -418,7 +419,8 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                         bld.setNegativeButton(R.string.telephone_connection, new DialogInterface.OnClickListener() {  //통화
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent;
-                                intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + psPhone));
+//                                intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + psPhone));
+                                intent = new Intent("android.intent.action.CALL", Uri.parse("tel:"+psPhone));
                                 startActivity(intent);
                             }
                         });
