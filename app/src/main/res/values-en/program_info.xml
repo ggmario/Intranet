@@ -2,7 +2,7 @@
 <resources>
     <string name="prog_info">
         Service name:EluoC&#38;C Intranet\n\n
-        version: Release Version 1.7.0\n\n
+        version: Release Version 1.7.1\n\n
         Function:\n
         - Top 5 list of notices on main screen\n
         - Show holiday on Main Screen\n
@@ -26,6 +26,16 @@
         \n
         \n
         history\n
+
+        Version:  Release Version 1.7.1\n
+        1. Change the query after entering more than 2 characters\n
+        2. Add Progress Dialog representation when referring to employees\n
+        3. Add completion notification to toast message when search is complete\n
+        4. Conference Room Reservation Board Room Tab Location Change\n
+        5. Adding a meeting room as an office expands\n
+        6. Employee Lookup Result Calls Change to Direct Dialing on Touch
+        \n\n
+
 
         Version:  Release Version 1.7.0\n
         1. Change conference room reservation UI (7th floor, 8th floor, 4th floor meeting room can be checked)\n
