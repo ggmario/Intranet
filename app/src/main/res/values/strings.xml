@@ -57,12 +57,14 @@
     <string name="T_booking_name_impossible">신청자 이름은 변경이 되지 않습니다</string>
     <string name="T_exit_meg">한번 더 누르시면 종료됩니다.</string>
     <string name="T_search_no">검색내용 입력 해주세요</string>
+    <string name="T_search_no2">검색어를 2자 이상 입력해주세요</string>
     <string name="T_multi_windowMode">멀티 윈도우 사용시 원활하게 사용 할 수 없습니다.</string>
     <string name="T_app_permissions">앱 실행을 위해 전화 관리 권한을 설정해야 합니다.</string>
     <string name="T_meeting_4floor">4층 회의실 예약 현황 입니다</string>
     <string name="T_meeting_7floor">7층 회의실 예약 현황 입니다</string>
     <string name="T_meeting_8floor">8층 회의실 예약 현황 입니다</string>
     <string name="T_meeting_not">예약된 회의실이 없습니다</string>
+    <string name="T_search_complete">검색이 완료 되었습니다</string>
 
     <!-- 네트워크오류 문구 -->
     <string name="network_error">네트워크 오류</string>

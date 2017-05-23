@@ -57,12 +57,14 @@
     <string name="T_booking_name_impossible">Applicant"'"s name can not be changed.</string>
     <string name="T_exit_meg">Press once to exit.</string>
     <string name="T_search_no">Enter search contents.</string>
+    <string name="T_search_no2">Please enter at least 2 characters.</string>
     <string name="T_multi_windowMode">It can not be used smoothly when using multi-window.</string>
     <string name="T_app_permissions">You need to set up phone administration permissions to run your app.</string>
     <string name="T_meeting_4floor">4th floor conference room reservation status.</string>
     <string name="T_meeting_7floor">7th floor conference room reservation status.</string>
     <string name="T_meeting_8floor">8th floor conference room reservation status.</string>
     <string name="T_meeting_not">There is no reserved meeting room.</string>
+    <string name="T_search_complete">Your search is complete.</string>
 
     <!-- 네트워크오류 문구 -->
     <string name="network_error">Network error</string>
@@ -107,5 +109,4 @@
     <string name="info_head_office_7">7th floor meeting room</string>
     <string name="info_head_office_8">8th floor meeting room</string>
     <string name="info_office_expansion_4">4th floor meeting room</string>
-
 </resources>
