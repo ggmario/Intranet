@@ -50,6 +50,7 @@
     <string name="D_account">The intranet does not match the account information\nPlease check your account information on the intranet.</string>
     <string name="D_meeting">It s a 7th floor conference room reservation.</string>
     <string name="D_not_available">I can"'"t book a conference room.</string>
+    <string name="D_Update">Not the latest version\nDo you want to go to download page?</string>
 
     <string name="T_meeting_name">Please enter the room reservation name.</string>
     <string name="T_meeting_booking">Please enter the name of the room reservation person.</string>

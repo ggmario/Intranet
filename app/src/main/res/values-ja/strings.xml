@@ -50,6 +50,7 @@
     <string name="D_account">イントラネットにアカウント情報と一致していません。\nイントラネットにアカウント情報を確認してください。</string>
     <string name="D_meeting">7階の会議室の予約です</string>
     <string name="D_not_available">会議室予約できません。</string>
+    <string name="D_Update">最新バージョンがありません。\nダウンロードページに移動しますか？</string>
 
     <string name="T_meeting_name">議室の予約名を入力してください。</string>
     <string name="T_meeting_booking">会議室予約者の名前を入力してください。</string>

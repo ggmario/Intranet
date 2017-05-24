@@ -50,6 +50,7 @@
     <string name="D_account">인트라넷에 계정 정보와 일치 하지 않습니다\n인트라넷에 계정 정보를 확인 해주세요</string>
     <string name="D_meeting">7층 회의실 예약입니다</string>
     <string name="D_not_available">회의실 예약 할 수 없습니다</string>
+    <string name="D_Update">최신 버전이 아닙니다.\n다운로드 페이지 이동 하시겠습니까?</string>
 
     <string name="T_meeting_name">회의실 예약 명을 입력 해주세요</string>
     <string name="T_meeting_booking">회의실 예약자 이름을 입력 해주세요</string>
@@ -95,7 +96,7 @@
     <string name="main_outside">외근현황</string>
 
     <!-- 정보 -->
-    <string name="app_info_v">앱 정보 Alpha 1.4(Development Test Version)</string>
+    <string name="app_info_v">앱 정보 Alpha 1.7.1(Development Test Version)</string>
 
     <!-- 정보 표기 -->
     <string name="info_name">이름</string>
