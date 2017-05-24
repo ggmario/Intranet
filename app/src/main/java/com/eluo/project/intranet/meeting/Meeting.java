@@ -98,132 +98,129 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            //현재 날짜 구함
-            long now = System.currentTimeMillis();
-            Date date = new Date(now);
-            SimpleDateFormat CurHourFormat = new SimpleDateFormat("HH");
-            SimpleDateFormat CurMinuteFormat = new SimpleDateFormat("mm");
+        //현재 날짜 구함
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat CurHourFormat = new SimpleDateFormat("HH");
+        SimpleDateFormat CurMinuteFormat = new SimpleDateFormat("mm");
 
-            String strCurHour = CurHourFormat.format(date);
-            String strCurMinute = CurMinuteFormat.format(date);
+        String strCurHour = CurHourFormat.format(date);
+        String strCurMinute = CurMinuteFormat.format(date);
 
-            int iToTime = Integer.parseInt(strCurHour);
-            int iToMinute = Integer.parseInt(strCurMinute);
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    sFloor = "7";
-                    String result7 = SendByHttp("1");
-                    String[][] parsedData7 = jsonParserList(result7);
-                    m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
+        int iToTime = Integer.parseInt(strCurHour);
+        int iToMinute = Integer.parseInt(strCurMinute);
+        switch (item.getItemId()) {
+            case R.id.navigation_home:
+                sFloor = "7";
+                String result7 = SendByHttp("1");
+                String[][] parsedData7 = jsonParserList(result7);
+                m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
+                m_ListView = (ListView) findViewById(R.id.meeting_list_view);
+                ArrayAdapter adapter7 = (ArrayAdapter) m_ListView.getAdapter();
+                adapter7.notifyDataSetChanged();
+                m_ListView.setAdapter(m_Adapter);
 
-                    m_ListView = (ListView) findViewById(R.id.meeting_list_view);
-
-                    ArrayAdapter adapter7 = (ArrayAdapter) m_ListView.getAdapter();
-                    adapter7.notifyDataSetChanged();
-                    m_ListView.setAdapter(m_Adapter);
-
-
-                    // ListView 아이템 터치 시 이벤트
-                    m_ListView.setOnItemLongClickListener(onClickListItem1);
-                    if (result7.lastIndexOf("RESULT") > 0) {
-                        m_Adapter.add("예약된 회의실이 없습니다");
-                    } else {
-                        if(parsedData7 != null){
-                            if (parsedData7.length > 0) {
-                                Resources res = getResources();
-                                String[] arrString = res.getStringArray(R.array.meeting_time);
-                                int iCk= 0;
-                                for(String s:arrString) {
-                                    for (int i = 0; i < parsedData7.length; i++) {
-                                        if (s.equals(parsedData7[i][0])) {
-                                            if (!parsedData7[i][1].equals("")) {
-                                                m_Adapter.add(s + "\n" + parsedData7[i][1]);
-                                                iCk = 1;
-                                            }
+                // ListView 아이템 터치 시 이벤트
+                m_ListView.setOnItemLongClickListener(onClickListItem1);
+                if (result7.lastIndexOf("RESULT") > 0) {
+                    m_Adapter.add("예약된 회의실이 없습니다");
+                } else {
+                    if(parsedData7 != null){
+                        if (parsedData7.length > 0) {
+                            Resources res = getResources();
+                            String[] arrString = res.getStringArray(R.array.meeting_time);
+                            int iCk= 0;
+                            for(String s:arrString) {
+                                for (int i = 0; i < parsedData7.length; i++) {
+                                    if (s.equals(parsedData7[i][0])) {
+                                        if (!parsedData7[i][1].equals("")) {
+                                            m_Adapter.add(s + "\n" + parsedData7[i][1]);
+                                            iCk = 1;
                                         }
                                     }
-                                    if(iCk == 0){
-                                        String sTmp = s.substring(0,2);
-                                        String sTmp1 = s.substring(3,5);
-                                        int iTime = Integer.parseInt(sTmp);
-                                        int iMinute = Integer.parseInt(sTmp1);
-                                        if(iToTime > iTime) {
-                                            m_Adapter.add(s+"\n 예약 불가");
-                                        }else if(iToTime == iTime){
-                                            if(iToMinute <= iMinute){
-                                                m_Adapter.add(s+"\n 예약 가능");
-                                            }else{
-                                                m_Adapter.add(s+"\n 예약 불가");
-                                            }
-                                        }else{
+                                }
+                                if(iCk == 0){
+                                    String sTmp = s.substring(0,2);
+                                    String sTmp1 = s.substring(3,5);
+                                    int iTime = Integer.parseInt(sTmp);
+                                    int iMinute = Integer.parseInt(sTmp1);
+                                    if(iToTime > iTime) {
+                                        m_Adapter.add(s+"\n 예약 불가");
+                                    }else if(iToTime == iTime){
+                                        if(iToMinute <= iMinute){
                                             m_Adapter.add(s+"\n 예약 가능");
+                                        }else{
+                                            m_Adapter.add(s+"\n 예약 불가");
                                         }
+                                    }else{
+                                        m_Adapter.add(s+"\n 예약 가능");
                                     }
-                                    iCk = 0;
                                 }
+                                iCk = 0;
                             }
-                        }else{
-                            Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
                         }
+                    }else{
+                        Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
                     }
-                    return true;
-                case R.id.navigation_dashboard:
-                    sFloor = "8";
-                    String result8 = SendByHttp("1");
-                    String[][] parsedData8 = jsonParserList(result8);
-                    m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
-                    m_ListView = (ListView) findViewById(R.id.meeting_list_view);
-                    ArrayAdapter adapter8 = (ArrayAdapter) m_ListView.getAdapter();
-                    adapter8.notifyDataSetChanged();
-                    m_ListView.setAdapter(m_Adapter);
+                }
+                return true;
+            case R.id.navigation_dashboard:
+                sFloor = "8";
+                String result8 = SendByHttp("1");
+                String[][] parsedData8 = jsonParserList(result8);
+                m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
+                m_ListView = (ListView) findViewById(R.id.meeting_list_view);
+                ArrayAdapter adapter8 = (ArrayAdapter) m_ListView.getAdapter();
+                adapter8.notifyDataSetChanged();
+                m_ListView.setAdapter(m_Adapter);
 
-                    if (result8.lastIndexOf("RESULT") > 0) {
-                        m_Adapter.add("예약된 회의실이 없습니다");
-                    }else {
-                        int icount = 0;
-                        for (int i = 0; i < parsedData8.length; i++) {
-                            if (!parsedData8[i][2].equals("")) {
-                                icount++;
-                                Resources res = getResources();
-                                String[] arrString = res.getStringArray(R.array.meeting_time);
-                                int iCk = 0;
-                                for (String s : arrString) {
-                                    for (int is = 0; is < parsedData8.length; is++) {
-                                        if (s.equals(parsedData8[is][0])) {
-                                            if (!parsedData8[is][1].equals("")) {
-                                                m_Adapter.add(s + "\n" + parsedData8[is][2]);
-                                                iCk = 1;
-                                            }
+                if (result8.lastIndexOf("RESULT") > 0) {
+                    m_Adapter.add("예약된 회의실이 없습니다");
+                }else {
+                    int icount = 0;
+                    for (int i = 0; i < parsedData8.length; i++) {
+                        if (!parsedData8[i][2].equals("")) {
+                            icount++;
+                            Resources res = getResources();
+                            String[] arrString = res.getStringArray(R.array.meeting_time);
+                            int iCk = 0;
+                            for (String s : arrString) {
+                                for (int is = 0; is < parsedData8.length; is++) {
+                                    if (s.equals(parsedData8[is][0])) {
+                                        if (!parsedData8[is][1].equals("")) {
+                                            m_Adapter.add(s + "\n" + parsedData8[is][2]);
+                                            iCk = 1;
                                         }
                                     }
-                                    if (iCk == 0) {
-                                        String sTmp = s.substring(0, 2);
-                                        String sTmp1 = s.substring(3, 5);
-                                        int iTime = Integer.parseInt(sTmp);
-                                        int iMinute = Integer.parseInt(sTmp1);
-                                        if (iToTime > iTime) {
-                                            m_Adapter.add(s + "\n 예약 불가");
-                                        } else if (iToTime == iTime) {
-                                            if (iToMinute <= iMinute) {
-                                                m_Adapter.add(s + "\n 예약 가능");
-                                            } else {
-                                                m_Adapter.add(s + "\n 예약 불가");
-                                            }
-                                        } else {
+                                }
+                                if (iCk == 0) {
+                                    String sTmp = s.substring(0, 2);
+                                    String sTmp1 = s.substring(3, 5);
+                                    int iTime = Integer.parseInt(sTmp);
+                                    int iMinute = Integer.parseInt(sTmp1);
+                                    if (iToTime > iTime) {
+                                        m_Adapter.add(s + "\n 예약 불가");
+                                    } else if (iToTime == iTime) {
+                                        if (iToMinute <= iMinute) {
                                             m_Adapter.add(s + "\n 예약 가능");
+                                        } else {
+                                            m_Adapter.add(s + "\n 예약 불가");
                                         }
+                                    } else {
+                                        m_Adapter.add(s + "\n 예약 가능");
                                     }
-                                    iCk = 0;
                                 }
-                            } else {
-                                if (icount == 0) {
-                                    m_Adapter.add("예약된 회의실이 없습니다.");
-                                    icount++;
-                                }
+                                iCk = 0;
+                            }
+                        } else {
+                            if (icount == 0) {
+                                m_Adapter.add("예약된 회의실이 없습니다.");
+                                icount++;
                             }
                         }
                     }
-                    return true;
+                }
+                return true;
 //                case R.id.navigation_notifications:
 //                    Toast.makeText(Meeting.this, "준비 중...", Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
 //                    sFloor = "4";
@@ -238,8 +235,8 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
 //                    m_ListView.setAdapter(m_Adapter);
 //                    m_Adapter.add("예약된 회의실이 없습니다.");
 //                    return true;
-            }
-            return false;
+        }
+        return false;
         }
 
     };
