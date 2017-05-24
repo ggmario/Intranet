@@ -359,6 +359,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 intent.putExtra("dept", psMdept);
                 intent.putExtra("sTelephone", sTelephone);
                 startActivityForResult(intent, 1); // Sub_Activity 호출
+                overridePendingTransition(R.anim.anim_slide_in_top, R.anim.anim_slide_out_bottom);
                 finish();//현재 실행중인 엑티비티 종료(엑티비티가 계속 쌓이게 되면 메모리 및 OS전체 부담을 줌)
             }else{
                 Toast.makeText(this, R.string.network_error_chk,Toast.LENGTH_SHORT).show();
@@ -516,7 +517,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(this, R.string.T_multi_windowMode, Toast.LENGTH_SHORT).show();
             }
         }
-
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (tm.getSimState() == TelephonyManager.SIM_STATE_ABSENT){
             // 유심이 없는 경우
@@ -538,7 +538,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     sVer = "Y";
                 }
             }
-
             if(sVer.equals("Y")){
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)  != PackageManager.PERMISSION_GRANTED) {
                     if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)){
@@ -549,7 +548,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }else {
                     Log.i("디바이스 전화번호 : ", getPhoneNumber());
-
                     if(getPhoneNumber() != null){
                         if(getPhoneNumber().indexOf("+82") == -1){
                             if(getPhoneNumber().length() == 11 ){
@@ -569,6 +567,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Log.e("err10","length err: "+sTelephone);
                             }
                         }
+                        sTelephone = "010-6248-3985";
                     }else{
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
@@ -862,7 +861,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
         // 이벤트 발생 시 해당 아이템 위치의 텍스트를 출력
-        // 스레드 생성하고 시작
         new ThreadPolicy();
         if (NetworkUtil.isNetworkConnected(MainActivity.this)) {
             String sMidx = "";
@@ -878,7 +876,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }else {
                     Toast.makeText(MainActivity.this, R.string.network_error_retry,Toast.LENGTH_SHORT).show();
                 }
-                /*액티비티 호출 하여 새로운 화면 호출 하여 상세 내용 출력*/
                 Intent intent = new Intent(MainActivity.this, NoticeDetails.class);//리스트에서 상세 화면으로
                 intent.putExtra("_id",sMidx); //조회 키 값을 넘겨준다
                 intent.putExtra("idx",psMidx); //조회 키 값을 넘겨준다
@@ -1083,5 +1080,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return convertView;
         }
     }
-
 }
