@@ -2,36 +2,29 @@ package com.eluo.project.intranet.intro;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Window;
-import android.widget.Toast;
 
 import com.eluo.project.intranet.MainActivity;
 import com.eluo.project.intranet.R;
 import com.eluo.project.intranet.network.NetworkUtil;
 import com.eluo.project.intranet.utils.ThreadPolicy;
+import com.google.firebase.crash.FirebaseCrash;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /*
  * Project	    : Eluo Intranet
@@ -74,23 +67,23 @@ public class IntroActivity extends Activity {
         editor.putString("check", "exist");
         editor.commit();
 
-
         if (NetworkUtil.isNetworkConnected(this)) {
             String sVersionName = "1.0.0";
             try {
                 sVersionName =  getPackageManager().getPackageInfo(getPackageName(),0).versionName;
                 new ThreadPolicy();
-                String result = SendByHttp(""); // 메시지를 서버에 보냄
                 String sVer = "";
-                if (result != null) {
-                    String[][] parsedData = jsonParserList(result);
-                    if(parsedData != null){
+                if (jsonParserList() != null) {
+                    String[][] parsedData = jsonParserList();
+                    if (parsedData != null) {
                         sVer = parsedData[0][0];
-                    }else{
+                    } else {
                         sVer = sVersionName;
-                        Log.i("버전 체크:","앱 버전 체크 실패 하였습니다");
+                        Log.i("버전 체크:", "앱 버전 체크 실패 하였습니다");
                         //FirebaseCrash.report(new Exception("앱 버전 체크 실패 하였습니다"));
                     }
+                }else{
+                    sVer = sVersionName;
                 }
 
                 if(!sVersionName.equals(sVer)){
@@ -103,7 +96,7 @@ public class IntroActivity extends Activity {
                                 // 확인 버튼 클릭시 설정
                                 public void onClick(DialogInterface dialog, int whichButton){
                                     finish();
-                                    callBrowser("http://fs.eluocnc.com:8282/html/adn_download.html");
+                                    callBrowser("http://fs.eluocnc.com:8282/download.jsp");
                                 }
                             })
                             .setNegativeButton(R.string.D_Canceled, new DialogInterface.OnClickListener(){
@@ -145,7 +138,6 @@ public class IntroActivity extends Activity {
         }
     }
 
-
     Runnable mrun = new Runnable(){
         @Override
         public void run(){
@@ -164,7 +156,7 @@ public class IntroActivity extends Activity {
         h.removeCallbacks(mrun);
     }
 
-
+    //외부 브라우저 호출 (인트로 화면에서만 사용함)
     public void callBrowser(String url) {
         try {
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -174,85 +166,52 @@ public class IntroActivity extends Activity {
         }
     }
 
-
-    private String SendByHttp(String msg) {
-
-        String URL ="http://fs.eluocnc.com:8282/versionName.jsp";
-
-        DefaultHttpClient client = new DefaultHttpClient();
-        try {
-            HttpPost post = new HttpPost(URL);
-			/* 지연시간 최대 3초 */
-            HttpParams params = client.getParams();
-            HttpConnectionParams.setConnectionTimeout(params, 3000);
-            HttpConnectionParams.setSoTimeout(params, 300);
-
-			/* 데이터 보낸 뒤 서버에서 데이터를 받아오는 과정 */
-            HttpResponse response = null;
-            try{
-                ConnectivityManager conManager =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo netInfo = conManager.getActiveNetworkInfo();
-
-                if(netInfo != null && netInfo.isConnected()){
-                    response = client.execute(post);
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            BufferedReader bufreader = new BufferedReader( new InputStreamReader(response.getEntity().getContent(),"utf-8"));
-            String line = null;
-            String result = "";
-            while ((line = bufreader.readLine()) != null) {
-                result += line;
-            }
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            client.getConnectionManager().shutdown();	// 연결 지연 종료
-            return "";
+    private String[][] jsonParserList() {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        try{
+            //웹서버 URL 지정
+            url= new URL("http://fs.eluocnc.com:8282/versionName.jsp");
+            HttpURLConnection urlc =(HttpURLConnection)url.openConnection();
+            urlc.setConnectTimeout(3000);
+            urlc.connect();
+        }catch (Exception e){
+            return null;
         }
-    }
-    /**
-     * 받은 JSON 객체를 파싱하는 메소드(회의실 리스트)
-     * @param
-     * @return
-     */
-    private String[][] jsonParserList(String pRecvServerPage) {
-        Log.i("서버에서 받은 전체 내용 : ", pRecvServerPage);
-        try {
-            JSONObject json = new JSONObject(pRecvServerPage);
-            JSONArray jArr = json.getJSONArray("vers");
-            String jsonName[];
-            if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
-                String[] jsonName1 = {"RESULT"};
-                jsonName = jsonName1;
-            }else{
-                String[] jsonName1 = {"VER"};
-                jsonName = jsonName1;
-            }
 
-            String[][] parseredData = new String[jArr.length()][jsonName.length];
-            if(parseredData.length > 0){
-                for (int i = 0; i < jArr.length(); i++) {
-                    json = jArr.getJSONObject(i);
-                    for(int j = 0; j < jsonName.length; j++) {
-                        try{
-                            if(parseredData[i][j] == null ){
-                                parseredData[i][j] = json.getString(jsonName[j]);
-                                Log.i("JSON을 분석한 데이터 " + i + " : ", parseredData[i][j] );
-                            }
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }else{
-                Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
+        try {
+            //URL 접속
+            urlConnection = (HttpURLConnection) url.openConnection();
+            //[웹문서 소스를 버퍼에 저장]
+            //데이터를 버퍼에 기록
+            BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),"UTF-8"));
+            Log.d("line:",bufreader.toString());
+            String line = null;
+            String page = "";
+
+            //버퍼의 웹문서 소스를 줄단위로 읽어(line), Page에 저장함
+            while((line = bufreader.readLine())!=null){
+                Log.d("line:",line);
+                page+=line;
+            }
+            //읽어들인 JSON포맷의 데이터를 JSON객체로 변환
+            JSONObject json = new JSONObject(page);
+
+            //ksk_list 에 해당하는 배열을 할당
+            JSONArray jArr = json.getJSONArray("vers");
+            String[][] parseredData = new String[jArr.length()][jArr.length()];
+
+            for (int i=0; i<jArr.length(); i++){
+                json = jArr.getJSONObject(i);
+//                String ksNo = json.getString("VER");
+                parseredData[0][i] = json.getString("VER");
             }
             return parseredData;
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            FirebaseCrash.report(new Exception("앱 버전 정보 가져오기 실패"));
             return null;
+        }finally{
+            urlConnection.disconnect();      //URL 연결 해제
         }
     }
 }
