@@ -422,9 +422,7 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
         }
 
         try {
-            url= new URL("http://www.eluocnc.com/GW_V3/app/meetList.asp");
             urlConnection = (HttpURLConnection) url.openConnection();
-
             BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),"UTF-8"));
             Log.d("line:",bufreader.toString());
             String line = null;
@@ -447,7 +445,7 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
             Log.i("RESULT","데이터가 없음");
             return null;
         }finally{
-            urlConnection.disconnect();      //URL 연결 해제
+            urlConnection.disconnect();
         }
     }
     @Override
