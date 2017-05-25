@@ -6,8 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -37,14 +35,9 @@ import com.eluo.project.intranet.member.Staff;
 import com.eluo.project.intranet.network.NetworkUtil;
 import com.eluo.project.intranet.program.ProgramInformation;
 import com.eluo.project.intranet.utils.ThreadPolicy;
+import com.google.firebase.crash.FirebaseCrash;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -73,12 +66,8 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
     String Id = "";
     private TextView textView, textView3, textView4;
     private Bitmap bmp;
-    private String psMid = null;
-    private String psMidx = null;
-    private String psMpath = null;
-    private String psMdept = null;
-    private String psMname = null;
-    private String sTelephone = null;
+    private String psMid, psMidx, psMpath, psMdept, psMname, sTelephone = null;
+    private String sIDX, sSUBJECT, sCONTENT, sREGNM, sREGDT = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,41 +88,30 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
             psMdept =intent.getStringExtra("dept");
             sTelephone =intent.getStringExtra("sTelephone");
 
-            // 스레드 생성하고 시작
-            new ThreadPolicy();
-
-            String result = SendByHttp(Id); // 메시지를 서버에 보냄
-            if (result != null) {
-                String sContent = "";
-                String sName = "";
-                String sDate = "";
-                String sTitle = "";
-                String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
-                if(parsedData != null){
-                    if(parsedData.length > 0){
-                        for (int i = 0; i < parsedData.length; i++) {
-                            Log.i("JSON을 분석한 데이터 " + i + " : ", parsedData[i][2] );
-                            sTitle = parsedData[i][1];
-                            sContent = parsedData[i][2];
-                            sContent = sContent.replaceAll("&amp;","&");
-                            sName = parsedData[i][3];
-                            sDate = parsedData[i][4];
-                        }
-                    }
-                }
-                //작성자
-                textView =(TextView)findViewById(R.id.textWordView);
-                textView.setText(sName+" / "+sDate);
-
-                //제목
-                textView3 =(TextView)findViewById(R.id.textTitleView);
-                textView3.setText(sTitle);
-
-                //내용
-                textView4 =(TextView)findViewById(R.id.textContentView);
-                textView4.setMovementMethod(new ScrollingMovementMethod());
-                textView4.setText(sContent);
+            new ThreadPolicy();;
+            jsonParserList();
+            String sContent = "";
+            String sName = "";
+            String sDate = "";
+            String sTitle = "";
+            if(sIDX != null){
+                sTitle = sSUBJECT;
+                sContent = sCONTENT;
+                sContent = sContent.replaceAll("&amp;","&");
+                sName = sREGNM;
+                sDate = sREGDT;
             }
+            //작성자
+            textView =(TextView)findViewById(R.id.textWordView);
+            textView.setText(sName+" / "+sDate);
+            //제목
+            textView3 =(TextView)findViewById(R.id.textTitleView);
+            textView3.setText(sTitle);
+            //내용
+            textView4 =(TextView)findViewById(R.id.textContentView);
+            textView4.setMovementMethod(new ScrollingMovementMethod());
+            textView4.setText(sContent);
+
             //옵션 메뉴
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -372,87 +350,44 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
         return super.onKeyDown( KeyCode, event );
     }
 
-    /**
-     * 서버에 데이터를 보내는 메소드
-     * @param msg
-     * @return
-     */
-    private String SendByHttp(String msg) {
-        if(msg == null)
-            msg = "";
-        String URL ="http://www.eluocnc.com/GW_V3/app/bbsView.asp";
-
-        DefaultHttpClient client = new DefaultHttpClient();
-        try {
-            HttpPost post = new HttpPost(URL+"?gb=not&idx="+msg);
-
-            HttpParams params = client.getParams();
-            HttpConnectionParams.setConnectionTimeout(params, 3000);
-            HttpConnectionParams.setSoTimeout(params, 3000);
-
-            HttpResponse response = null;
-            try{
-                ConnectivityManager conManager =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo netInfo = conManager.getActiveNetworkInfo();
-                if(netInfo != null && netInfo.isConnected()){
-                    response = client.execute(post);
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            BufferedReader bufreader = new BufferedReader( new InputStreamReader(response.getEntity().getContent(),"utf-8"));
-            String line = null;
-            String result = "";
-            while ((line = bufreader.readLine()) != null) {
-                result += line;
-            }
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            client.getConnectionManager().shutdown();	// 연결 지연 종료
-            return "";
-        }
-    }
-
-    /**
-     * 받은 JSON 객체를 파싱하는 메소드
-     * @param
-     * @return
-     */
-    private String[][] jsonParserList(String pRecvServerPage) {
-        Log.i("서버에서 받은 전체 내용 : ", pRecvServerPage);
-        try {
-            JSONObject json = new JSONObject(pRecvServerPage);
-            JSONArray jArr = json.getJSONArray("bbs");
-
-            String jsonName[];
-            if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
-                String[] jsonName1 = {"RESULT"};
-                jsonName = jsonName1;
-            }else{
-                String[] jsonName1 = {"IDX", "SUBJECT", "CONTENT", "REGNM", "REGDT"};
-                jsonName = jsonName1;
-            }
-            String[][] parseredData = new String[jArr.length()][jsonName.length];
-            if(parseredData.length > 0){
-                for (int i = 0; i < jArr.length(); i++) {
-                    json = jArr.getJSONObject(i);
-                    for(int j = 0; j < jsonName.length; j++) {
-                        try{
-                            if(parseredData[i][j] == null ){
-                                parseredData[i][j] = json.getString(jsonName[j]);
-                                Log.i("JSON을 분석한 데이터 " + i + " : ", parseredData[i][j] );
-                            }
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-            return parseredData;
-        } catch (JSONException e) {
-            e.printStackTrace();
+    private String[][] jsonParserList() {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        try{
+            //웹서버 URL 지정
+            url= new URL("http://www.eluocnc.com/GW_V3/app/bbsView.asp?gb=not&idx="+Id);
+            HttpURLConnection urlc =(HttpURLConnection)url.openConnection();
+            urlc.setConnectTimeout(3000);
+            urlc.connect();
+        }catch (Exception e){
+            FirebaseCrash.report(new Exception("공지 상세 내용 : 서버 연결 실패"));
             return null;
+        }
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),"UTF-8"));
+            Log.d("line:",bufreader.toString());
+            String line = null;
+            String page = "";
+            while((line = bufreader.readLine())!=null){
+                Log.d("line:",line);
+                page+=line;
+            }
+            JSONObject json = new JSONObject(page);
+            JSONArray jArr = json.getJSONArray("bbs");
+            json = jArr.getJSONObject(0);
+
+            sIDX = json.getString("IDX");
+            sSUBJECT = json.getString("SUBJECT");
+            sCONTENT = json.getString("CONTENT");
+            sREGNM = json.getString("REGNM");
+            sREGDT= json.getString("REGDT");
+            return null;
+        } catch (Exception e) {
+            Log.i("RESULT","데이터가 없음");
+            return null;
+        }finally{
+            urlConnection.disconnect();
         }
     }
 }
