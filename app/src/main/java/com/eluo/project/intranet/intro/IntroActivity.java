@@ -178,7 +178,6 @@ public class IntroActivity extends Activity {
         }catch (Exception e){
             return null;
         }
-
         try {
             //URL 접속
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -203,7 +202,6 @@ public class IntroActivity extends Activity {
 
             for (int i=0; i<jArr.length(); i++){
                 json = jArr.getJSONObject(i);
-//                String ksNo = json.getString("VER");
                 parseredData[0][i] = json.getString("VER");
             }
             return parseredData;
