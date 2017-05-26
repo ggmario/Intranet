@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -53,14 +51,9 @@ import com.eluo.project.intranet.notice.Notice;
 import com.eluo.project.intranet.program.ProgramInformation;
 import com.eluo.project.intranet.utils.ThreadPolicy;
 import com.eluo.project.intranet.utils.VoiceRecognition;
+import com.google.firebase.crash.FirebaseCrash;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -90,12 +83,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
     private Button btnSend, btnSendMic;
     private Bitmap bmp;
 
-    private String psMid = null;
-    private String psMidx = null;
-    private String psMpath = null;
-    private String psMdept = null;
-    private String psMname = null;
-    private String sTelephone = null;
+    private String psMid, psMidx, psMpath, psMdept, psMname, sTelephone, sMessage = null;
     private String psPhone = "";
     private String psViewsConditions = "N";  //조회 상태
 
@@ -103,7 +91,6 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
     private ArrayAdapter<String> m_Adapter;
     private ListViewAdapter mAdapter = null;
     private VoiceRecognition voiceRecognition;
-
     private ProgressDialog mProgressDialog;
     private Handler mHandler;
 
@@ -135,15 +122,11 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         Intent intent = new Intent(getIntent());
-
         mHandler = new Handler();
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);  // 화면위 타이틀 없애기
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);  // 전체화면 만들기
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);  // 전체화면 만들기
         setContentView(R.layout.activity_staff_list_all);   //작성 화면 구성 xml
 
-        //옵션 메뉴
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -179,7 +162,6 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
         }
         if (NetworkUtil.isNetworkConnected(this)) {
             View nev_header_view = navigationView.getHeaderView(0);
-            //네비게이터 사진
             ImageView nav_header_image = (ImageView) nev_header_view.findViewById(R.id.imageView);
             bmp = getBitmapFromURL(psMpath);
             int width=(int)(getWindowManager().getDefaultDisplay().getWidth()/6.6); // 가로 사이즈 지정
@@ -187,10 +169,9 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
             Bitmap resizedbitmap=Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
             nav_header_image.setImageBitmap(resizedbitmap);
 
-            //네비게이터 이름
             TextView nav_header_nm_text = (TextView) nev_header_view.findViewById(R.id.loginName);
             nav_header_nm_text.setText(psMname);
-            //네이게이터에 소속
+
             TextView nav_header_id_text = (TextView) nev_header_view.findViewById(R.id.textView);
             nav_header_id_text.setText(psMdept);
         }else {
@@ -219,35 +200,33 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                     if (NetworkUtil.isNetworkConnected(Staff.this)) {
                         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
-
-                        String sMessage = etMessage.getText().toString(); // 보내는 메시지를 받아옴
+                        sMessage = etMessage.getText().toString(); // 보내는 메시지를 받아옴
                         sMessage = sMessage.replaceAll(" ","");/*공백 제거*/
-                        String result = SendByHttp(sMessage); // 메시지를 서버에 보냄
-                        String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
+                        if (jsonParserList() != null) {
+                            String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+                            run(parsedData.length); //ProgressDialog
+                            // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
+                            m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.staff_item);
+                            m_ListView = (ListView) findViewById(R.id.listview);
+                            m_ListView.setOnItemClickListener(onClickListItem);
+                            m_ListView.setOnItemLongClickListener(onClickListItem1);
 
-                        run(parsedData.length); //ProgressDialog
-                        // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
-                        m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.staff_item);
-                        m_ListView = (ListView) findViewById(R.id.listview);
-                        m_ListView.setOnItemClickListener(onClickListItem);
-                        m_ListView.setOnItemLongClickListener(onClickListItem1);
+                            //커스텀 처리 부분
+                            mAdapter = new Staff.ListViewAdapter(Staff.this);
+                            m_ListView.setAdapter(mAdapter);
 
-                        //커스텀 처리 부분
-                        mAdapter = new Staff.ListViewAdapter(Staff.this);
-                        m_ListView.setAdapter(mAdapter);
-
-                        if (result.lastIndexOf("RESULT") > 0) {
-                            mAdapter.addItem(null,"조회 내용이 없습니다","","");
-                            psViewsConditions = "N";
-                        } else {
                             if (parsedData.length > 0) {
-                                psViewsConditions = "Y";
-                                for (int i = 0; i < parsedData.length; i++) {
-                                    bmp = getBitmapFromURL(parsedData[i][8]+parsedData[i][9]);
-                                    int width=(int)(getWindowManager().getDefaultDisplay().getWidth()/6.6); // 가로 사이즈 지정
-                                    int height=(int)(getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
-                                    Bitmap resizedbitmap=Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
-                                    mAdapter.addItem(resizedbitmap, parsedData[i][3]+"  "+parsedData[i][7], parsedData[i][6], parsedData[i][4]);
+                                if(parsedData[0][0] == "NO DATA"){
+                                    mAdapter.addItem(null, " ", "일치하는 정보가 없습니다","");
+                                }else {
+                                    psViewsConditions = "Y";
+                                    for (int i = 0; i < parsedData.length; i++) {
+                                        bmp = getBitmapFromURL(parsedData[i][8] + parsedData[i][9]);
+                                        int width = (int) (getWindowManager().getDefaultDisplay().getWidth() / 6.6); // 가로 사이즈 지정
+                                        int height = (int) (getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
+                                        Bitmap resizedbitmap = Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
+                                        mAdapter.addItem(resizedbitmap, parsedData[i][3] + "  " + parsedData[i][7], parsedData[i][6], parsedData[i][4]);
+                                    }
                                 }
                             }else{
                                 Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
@@ -287,33 +266,34 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                     //키패드 숨기기
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
-                    String sMessage = etMessage.getText().toString(); // 보내는 메시지를 받아옴
+                    sMessage = null;
+                    sMessage = etMessage.getText().toString(); // 보내는 메시지를 받아옴
                     sMessage = sMessage.replaceAll(" ", "");/*공백 제거*/
-                    String result = SendByHttp(sMessage); // 메시지를 서버에 보냄
-                    String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
-                     run(parsedData.length);
-                    // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
-                    m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.staff_item);
-                    m_ListView = (ListView) findViewById(R.id.listview);
-                    m_ListView.setOnItemClickListener(onClickListItem);
-                    m_ListView.setOnItemLongClickListener(onClickListItem1);
+                    if (jsonParserList() != null) {
+                        String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+                        run(parsedData.length);
+                        // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
+                        m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.staff_item);
+                        m_ListView = (ListView) findViewById(R.id.listview);
+                        m_ListView.setOnItemClickListener(onClickListItem);
+                        m_ListView.setOnItemLongClickListener(onClickListItem1);
 
-                    //커스텀 처리 부분
-                    mAdapter = new Staff.ListViewAdapter(Staff.this);
-                    m_ListView.setAdapter(mAdapter);
-
-                    if (result.lastIndexOf("RESULT") > 0) {
-                        mAdapter.addItem(null, "조회 내용이 없습니다", "", "");
-                        psViewsConditions = "N";
-                    } else {
+                        //커스텀 처리 부분
+                        mAdapter = new Staff.ListViewAdapter(Staff.this);
+                        m_ListView.setAdapter(mAdapter);
                         if (parsedData.length > 0) {
-                            psViewsConditions = "Y";
-                            for (int i = 0; i < parsedData.length; i++) {
-                                bmp = getBitmapFromURL(parsedData[i][8] + parsedData[i][9]);
-                                int width = (int) (getWindowManager().getDefaultDisplay().getWidth() / 6.6); // 가로 사이즈 지정
-                                int height = (int) (getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
-                                Bitmap resizedbitmap = Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
-                                mAdapter.addItem(resizedbitmap, parsedData[i][3] + "  " + parsedData[i][7], parsedData[i][6], parsedData[i][4]);
+                            if(parsedData[0][0] == "NO DATA"){
+                                mAdapter.addItem(null, " ", "일치하는 정보가 없습니다","");
+                                psViewsConditions = "N";
+                            }else {
+                                for (int i = 0; i < parsedData.length; i++) {
+                                    bmp = getBitmapFromURL(parsedData[i][8] + parsedData[i][9]);
+                                    int width = (int) (getWindowManager().getDefaultDisplay().getWidth() / 6.6); // 가로 사이즈 지정
+                                    int height = (int) (getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
+                                    Bitmap resizedbitmap = Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
+                                    mAdapter.addItem(resizedbitmap, parsedData[i][3] + "  " + parsedData[i][7], parsedData[i][6], parsedData[i][4]);
+                                }
+                                psViewsConditions = "Y";
                             }
                         } else {
                             Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
@@ -335,16 +315,18 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View arg1, int arg2, long arg3) {
         String sPhones ="";
-        new ThreadPolicy();             // 스레드 생성하고 시작
-        String sMessage = etMessage.getText().toString();
+        new ThreadPolicy();
+        sMessage = null;
+        sMessage = etMessage.getText().toString();
         if(psViewsConditions.equals("Y")){
             int iChoice = arg2;
-            String result = SendByHttp(sMessage); // 메시지를 서버에 보냄
-            if (result != null) {
-                String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
+            if (jsonParserList() != null) {
+                String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
                 if(parsedData.length > 0){
-                    for (int i = 0; i < parsedData.length; i++) {
-                        sPhones = parsedData[iChoice][4];
+                    if(parsedData[0][0] != "NO DATA"){
+                        for (int i = 0; i < parsedData.length; i++) {
+                            sPhones = parsedData[iChoice][4];
+                        }
                     }
                 }
                 final  CharSequence info[] = new CharSequence[] {sPhones};
@@ -378,53 +360,57 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                     String sPhone = "";
                     String sNm = "";
                     String sPosition = "";
-                    String sMessage = etMessage.getText().toString();
+                    sMessage = null;
+                    sMessage = etMessage.getText().toString();
                     int iChoice = arg2;
-                    String result = SendByHttp(sMessage); // 메시지를 서버에 보냄
-                    if (result != null) {
-                        String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱;
-                        sNm = parsedData[iChoice][3];
-                        sPhone = parsedData[iChoice][4];
-                        sEmail = parsedData[iChoice][5];
-                        sDept = parsedData[iChoice][6];
-                        psPhone = parsedData[iChoice][4];
-                        sPosition = parsedData[iChoice][7];
+                    if (jsonParserList() != null) {
+                        String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+                        if(parsedData[0][0] == "NO DATA"){
+                            mAdapter.addItem(null, " ", "일치하는 정보가 없습니다","");
+                        }else {
+                            sNm = parsedData[iChoice][3];
+                            sPhone = parsedData[iChoice][4];
+                            sEmail = parsedData[iChoice][5];
+                            sDept = parsedData[iChoice][6];
+                            psPhone = parsedData[iChoice][4];
+                            sPosition = parsedData[iChoice][7];
 
-                        final CharSequence[] items = {sNm + " " + sPosition + "", sDept, sEmail, sPhone};
+                            final CharSequence[] items = {sNm + " " + sPosition + "", sDept, sEmail, sPhone};
 
                         /*AlertDialog.Builder 를 생성할 때 context 만 넘겨주면 activity 의 theme 를 따르게 된다*/
-                        AlertDialog.Builder bld = new AlertDialog.Builder(Staff.this);
+                            AlertDialog.Builder bld = new AlertDialog.Builder(Staff.this);
                         /* AlertDialog.Builder 를 생성할 때 theme 값을 넣어주면 해당 theme 를 따르게 된다. ICS 기본 테마를 따르게 했다. */
-                        //AlertDialog.Builder bld = new AlertDialog.Builder(Staff.this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
-                        final ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);  //클립보드 선언
-                        bld.setTitle(R.string.employee_information);
-                        bld.setItems(items, new DialogInterface.OnClickListener() {    // 목록 클릭시 설정
-                            public void onClick(DialogInterface dialog, int index) {
-                                clipboardManager.setText(items[index]);//클립보드 담기
-                                Toast.makeText(Staff.this, "클립보드 복사", Toast.LENGTH_SHORT).show(); //토스트 알림 메시지 출력
-                            }
-                        });
+                            //AlertDialog.Builder bld = new AlertDialog.Builder(Staff.this, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+                            final ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);  //클립보드 선언
+                            bld.setTitle(R.string.employee_information);
+                            bld.setItems(items, new DialogInterface.OnClickListener() {    // 목록 클릭시 설정
+                                public void onClick(DialogInterface dialog, int index) {
+                                    clipboardManager.setText(items[index]);//클립보드 담기
+                                    Toast.makeText(Staff.this, "클립보드 복사", Toast.LENGTH_SHORT).show(); //토스트 알림 메시지 출력
+                                }
+                            });
 
-                        bld.setPositiveButton(R.string.message, new DialogInterface.OnClickListener() { //문자
-                            public void onClick(DialogInterface dialog, int which) {
-                                // TODO Auto-generated method stub
-                                Intent intent = new Intent(Intent.ACTION_VIEW);
-                                intent.putExtra("address", items[3]);
-                                intent.putExtra("sms_body", "안녕하세요.\n" + psMdept + "부서에 " + psMname + "입니다.");
-                                intent.setType("vnd.android-dir/mms-sms");
-                                startActivity(intent);
-                            }
-                        });
+                            bld.setPositiveButton(R.string.message, new DialogInterface.OnClickListener() { //문자
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // TODO Auto-generated method stub
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.putExtra("address", items[3]);
+                                    intent.putExtra("sms_body", "안녕하세요.\n" + psMdept + "부서에 " + psMname + "입니다.");
+                                    intent.setType("vnd.android-dir/mms-sms");
+                                    startActivity(intent);
+                                }
+                            });
 
-                        bld.setNegativeButton(R.string.telephone_connection, new DialogInterface.OnClickListener() {  //통화
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent;
+                            bld.setNegativeButton(R.string.telephone_connection, new DialogInterface.OnClickListener() {  //통화
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent;
 //                                intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + psPhone));
-                                intent = new Intent("android.intent.action.CALL", Uri.parse("tel:"+psPhone));
-                                startActivity(intent);
-                            }
-                        });
-                        bld.show();
+                                    intent = new Intent("android.intent.action.CALL", Uri.parse("tel:"+psPhone));
+                                    startActivity(intent);
+                                }
+                            });
+                            bld.show();
+                        }
                     } else {
                         Toast.makeText(Staff.this, R.string.D_View_again, Toast.LENGTH_SHORT).show(); //토스트 알림 메시지 출력
                     }
@@ -435,94 +421,54 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
         }
     };
 
-    /**
-     * 서버에 데이터를 보내는 메소드
-     * @param msg
-     * @return
-     */
-    private String SendByHttp(String msg) {
-        if(msg == null)
-            msg = "";
-        String URL ="http://www.eluocnc.com/GW_V3/app/memberList.asp";
-
-        DefaultHttpClient client = new DefaultHttpClient();
-        try {
-			/* 체크할 id와 pwd값 서버로 전송 */
-            HttpPost post = new HttpPost(URL+"?searchValue="+msg+"&pageUnit=100");
-			/* 지연시간 최대 3초 */
-            HttpParams params = client.getParams();
-            HttpConnectionParams.setConnectionTimeout(params, 3000);
-            HttpConnectionParams.setSoTimeout(params, 3000);
-
-			/* 데이터 보낸 뒤 서버에서 데이터를 받아오는 과정 */
-            HttpResponse response = null;
-            try{
-                ConnectivityManager conManager =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo netInfo = conManager.getActiveNetworkInfo();
-
-                if(netInfo != null && netInfo.isConnected()){
-                    response = client.execute(post);
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            BufferedReader bufreader = new BufferedReader( new InputStreamReader(response.getEntity().getContent(),"utf-8"));
-            String line = null;
-            String result = "";
-            while ((line = bufreader.readLine()) != null) {
-                result += line;
-            }
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            client.getConnectionManager().shutdown();	// 연결 지연 종료
-            return "";
+    private String[][] jsonParserList() {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        try{
+            //웹서버 URL 지정
+            url= new URL("http://www.eluocnc.com/GW_V3/app/memberList.asp?searchValue="+sMessage+"&pageUnit=100");
+            HttpURLConnection urlc =(HttpURLConnection)url.openConnection();
+            urlc.setConnectTimeout(3000);
+            urlc.connect();
+        }catch (Exception e){
+            FirebaseCrash.report(new Exception("공지 리스트 : 서버 연결 실패"));
+            return null;
         }
-    }
 
-    /**
-     * 받은 JSON 객체를 파싱하는 메소드
-     * @param
-     * @return
-     */
-    private String[][] jsonParserList(String pRecvServerPage) {
-        Log.i("서버에서 받은 전체 내용 : ", pRecvServerPage);
         try {
-            JSONObject json = new JSONObject(pRecvServerPage);
-            JSONArray jArr = json.getJSONArray("member");
-
-            // 받아온 pRecvServerPage를 분석하는 부분
-            String jsonName[];
-            if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
-                String[] jsonName1 = {"RESULT"};
-                jsonName = jsonName1;
-            }else{
-                String[] jsonName1 = {"MIDX", "GUBUN", "USERID", "USERNM", "MOBILE", "EMAIL", "PART","JOB", "USERPATH", "USERIMG"};
-                jsonName = jsonName1;
+            urlConnection = (HttpURLConnection) url.openConnection();
+            BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),"UTF-8"));
+            Log.d("line:",bufreader.toString());
+            String line = null;
+            String page = "";
+            while((line = bufreader.readLine())!=null){
+                Log.d("line:",line);
+                page+=line;
             }
-
-            String[][] parseredData = new String[jArr.length()][jsonName.length];
-            if(parseredData.length > 0){
-                for (int i = 0; i < jArr.length(); i++) {
-                    json = jArr.getJSONObject(i);
-                    for(int j = 0; j < jsonName.length; j++) {
-                        try{
-                            if(parseredData[i][j] == null ){
-                                parseredData[i][j] = json.getString(jsonName[j]);
-                                Log.i("JSON을 분석한 데이터 " + i + " : ", parseredData[i][j] );
-                            }
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }else{
-                Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
+            JSONObject json = new JSONObject(page);
+            JSONArray jArr = json.getJSONArray("member");
+            String[][] parseredData = new String[jArr.length()][10];
+            for (int i=0; i<jArr.length(); i++){
+                json = jArr.getJSONObject(i);
+                parseredData[i][0] = json.getString("MIDX");
+                parseredData[i][1] = json.getString("GUBUN");
+                parseredData[i][2] = json.getString("USERID");
+                parseredData[i][3] = json.getString("USERNM");
+                parseredData[i][4] = json.getString("MOBILE");
+                parseredData[i][5] = json.getString("EMAIL");
+                parseredData[i][6] = json.getString("PART");
+                parseredData[i][7] = json.getString("JOB");
+                parseredData[i][8] = json.getString("USERPATH");
+                parseredData[i][9] = json.getString("USERIMG");
             }
             return parseredData;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
+        } catch (Exception e) {
+            String[][] parseredData = new String[1][1];
+            parseredData[0][0] = "NO DATA";
+            Log.i("RESULT","데이터가 없음");
+            return parseredData;
+        }finally{
+            urlConnection.disconnect();
         }
     }
     //비트맵 외부 URL로  변환하는 코드
@@ -823,7 +769,6 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
             }
 
             holder.mName.setText(mData.sName);  //이름
-
             holder.mDept.setText(mData.sDept);  //부서
             String strColor = "#4174D9";
             holder.mDept.setTextColor(Color.parseColor(strColor));
@@ -835,5 +780,4 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
             return convertView;
         }
     }
-
 }
