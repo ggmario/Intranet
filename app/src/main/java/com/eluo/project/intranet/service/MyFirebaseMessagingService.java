@@ -1,3 +1,15 @@
+/*
+ * Project	    : Eluo Intranet
+ * Program    : 표기 하지 않음
+ * Description	: 엘루오 씨엔시 서비스(푸시 수신시 로티피케이션 알림)
+ * Environment	:
+ * Notes	    : Developed by
+ *
+ * @(#) MyFirebaseMessagingService.java
+ * @since 2017-03-28
+ * History	    : [DATE][Programmer][Description]
+ * 		        : [2017-03-28][ggmario@eluocnc.com][CREATE: STATEMENT]
+ */
 package com.eluo.project.intranet.service;
 
 /**
@@ -27,7 +39,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService{
-
     private static final String TAG = "MyFirebaseMsgService";
 
     /**
@@ -87,8 +98,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
         // message, here is where that should be initiated. See sendNotification method below.
     }
     // [END receive_message]
-
-
     /**
      * Schedule a job using FirebaseJobDispatcher.
      */
@@ -102,7 +111,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
         dispatcher.schedule(myJob);
         // [END dispatch_job]
     }
-
     /**
      * Handle time allotted to BroadcastReceivers.
      */
@@ -143,7 +151,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
 }
