@@ -66,7 +66,7 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
     String Id = "";
     private TextView textView, textView3, textView4;
     private Bitmap bmp;
-    private String psMid, psMidx, psMpath, psMdept, psMname, sTelephone = null;
+    private String psMid, psMidx, psMpath, psMdept, psMname, sTelephone, sPast = null;
     private String sIDX, sSUBJECT, sCONTENT, sREGNM, sREGDT = null;
 
     @Override
@@ -87,7 +87,8 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
             psMpath = intent.getStringExtra("path");
             psMdept =intent.getStringExtra("dept");
             sTelephone =intent.getStringExtra("sTelephone");
-
+            sPast =intent.getStringExtra("sPast");
+            System.out.println(">>>>>>>>>>>>>>>"+sPast);
             new ThreadPolicy();;
             jsonParserList();
             String sContent = "";
@@ -325,7 +326,12 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
     public boolean onKeyDown( int KeyCode, KeyEvent event ){
         if( KeyCode == KeyEvent.KEYCODE_BACK ){
             if (NetworkUtil.isNetworkConnected(this)) {
-                Intent intent = new Intent(NoticeDetails.this, Notice.class);//엑티비티 생성 작성 화면
+                Intent intent  = null;
+                if(sPast != null){
+                    intent = new Intent(NoticeDetails.this, MainActivity.class);//엑티비티 생성 작성 화면
+                }else{
+                    intent = new Intent(NoticeDetails.this, Notice.class);//엑티비티 생성 작성 화면
+                }
                 intent.putExtra("idx",psMidx); //조회 키 값을 넘겨준다
                 intent.putExtra("id",psMid);
                 intent.putExtra("name",psMname);
