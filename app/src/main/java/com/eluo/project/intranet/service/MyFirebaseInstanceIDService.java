@@ -1,9 +1,20 @@
+/*
+ * Project	    : Eluo Intranet
+ * Program    : 표기 하지 않음
+ * Description	: 엘루오 씨엔시 서비스(푸시 토크 생성 프리퍼런스 담기)
+ * Environment	:
+ * Notes	    : Developed by
+ *
+ * @(#) MyFirebaseInstanceIDService.java
+ * @since 2017-03-28
+ * History	    : [DATE][Programmer][Description]
+ * 		        : [2017-03-28][ggmario@eluocnc.com][CREATE: STATEMENT]
+ */
 package com.eluo.project.intranet.service;
 
 /**
  * Created by gogumario on 2017-03-28.
  */
-
 
 import android.content.SharedPreferences;
 import android.util.Log;
