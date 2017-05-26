@@ -66,7 +66,7 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
     private ArrayAdapter<String> m_Adapter;
     private ListView m_ListView;
     private Bitmap bmp;
-    private String psMid, psMidx, psMpath, psMdept, psMname, sTelephone  = null;
+    private String psMid, psMidx, psMpath, psMdept, psMname, sTelephone = null;
 
     /** Called when the activity is first created. */
     @Override
@@ -187,7 +187,6 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
             FirebaseCrash.report(new Exception("공지 리스트 : 서버 연결 실패"));
             return null;
         }
-
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
             BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),"UTF-8"));
@@ -385,8 +384,6 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
             // 스레드 생성하고 시작
             new ThreadPolicy();
             if (NetworkUtil.isNetworkConnected(Notice.this)) {
-//                String result = SendByHttp("1"); // 메시지를 서버에 보냄
-
                 String sMidx = "";
                 int iChoice = arg2;
                 String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
