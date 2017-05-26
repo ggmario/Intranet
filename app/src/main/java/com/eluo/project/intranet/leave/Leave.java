@@ -40,14 +40,9 @@ import com.eluo.project.intranet.network.NetworkUtil;
 import com.eluo.project.intranet.notice.Notice;
 import com.eluo.project.intranet.program.ProgramInformation;
 import com.eluo.project.intranet.utils.ThreadPolicy;
+import com.google.firebase.crash.FirebaseCrash;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -73,12 +68,7 @@ public class Leave extends AppCompatActivity implements NavigationView.OnNavigat
     private ArrayAdapter<String> m_Adapter;
     private ListView m_ListView;
     private LeaveCustomDialog mCustomDialog;
-    private String psMid = null;
-    private String psMidx = null;
-    private String psMpath = null;
-    private String psMdept = null;
-    private String psMname = null;
-    private String sTelephone = null;
+    private String psMid, psMidx, psMpath, psMdept, psMname, sTelephone = null;
     private static final long MIN_CLICK_INTERVAL=600;
     private long mLastClickTime;
 
@@ -90,10 +80,8 @@ public class Leave extends AppCompatActivity implements NavigationView.OnNavigat
         Intent intent = new Intent(getIntent());
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);  // 화면위 타이틀 없애기
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);  // 전체화면 만들기
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);  // 전체화면 만들기
         setContentView(R.layout.activity_leave_view_all);   //작성 화면 구성 xml
-
 
         if (NetworkUtil.isNetworkConnected(this)) {
             psMidx = intent.getStringExtra("idx");    // 키값(PRIMARY KEY)
@@ -105,7 +93,6 @@ public class Leave extends AppCompatActivity implements NavigationView.OnNavigat
 
             // 스레드 생성하고 시작
             new ThreadPolicy();
-            String result = SendByHttp(psMidx); // 메시지를 서버에 보냄
             m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.leave_item);
             m_ListView = (ListView) findViewById(R.id.leave_list_view);
             m_ListView.setAdapter(m_Adapter);
@@ -113,16 +100,14 @@ public class Leave extends AppCompatActivity implements NavigationView.OnNavigat
             // ListView 아이템 터치 시 이벤트
             m_ListView.setOnItemClickListener(onClickListItem);
 
-            if (result != null) {
-                if (result.lastIndexOf("RESULT") > 0) {
-                    m_Adapter.add("휴가 내역이 없습니다");
-                } else {
-                    String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
-                    if(parsedData.length > 0){
-                        for (int i = 0; i < parsedData.length; i++) {
-                            m_Adapter.add("[신청] " + parsedData[i][4] + "\n[구분] " + parsedData[i][3] + " / " + parsedData[i][6] + " " + parsedData[i][9]);
-                        }
+            String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+            if(parsedData != null && parsedData.length > 0) {
+                if(parsedData[0][0] != "NO DATA" ){
+                    for (int i = 0; i < parsedData.length; i++) {
+                        m_Adapter.add("[신청] " + parsedData[i][4] + "\n[구분] " + parsedData[i][3] + " / " + parsedData[i][5] + " " + parsedData[i][6]);
                     }
+                }else{
+                    m_Adapter.add("조회된 데이터가 없습니다");
                 }
             }else{
                 Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
@@ -186,13 +171,13 @@ public class Leave extends AppCompatActivity implements NavigationView.OnNavigat
             if(elapsedTime<=MIN_CLICK_INTERVAL){
                 return;
             }
-
             if (NetworkUtil.isNetworkConnected(Leave.this)) {
-                String result = SendByHttp(psMidx); // 메시지를 서버에 보냄
-                if (result != null) {
-                    String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
-                    mCustomDialog = new LeaveCustomDialog(Leave.this,"휴가 정보","[구분]  "+parsedData[iChoice][3]+"\n[시작날짜]  "+parsedData[iChoice][7]+"\n[종료날짜]  "+parsedData[iChoice][8]+"\n[신청]  "+parsedData[iChoice][4]+"\n[일수]  "+parsedData[iChoice][2]+"일\n[승인여부] "+parsedData[iChoice][6]+" "+parsedData[iChoice][9],leftListener,rightListener);
-                    mCustomDialog.show();
+                String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+                if(parsedData != null && parsedData.length > 0) {
+                    if(parsedData[0][0] != "NO DATA"){
+                        mCustomDialog = new LeaveCustomDialog(Leave.this,"휴가 정보","[구분]  "+parsedData[iChoice][3]+"\n[시작날짜]  "+parsedData[iChoice][7]+"\n[종료날짜]  "+parsedData[iChoice][8]+"\n[신청]  "+parsedData[iChoice][4]+"\n[일수]  "+parsedData[iChoice][2]+"일\n[승인여부] "+parsedData[iChoice][5]+" "+parsedData[iChoice][6],leftListener,rightListener);
+                        mCustomDialog.show();
+                    }
                 }
             }else{
                 Toast.makeText(Leave.this, R.string.network_error_chk,Toast.LENGTH_SHORT).show();
@@ -231,89 +216,139 @@ public class Leave extends AppCompatActivity implements NavigationView.OnNavigat
             if(connection!=null)connection.disconnect();
         }
     }
-    /**
-     * 서버에 데이터를 보내는 메소드
-     * @param msg
-     * @return
-     */
-    private String SendByHttp(String msg) {
-        if(msg == null)
-            msg = "";
-        String URL ="http://www.eluocnc.com/GW_V3/app/myVacList.asp";
 
-        DefaultHttpClient client = new DefaultHttpClient();
-        try {
-            HttpPost post = new HttpPost(URL+"?seq="+msg);
-            HttpParams params = client.getParams();
-            HttpConnectionParams.setConnectionTimeout(params, 3000);
-            HttpConnectionParams.setSoTimeout(params, 3000);
-
-            HttpResponse response = null;
-            try{
-                ConnectivityManager conManager =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo netInfo = conManager.getActiveNetworkInfo();
-                if(netInfo != null && netInfo.isConnected()){
-                    response = client.execute(post);
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            BufferedReader bufreader = new BufferedReader( new InputStreamReader(response.getEntity().getContent(),"utf-8"));
-            String line = null;
-            String result = "";
-            while ((line = bufreader.readLine()) != null) {
-                result += line;
-            }
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            client.getConnectionManager().shutdown();	// 연결 지연 종료
-            return "";
-        }
-    }
-
-    /**
-     * 받은 JSON 객체를 파싱하는 메소드
-     * @param
-     * @return
-     */
-    private String[][] jsonParserList(String pRecvServerPage) {
-        Log.i("서버에서 받은 전체 내용 : ", pRecvServerPage);
-        try {
-            JSONObject json = new JSONObject(pRecvServerPage);
-            JSONArray jArr = json.getJSONArray("vacation");
-
-            String jsonName[];
-            if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
-                String[] jsonName1 = {"RESULT"};
-                jsonName = jsonName1;
-            }else{
-                String[] jsonName1 = {"VIDX", "DT", "VACCNT", "REASON", "REGDT", "AUTH", "AUTH", "DTS", "DTE","STATE" };
-                jsonName = jsonName1;
-            }
-
-            String[][] parseredData = new String[jArr.length()][jsonName.length];
-            if(parseredData.length > 0){
-                for (int i = 0; i < jArr.length(); i++) {
-                    json = jArr.getJSONObject(i);
-                    for(int j = 0; j < jsonName.length; j++) {
-                        try{
-                            if(parseredData[i][j] == null ){
-                                parseredData[i][j] = json.getString(jsonName[j]);
-                                Log.i("JSON을 분석한 데이터 " + i + " : ", parseredData[i][j] );
-                            }
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-            return parseredData;
-        } catch (JSONException e) {
-            e.printStackTrace();
+    private String[][] jsonParserList() {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        try{
+            //웹서버 URL 지정
+            url= new URL("http://www.eluocnc.com/GW_V3/app/myVacList.asp?seq="+psMidx);
+            HttpURLConnection urlc =(HttpURLConnection)url.openConnection();
+            urlc.setConnectTimeout(3000);
+            urlc.connect();
+        }catch (Exception e){
+            FirebaseCrash.report(new Exception("직원 휴가 리스트 : 서버 연결 실패"));
             return null;
         }
+
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),"UTF-8"));
+            Log.d("line:",bufreader.toString());
+            String line = null;
+            String page = "";
+            while((line = bufreader.readLine())!=null){
+                Log.d("line:",line);
+                page+=line;
+            }
+            JSONObject json = new JSONObject(page);
+            JSONArray jArr = json.getJSONArray("vacation");
+            String[][] parseredData = new String[jArr.length()][9];
+            for (int i=0; i<jArr.length(); i++){
+                json = jArr.getJSONObject(i);
+                parseredData[i][0] = json.getString("VIDX");
+                parseredData[i][1] = json.getString("DT");
+                parseredData[i][2] = json.getString("VACCNT");
+                parseredData[i][3] = json.getString("REASON");
+                parseredData[i][4] = json.getString("REGDT");
+                parseredData[i][5] = json.getString("AUTH");
+                parseredData[i][6] = json.getString("STATE");
+                parseredData[i][7] = json.getString("DTS");
+                parseredData[i][8] = json.getString("DTE");
+            }
+            return parseredData;
+        } catch (Exception e) {
+            String[][] parseredData = new String[1][1];
+            parseredData[0][0] = "NO DATA";
+            Log.i("RESULT","데이터가 없음");
+            return parseredData;
+        }finally{
+            urlConnection.disconnect();
+        }
     }
+//    /**
+//     * 서버에 데이터를 보내는 메소드
+//     * @param msg
+//     * @return
+//     */
+//    private String SendByHttp(String msg) {
+//        if(msg == null)
+//            msg = "";
+//        String URL ="http://www.eluocnc.com/GW_V3/app/myVacList.asp";
+//
+//        DefaultHttpClient client = new DefaultHttpClient();
+//        try {
+//            HttpPost post = new HttpPost(URL+"?seq="+msg);
+//            HttpParams params = client.getParams();
+//            HttpConnectionParams.setConnectionTimeout(params, 3000);
+//            HttpConnectionParams.setSoTimeout(params, 3000);
+//
+//            HttpResponse response = null;
+//            try{
+//                ConnectivityManager conManager =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+//                NetworkInfo netInfo = conManager.getActiveNetworkInfo();
+//                if(netInfo != null && netInfo.isConnected()){
+//                    response = client.execute(post);
+//                }
+//            }catch (Exception e){
+//                e.printStackTrace();
+//            }
+//            BufferedReader bufreader = new BufferedReader( new InputStreamReader(response.getEntity().getContent(),"utf-8"));
+//            String line = null;
+//            String result = "";
+//            while ((line = bufreader.readLine()) != null) {
+//                result += line;
+//            }
+//            return result;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            client.getConnectionManager().shutdown();	// 연결 지연 종료
+//            return "";
+//        }
+//    }
+//
+//    /**
+//     * 받은 JSON 객체를 파싱하는 메소드
+//     * @param
+//     * @return
+//     */
+//    private String[][] jsonParserList(String pRecvServerPage) {
+//        Log.i("서버에서 받은 전체 내용 : ", pRecvServerPage);
+//        try {
+//            JSONObject json = new JSONObject(pRecvServerPage);
+//            JSONArray jArr = json.getJSONArray("vacation");
+//
+//            String jsonName[];
+//            if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
+//                String[] jsonName1 = {"RESULT"};
+//                jsonName = jsonName1;
+//            }else{
+//                String[] jsonName1 = {"VIDX", "DT", "VACCNT", "REASON", "REGDT", "AUTH", "AUTH", "DTS", "DTE","STATE" };
+//                jsonName = jsonName1;
+//            }
+//
+//            String[][] parseredData = new String[jArr.length()][jsonName.length];
+//            if(parseredData.length > 0){
+//                for (int i = 0; i < jArr.length(); i++) {
+//                    json = jArr.getJSONObject(i);
+//                    for(int j = 0; j < jsonName.length; j++) {
+//                        try{
+//                            if(parseredData[i][j] == null ){
+//                                parseredData[i][j] = json.getString(jsonName[j]);
+//                                Log.i("JSON을 분석한 데이터 " + i + " : ", parseredData[i][j] );
+//                            }
+//                        }catch (Exception e){
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            }
+//            return parseredData;
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
     //메뉴 생성
     @Override

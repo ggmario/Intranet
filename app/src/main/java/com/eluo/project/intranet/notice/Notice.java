@@ -66,12 +66,7 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
     private ArrayAdapter<String> m_Adapter;
     private ListView m_ListView;
     private Bitmap bmp;
-    private String psMid = null;
-    private String psMidx = null;
-    private String psMpath = null;
-    private String psMdept = null;
-    private String psMname = null;
-    private String sTelephone = null;
+    private String psMid, psMidx, psMpath, psMdept, psMname, sTelephone  = null;
 
     /** Called when the activity is first created. */
     @Override
@@ -126,8 +121,8 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
             m_ListView = (ListView) findViewById(R.id.listview);
             m_ListView.setAdapter(m_Adapter);
             m_ListView.setOnItemClickListener(onClickListItem);
-            if (jsonParserList() != null) {
-                String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+            String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+            if(parsedData != null && parsedData.length > 0) {
                 if (parsedData.length > 0) {
                     for (int i = 0; i < parsedData.length; i++) {
                         m_Adapter.add(parsedData[i][1]);
@@ -391,15 +386,15 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
             new ThreadPolicy();
             if (NetworkUtil.isNetworkConnected(Notice.this)) {
 //                String result = SendByHttp("1"); // 메시지를 서버에 보냄
-                if (jsonParserList() != null) {
-                    String sMidx = "";
-                    int iChoice = arg2;
-                    String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+
+                String sMidx = "";
+                int iChoice = arg2;
+                String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+                if(parsedData != null && parsedData.length > 0) {
                     for (int i = 0; i < parsedData.length; i++) {
                         sMidx = parsedData[iChoice][0];
                         Log.i("JSON을 분석한 데이터 " + i + " : ", parsedData[i][0]);
                     }
-                    /*액티비티 호출 하여 새로운 화면 호출 하여 상세 내용 출력*/
                     Intent intent = new Intent(Notice.this, NoticeDetails.class);//리스트에서 상세 화면으로
                     intent.putExtra("_id", sMidx); //조회 키 값을 넘겨준다
                     intent.putExtra("idx", psMidx);

@@ -202,8 +202,8 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                         imm.hideSoftInputFromWindow(etMessage.getWindowToken(), 0);
                         sMessage = etMessage.getText().toString(); // 보내는 메시지를 받아옴
                         sMessage = sMessage.replaceAll(" ","");/*공백 제거*/
-                        if (jsonParserList() != null) {
-                            String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+                        String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+                        if(parsedData != null && parsedData.length > 0) {
                             run(parsedData.length); //ProgressDialog
                             // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
                             m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.staff_item);
@@ -216,9 +216,9 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                             m_ListView.setAdapter(mAdapter);
 
                             if (parsedData.length > 0) {
-                                if(parsedData[0][0] == "NO DATA"){
-                                    mAdapter.addItem(null, " ", "일치하는 정보가 없습니다","");
-                                }else {
+                                if (parsedData[0][0] == "NO DATA") {
+                                    mAdapter.addItem(null, " ", "일치하는 정보가 없습니다", "");
+                                } else {
                                     psViewsConditions = "Y";
                                     for (int i = 0; i < parsedData.length; i++) {
                                         bmp = getBitmapFromURL(parsedData[i][8] + parsedData[i][9]);
@@ -228,7 +228,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                                         mAdapter.addItem(resizedbitmap, parsedData[i][3] + "  " + parsedData[i][7], parsedData[i][6], parsedData[i][4]);
                                     }
                                 }
-                            }else{
+                            } else {
                                 Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
                                 psViewsConditions = "N";
                             }
@@ -269,8 +269,9 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                     sMessage = null;
                     sMessage = etMessage.getText().toString(); // 보내는 메시지를 받아옴
                     sMessage = sMessage.replaceAll(" ", "");/*공백 제거*/
-                    if (jsonParserList() != null) {
-                        String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+
+                    String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+                    if(parsedData != null && parsedData.length > 0) {
                         run(parsedData.length);
                         // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
                         m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.staff_item);
@@ -282,10 +283,10 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                         mAdapter = new Staff.ListViewAdapter(Staff.this);
                         m_ListView.setAdapter(mAdapter);
                         if (parsedData.length > 0) {
-                            if(parsedData[0][0] == "NO DATA"){
-                                mAdapter.addItem(null, " ", "일치하는 정보가 없습니다","");
+                            if (parsedData[0][0] == "NO DATA") {
+                                mAdapter.addItem(null, " ", "일치하는 정보가 없습니다", "");
                                 psViewsConditions = "N";
-                            }else {
+                            } else {
                                 for (int i = 0; i < parsedData.length; i++) {
                                     bmp = getBitmapFromURL(parsedData[i][8] + parsedData[i][9]);
                                     int width = (int) (getWindowManager().getDefaultDisplay().getWidth() / 6.6); // 가로 사이즈 지정
@@ -320,13 +321,12 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
         sMessage = etMessage.getText().toString();
         if(psViewsConditions.equals("Y")){
             int iChoice = arg2;
-            if (jsonParserList() != null) {
-                String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
-                if(parsedData.length > 0){
-                    if(parsedData[0][0] != "NO DATA"){
-                        for (int i = 0; i < parsedData.length; i++) {
-                            sPhones = parsedData[iChoice][4];
-                        }
+
+            String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+            if(parsedData != null && parsedData.length > 0) {
+                if(parsedData[0][0] != "NO DATA"){
+                    for (int i = 0; i < parsedData.length; i++) {
+                        sPhones = parsedData[iChoice][4];
                     }
                 }
                 final  CharSequence info[] = new CharSequence[] {sPhones};
@@ -363,8 +363,8 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                     sMessage = null;
                     sMessage = etMessage.getText().toString();
                     int iChoice = arg2;
-                    if (jsonParserList() != null) {
-                        String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+                    String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+                    if(parsedData != null && parsedData.length > 0) {
                         if(parsedData[0][0] == "NO DATA"){
                             mAdapter.addItem(null, " ", "일치하는 정보가 없습니다","");
                         }else {
@@ -431,7 +431,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
             urlc.setConnectTimeout(3000);
             urlc.connect();
         }catch (Exception e){
-            FirebaseCrash.report(new Exception("공지 리스트 : 서버 연결 실패"));
+            FirebaseCrash.report(new Exception("직원 리스트 : 서버 연결 실패"));
             return null;
         }
 

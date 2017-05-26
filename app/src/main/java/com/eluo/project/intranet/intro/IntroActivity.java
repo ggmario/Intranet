@@ -73,19 +73,15 @@ public class IntroActivity extends Activity {
                 sVersionName =  getPackageManager().getPackageInfo(getPackageName(),0).versionName;
                 new ThreadPolicy();
                 String sVer = "";
-                if (jsonParserList() != null) {
-                    String[][] parsedData = jsonParserList();
-                    if (parsedData != null) {
-                        sVer = parsedData[0][0];
-                    } else {
-                        sVer = sVersionName;
-                        Log.i("버전 체크:", "앱 버전 체크 실패 하였습니다");
-                        //FirebaseCrash.report(new Exception("앱 버전 체크 실패 하였습니다"));
-                    }
-                }else{
-                    sVer = sVersionName;
-                }
+                String[][] parsedData = jsonParserList();
 
+                if(parsedData != null && parsedData.length > 0) {
+                    sVer = parsedData[0][0];
+                } else {
+                    sVer = sVersionName;
+                    Log.i("버전 체크:", "앱 버전 체크 실패 하였습니다");
+                    //FirebaseCrash.report(new Exception("앱 버전 체크 실패 하였습니다"));
+                }
                 if(!sVersionName.equals(sVer)){
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     // 여기서 부터는 알림창의 속성 설정

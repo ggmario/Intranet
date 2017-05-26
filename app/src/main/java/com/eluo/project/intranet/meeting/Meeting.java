@@ -80,12 +80,7 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
     private ListView m_ListView;
     private Bitmap bmp;
 
-    private String psMid = null;
-    private String psMidx = null;
-    private String psMpath = null;
-    private String psMdept = null;
-    private String psMname = null;
-    private String sTelephone = null;
+    private String psMid, psMidx, psMpath, psMdept, psMname, sTelephone = null;
     private String sFloor = "7";
 
     /** Called when the activity is first created. */
@@ -107,8 +102,8 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
         switch (item.getItemId()) {
             case R.id.navigation_home:
                 sFloor = "7";
-                if (jsonParserList() != null) {
-                    String[][] parsedData = jsonParserList();
+                String[][] parsedData = jsonParserList();
+                if(parsedData != null && parsedData.length > 0) {
                     m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
                     m_ListView = (ListView) findViewById(R.id.meeting_list_view);
                     ArrayAdapter adapter7 = (ArrayAdapter) m_ListView.getAdapter();
@@ -117,43 +112,38 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
 
                     // ListView 아이템 터치 시 이벤트
                     m_ListView.setOnItemLongClickListener(onClickListItem1);
-                        if(parsedData != null){
-                            if (parsedData.length > 0) {
-                                Resources res = getResources();
-                                String[] arrString = res.getStringArray(R.array.meeting_time);
-                                int iCk= 0;
-                                for(String s:arrString) {
-                                    for (int i = 0; i < parsedData.length; i++) {
-                                        if (s.equals(parsedData[i][0])) {
-                                            if (!parsedData[i][1].equals("")) {
-                                                m_Adapter.add(s + "\n" + parsedData[i][1]);
-                                                iCk = 1;
-                                            }
-                                        }
-                                    }
-                                    if(iCk == 0){
-                                        String sTmp = s.substring(0,2);
-                                        String sTmp1 = s.substring(3,5);
-                                        int iTime = Integer.parseInt(sTmp);
-                                        int iMinute = Integer.parseInt(sTmp1);
-                                        if(iToTime > iTime) {
-                                            m_Adapter.add(s+"\n 예약 불가");
-                                        }else if(iToTime == iTime){
-                                            if(iToMinute <= iMinute){
-                                                m_Adapter.add(s+"\n 예약 가능");
-                                            }else{
-                                                m_Adapter.add(s+"\n 예약 불가");
-                                            }
-                                        }else{
-                                            m_Adapter.add(s+"\n 예약 가능");
-                                        }
-                                    }
-                                    iCk = 0;
+
+                    Resources res = getResources();
+                    String[] arrString = res.getStringArray(R.array.meeting_time);
+                    int iCk= 0;
+                    for(String s:arrString) {
+                        for (int i = 0; i < parsedData.length; i++) {
+                            if (s.equals(parsedData[i][0])) {
+                                if (!parsedData[i][1].equals("")) {
+                                    m_Adapter.add(s + "\n" + parsedData[i][1]);
+                                    iCk = 1;
                                 }
                             }
-                        }else{
-                            Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
                         }
+                        if(iCk == 0){
+                            String sTmp = s.substring(0,2);
+                            String sTmp1 = s.substring(3,5);
+                            int iTime = Integer.parseInt(sTmp);
+                            int iMinute = Integer.parseInt(sTmp1);
+                            if(iToTime > iTime) {
+                                m_Adapter.add(s+"\n 예약 불가");
+                            }else if(iToTime == iTime){
+                                if(iToMinute <= iMinute){
+                                    m_Adapter.add(s+"\n 예약 가능");
+                                }else{
+                                    m_Adapter.add(s+"\n 예약 불가");
+                                }
+                            }else{
+                                m_Adapter.add(s+"\n 예약 가능");
+                            }
+                        }
+                        iCk = 0;
+                    }
                 }else{
                     Log.e("jsonParserList 7:" , "null");
                     Toast.makeText(Meeting.this, R.string.network_error_chk, Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
@@ -161,25 +151,25 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                 return true;
             case R.id.navigation_dashboard:
                 sFloor = "8";
-                if (jsonParserList() != null) {
-                    String[][] parsedData = jsonParserList();
+                String[][] parsedData8 = jsonParserList();
+                if(parsedData8 != null && parsedData8.length > 0) {
                     m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
                     m_ListView = (ListView) findViewById(R.id.meeting_list_view);
                     ArrayAdapter adapter8 = (ArrayAdapter) m_ListView.getAdapter();
                     adapter8.notifyDataSetChanged();
                     m_ListView.setAdapter(m_Adapter);
                     int icount = 0;
-                    for (int i = 0; i < parsedData.length; i++) {
-                        if (!parsedData[i][2].equals("")) {
+                    for (int i = 0; i < parsedData8.length; i++) {
+                        if (!parsedData8[i][2].equals("")) {
                             icount++;
                             Resources res = getResources();
                             String[] arrString = res.getStringArray(R.array.meeting_time);
                             int iCk = 0;
                             for (String s : arrString) {
-                                for (int is = 0; is < parsedData.length; is++) {
-                                    if (s.equals(parsedData[is][0])) {
-                                        if (!parsedData[is][1].equals("")) {
-                                            m_Adapter.add(s + "\n" + parsedData[is][2]);
+                                for (int is = 0; is < parsedData8.length; is++) {
+                                    if (s.equals(parsedData8[is][0])) {
+                                        if (!parsedData8[is][1].equals("")) {
+                                            m_Adapter.add(s + "\n" + parsedData8[is][2]);
                                             iCk = 1;
                                         }
                                     }
@@ -325,9 +315,8 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                 }
             });
 
-            if (jsonParserList() != null) {
-                String[][] parsedData = jsonParserList();
-
+            String[][] parsedData = jsonParserList();
+            if(parsedData != null && parsedData.length > 0) {
                 // ListView 아이템 터치 시 이벤트
                 m_ListView.setOnItemLongClickListener(onClickListItem1);
                     if(parsedData != null){

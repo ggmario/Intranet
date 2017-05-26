@@ -62,12 +62,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Naviga
     private GoogleMap mMap;
     private Bitmap bmp;
 
-    private String psMid = null;
-    private String psMidx = null;
-    private String psMpath = null;
-    private String psMdept = null;
-    private String psMname = null;
-    private String sTelephone = null;
+    private String psMid, psMidx, psMpath, psMdept, psMname, sTelephone = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

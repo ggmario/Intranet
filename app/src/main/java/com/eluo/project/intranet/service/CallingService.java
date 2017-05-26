@@ -1,14 +1,23 @@
+/*
+ * Project	    : Eluo Intranet
+ * Program    : 표기 하지 않음
+ * Description	: 엘루오 씨엔시 서비스(전화 수신 서비스)
+ * Environment	:
+ * Notes	    : Developed by
+ *
+ * @(#) CallingService.java
+ * @since 2017-03-14
+ * History	    : [DATE][Programmer][Description]
+ * 		        : [2017-03-14][ggmario@eluocnc.com][CREATE: STATEMENT]
+ */
 package com.eluo.project.intranet.service;
 
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,17 +33,13 @@ import com.eluo.project.intranet.R;
 import com.eluo.project.intranet.utils.ThreadPolicy;
 import com.google.firebase.crash.FirebaseCrash;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import butterknife.OnClick;
 
@@ -43,7 +48,6 @@ import butterknife.OnClick;
  */
 
 public class CallingService extends Service {
-
     public static String EXTRA_CALL_NUMBER = "call_number";
     protected View rootView;
     private String sOverlay = null;
@@ -54,7 +58,6 @@ public class CallingService extends Service {
     String call_part = "";  //부서
     String call_nm = "";    //이름
     String call_tb = "";
-
 
     WindowManager.LayoutParams params;
     private WindowManager windowManager = null;
@@ -133,9 +136,6 @@ public class CallingService extends Service {
             loadScore();
             setExtra(intent);
             if (!TextUtils.isEmpty(call_number)) {
-//                System.out.println("-------------------------->>"+call_number);
-//                System.out.println("-------------------------->>"+call_nm);
-//                System.out.println("-------------------------->>"+call_job);
                 System.out.println("-------------------------->>"+sOverlay);
 
                 if(!call_nm.equals("") && sOverlay.equals("true")){
@@ -165,21 +165,19 @@ public class CallingService extends Service {
         if(!call_number.equals("")) {
             loadScore();
             if(sOverlay.equals("true")){
-                String result = SendByHttp(call_number); // 메시지를 서버에 보냄
-                String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
-                if(parsedData != null){
-                    if (parsedData.length > 0) {
-                        call_nm = "";
-                        call_part = "";
-                        call_job = "";
-                        call_tb = "Y";
-                        if (parsedData[0][0].equals("N")) {
-                            removePopup();
-                        } else {
-                            call_nm = parsedData[0][3];
-                            call_part = parsedData[0][6];
-                            call_job = parsedData[0][7];
-                        }
+
+                String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+                if(parsedData != null && parsedData.length > 0) {
+                    call_nm = "";
+                    call_part = "";
+                    call_job = "";
+                    call_tb = "Y";
+                    if (parsedData[0][0] == "NO DATA") {
+                        removePopup();
+                    } else {
+                        call_nm = parsedData[0][3];
+                        call_part = parsedData[0][6];
+                        call_job = parsedData[0][7];
                     }
                 }
             }else{
@@ -203,96 +201,144 @@ public class CallingService extends Service {
     public void removePopup() {
         if (rootView != null && windowManager != null && call_tb.equals("Y")) windowManager.removeView(rootView); call_tb="";  //iCount = 0;
     }
-
-    /**
-     * 서버에 데이터를 보내는 메소드
-     * @param msg
-     * @return
-     */
-    private String SendByHttp(String msg) {
-        if(msg == null)
-            msg = "";
-        String URL ="http://www.eluocnc.com/GW_V3/app/memberList.asp";
-
-        DefaultHttpClient client = new DefaultHttpClient();
-        try {
-			/* 체크할 id와 pwd값 서버로 전송 */
-            HttpPost post = new HttpPost(URL+"?searchValue="+msg+"&pageUnit=100");
-
-			/* 지연시간 최대 3초 */
-            HttpParams params = client.getParams();
-            HttpConnectionParams.setConnectionTimeout(params, 3000);
-            HttpConnectionParams.setSoTimeout(params, 3000);
-
-			/* 데이터 보낸 뒤 서버에서 데이터를 받아오는 과정 */
-            HttpResponse response = null;
-            try{
-                ConnectivityManager conManager =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo netInfo = conManager.getActiveNetworkInfo();
-
-                if(netInfo != null && netInfo.isConnected()){
-                    response = client.execute(post);
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            BufferedReader bufreader = new BufferedReader( new InputStreamReader(response.getEntity().getContent(),"utf-8"));
-            String line = null;
-            String result = "";
-            while ((line = bufreader.readLine()) != null) {
-                result += line;
-            }
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            client.getConnectionManager().shutdown();	// 연결 지연 종료
-            FirebaseCrash.report(new Exception("서버데이터 보내기 실패"));
-            return "";
-        }
-    }
-
-    /**
-     * 받은 JSON 객체를 파싱하는 메소드
-     * @param
-     * @return
-     */
-    private String[][] jsonParserList(String pRecvServerPage) {
-        Log.i("서버에서 받은 전체 내용 : ", pRecvServerPage);
-        try {
-            JSONObject json = new JSONObject(pRecvServerPage);
-            JSONArray jArr = json.getJSONArray("member");
-
-            // 받아온 pRecvServerPage를 분석하는 부분
-            String jsonName[];
-            if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
-                String[] jsonName1 = {"RESULT"};
-                jsonName = jsonName1;
-            }else{
-                String[] jsonName1 = {"MIDX", "GUBUN", "USERID", "USERNM", "MOBILE", "EMAIL", "PART","JOB"};
-                jsonName = jsonName1;
-            }
-
-            String[][] parseredData = new String[jArr.length()][jsonName.length];
-            for (int i = 0; i < jArr.length(); i++) {
-                json = jArr.getJSONObject(i);
-                for(int j = 0; j < jsonName.length; j++) {
-                    try{
-                        if(parseredData[i][j] == null ){
-                            parseredData[i][j] = json.getString(jsonName[j]);
-                            Log.i("JSON을 분석한 데이터!!!!!!!!!!!! " + i + " : ", parseredData[i][j] );
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-            return parseredData;
-        } catch (JSONException e) {
-            FirebaseCrash.report(new Exception("정보 조회 실패"));
-            e.printStackTrace();
+    private String[][] jsonParserList() {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        try{
+            //웹서버 URL 지정
+            url= new URL("http://www.eluocnc.com/GW_V3/app/memberList.asp?searchValue="+call_number+"&pageUnit=100");
+            HttpURLConnection urlc =(HttpURLConnection)url.openConnection();
+            urlc.setConnectTimeout(3000);
+            urlc.connect();
+        }catch (Exception e){
+            FirebaseCrash.report(new Exception("수신전화 정보조회 : 서버 연결 실패"));
             return null;
         }
+
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),"UTF-8"));
+            Log.d("line:",bufreader.toString());
+            String line = null;
+            String page = "";
+            while((line = bufreader.readLine())!=null){
+                Log.d("line:",line);
+                page+=line;
+            }
+            JSONObject json = new JSONObject(page);
+            JSONArray jArr = json.getJSONArray("member");
+            String[][] parseredData = new String[jArr.length()][8];
+            for (int i=0; i<jArr.length(); i++){
+                json = jArr.getJSONObject(i);
+                parseredData[i][0] = json.getString("MIDX");
+                parseredData[i][1] = json.getString("GUBUN");
+                parseredData[i][2] = json.getString("USERID");
+                parseredData[i][3] = json.getString("USERNM");
+                parseredData[i][4] = json.getString("MOBILE");
+                parseredData[i][5] = json.getString("EMAIL");
+                parseredData[i][6] = json.getString("PART");
+                parseredData[i][7] = json.getString("JOB");
+            }
+            return parseredData;
+        } catch (Exception e) {
+            String[][] parseredData = new String[1][1];
+            parseredData[0][0] = "NO DATA";
+            Log.i("RESULT","데이터가 없음");
+            return parseredData;
+        }finally{
+            urlConnection.disconnect();
+        }
     }
+//
+//    /**
+//     * 서버에 데이터를 보내는 메소드
+//     * @param msg
+//     * @return
+//     */
+//    private String SendByHttp(String msg) {
+//        if(msg == null)
+//            msg = "";
+//        String URL ="http://www.eluocnc.com/GW_V3/app/memberList.asp";
+//
+//        DefaultHttpClient client = new DefaultHttpClient();
+//        try {
+//			/* 체크할 id와 pwd값 서버로 전송 */
+//            HttpPost post = new HttpPost(URL+"?searchValue="+msg+"&pageUnit=100");
+//
+//			/* 지연시간 최대 3초 */
+//            HttpParams params = client.getParams();
+//            HttpConnectionParams.setConnectionTimeout(params, 3000);
+//            HttpConnectionParams.setSoTimeout(params, 3000);
+//
+//			/* 데이터 보낸 뒤 서버에서 데이터를 받아오는 과정 */
+//            HttpResponse response = null;
+//            try{
+//                ConnectivityManager conManager =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+//                NetworkInfo netInfo = conManager.getActiveNetworkInfo();
+//
+//                if(netInfo != null && netInfo.isConnected()){
+//                    response = client.execute(post);
+//                }
+//            }catch (Exception e){
+//                e.printStackTrace();
+//            }
+//            BufferedReader bufreader = new BufferedReader( new InputStreamReader(response.getEntity().getContent(),"utf-8"));
+//            String line = null;
+//            String result = "";
+//            while ((line = bufreader.readLine()) != null) {
+//                result += line;
+//            }
+//            return result;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            client.getConnectionManager().shutdown();	// 연결 지연 종료
+//            FirebaseCrash.report(new Exception("서버데이터 보내기 실패"));
+//            return "";
+//        }
+//    }
+//
+//    /**
+//     * 받은 JSON 객체를 파싱하는 메소드
+//     * @param
+//     * @return
+//     */
+//    private String[][] jsonParserList(String pRecvServerPage) {
+//        Log.i("서버에서 받은 전체 내용 : ", pRecvServerPage);
+//        try {
+//            JSONObject json = new JSONObject(pRecvServerPage);
+//            JSONArray jArr = json.getJSONArray("member");
+//
+//            // 받아온 pRecvServerPage를 분석하는 부분
+//            String jsonName[];
+//            if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
+//                String[] jsonName1 = {"RESULT"};
+//                jsonName = jsonName1;
+//            }else{
+//                String[] jsonName1 = {"MIDX", "GUBUN", "USERID", "USERNM", "MOBILE", "EMAIL", "PART","JOB"};
+//                jsonName = jsonName1;
+//            }
+//
+//            String[][] parseredData = new String[jArr.length()][jsonName.length];
+//            for (int i = 0; i < jArr.length(); i++) {
+//                json = jArr.getJSONObject(i);
+//                for(int j = 0; j < jsonName.length; j++) {
+//                    try{
+//                        if(parseredData[i][j] == null ){
+//                            parseredData[i][j] = json.getString(jsonName[j]);
+//                            Log.i("JSON을 분석한 데이터!!!!!!!!!!!! " + i + " : ", parseredData[i][j] );
+//                        }
+//                    }catch (Exception e){
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//            return parseredData;
+//        } catch (JSONException e) {
+//            FirebaseCrash.report(new Exception("정보 조회 실패"));
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
     /* 프리퍼런스 가져오기*/
     private void loadScore() {
