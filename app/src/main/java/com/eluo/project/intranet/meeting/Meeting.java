@@ -235,7 +235,6 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
 
     };
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -307,10 +306,7 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
             TextView nav_header_id_text = (TextView) nev_header_view.findViewById(R.id.textView);
             nav_header_id_text.setText(psMdept);
 
-//            String result = SendByHttp("1");
-
             m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
-
             m_ListView = (ListView) findViewById(R.id.meeting_list_view);
             m_ListView.setAdapter(m_Adapter);
 
