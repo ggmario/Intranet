@@ -169,7 +169,7 @@ public class IntroActivity extends Activity {
             //웹서버 URL 지정
             url= new URL("http://fs.eluocnc.com:8282/versionName.jsp");
             HttpURLConnection urlc =(HttpURLConnection)url.openConnection();
-            urlc.setConnectTimeout(3000);
+            urlc.setConnectTimeout(500);
             urlc.connect();
         }catch (Exception e){
             return null;
