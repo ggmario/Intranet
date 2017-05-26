@@ -15,6 +15,7 @@
     <!-- Keeps the processor from sleeping when a message is received. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" /><!--CPU_ON-->
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" /><!--잠김화면해제 권한-->
+    <category android:name="android.intent.category.BROWSABLE" />
 
 
     <!--애플리케이션-->
