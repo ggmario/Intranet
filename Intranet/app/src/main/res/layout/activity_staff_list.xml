@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <ListView
+        android:paddingLeft="10dp"
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/et_message"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/list_color"
+        android:layout_marginTop="14dp"
+        android:layout_height="1024dp" />
+
+    <Button
+        android:text="검색"
+        android:layout_width="60dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/btn_sendData"
+        android:layout_height="35dp"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/bg1"
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        />
+
+    <EditText
+        android:paddingLeft="10dp"
+        android:id="@+id/et_message"
+        android:textColor="@color/list_color"
+        android:imeOptions="actionSearch"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:layout_marginEnd="5dp"
+        android:text=""
+        android:hint="예)ID,전화,이름 검색"
+        android:ems="10"
+        android:layout_width="290dp"
+        android:layout_alignTop="@+id/btn_sendData"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

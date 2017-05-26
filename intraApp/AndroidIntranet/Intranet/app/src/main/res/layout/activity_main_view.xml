@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <!--android:background="@color/bg"-->
+    <!--<ScrollView>-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
+        android:layout_weight="0.76"
+        android:background="@color/bg"
+        android:orientation="vertical"
+        android:scrollbars="none">
+
+
+        <!--공지 타이틀-->
+        <LinearLayout
+            android:layout_width="172dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/titleNotice"
+                android:layout_width="161dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:paddingBottom="5dip"
+                android:paddingTop="5dip"
+                android:text="@string/main_notice"
+                android:textSize="8pt" />
+
+        </LinearLayout>
+
+        <!--공지 리스트-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="204dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <ListView
+                android:id="@+id/listNotice"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:background="@color/bg1"
+                android:singleLine="true"
+                android:textColor="@color/content_color" />
+
+        </LinearLayout>
+
+        <!--휴가자 타이틀-->
+        <LinearLayout
+            android:layout_width="172dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/titleLeave"
+                android:layout_width="161dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:paddingBottom="5dip"
+                android:paddingTop="5dip"
+                android:text="@string/main_leave"
+                android:textSize="8pt" />
+
+        </LinearLayout>
+
+        <!--휴가자 리스트-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="105dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/listLeave"
+                android:layout_width="match_parent"
+                android:layout_height="101dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:background="@color/bg1"
+                android:lineSpacingExtra="6dip"
+                android:padding="10dip"
+                android:textColor="@color/list_color"
+                android:textIsSelectable="true"
+                android:textSize="8pt" />
+
+        </LinearLayout>
+
+
+        <!-- 외근자 타이틀-->
+        <LinearLayout
+            android:layout_width="172dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/titleGoOut"
+                android:layout_width="161dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:paddingBottom="5dip"
+                android:paddingTop="5dip"
+                android:text="@string/main_outside"
+                android:textSize="8pt" />
+
+        </LinearLayout>
+
+        <!--외근자 리스트-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="164dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:weightSum="1">
+
+            <ListView
+                android:id="@+id/listGoOut"
+                android:layout_width="190dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1.00"
+                android:background="@color/bg1"
+                android:textColor="@color/content_color" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

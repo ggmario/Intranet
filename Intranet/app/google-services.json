@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "352135596764",
+    "firebase_url": "https://excellent-tide-161406.firebaseio.com",
+    "project_id": "excellent-tide-161406",
+    "storage_bucket": "excellent-tide-161406.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352135596764:android:0f30292542edf4be",
+        "android_client_info": {
+          "package_name": "com.eluo.project.intranet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "352135596764-1dah72bfk8rlnto67358dgjmqldkl2na.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eluo.project.intranet",
+            "certificate_hash": "401c3f6cd1f967c1c503d82661b4aca10b5c45e7"
+          }
+        },
+        {
+          "client_id": "352135596764-t994j4mfj5m98ei3ok79fui8n6pgngo7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0I4IRn6XbUgJBHriKGS4Uiy3UT8I9IXw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "352135596764-t994j4mfj5m98ei3ok79fui8n6pgngo7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

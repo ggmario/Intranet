@@ -1,0 +1,48 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.0"
+    defaultConfig {
+        applicationId "com.eluo.project.intranet"
+        minSdkVersion 21
+        targetSdkVersion 25
+        versionCode 1
+        versionName "0.91"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            // 개발용 KEY
+            resValue "string", "google_maps_key", "AIzaSyBs0nCQjU9eXnPlrswAYqt_hrlduJWfDIU"
+        }
+
+        release {
+            //배포용 KEY
+            resValue "string", "google_maps_key", "AIzaSyBcRg7F2PZdK3DwrNPHM_L2eBKrYaZptFs"
+
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:support-v4:25.1.0'
+    compile 'com.android.support:design:25.1.0'
+    testCompile 'junit:junit:4.12'
+    compile 'com.google.android.gms:play-services-maps:9.6.0' //구글지도
+//    compile 'com.jakewharton:butterknife:7.0.1' //(gradle추가)
+    compile 'com.jakewharton:butterknife:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+
+}
+android {
+    useLibrary 'org.apache.http.legacy'  //아파치 http 모듈 6.0부터 지원 하지 않아 넣었음
+}
+apply plugin: 'com.google.gms.google-services'
