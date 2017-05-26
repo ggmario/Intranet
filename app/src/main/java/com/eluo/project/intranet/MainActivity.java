@@ -13,8 +13,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -57,14 +55,9 @@ import com.eluo.project.intranet.notice.Notice;
 import com.eluo.project.intranet.notice.NoticeDetails;
 import com.eluo.project.intranet.program.ProgramInformation;
 import com.eluo.project.intranet.utils.ThreadPolicy;
+import com.google.firebase.crash.FirebaseCrash;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -100,19 +93,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private long backPressedTime = 0;   //뒤로가기 종료
     private Bitmap bmp = null;
-    private ListView m_ListView;
     private TextView TextView,TextView1;
     private ArrayAdapter<String> m_Adapter;
-    private String psMid = null;
-    private String psMidx = null;
-    private String psMpath = null;
-    private String psMdept = null;
-    private String psMname = null;
-    private String sTelephone = null;
-    private String  sToken = null;
-    private ListView mListView = null;
+    private String psMid, psMidx, psMpath, psMdept, psMname, sTelephone,sToken = null;
+    private ListView m_ListView, mListView, mListViewOutside = null;
     private ListViewAdapter mAdapter = null;
-    private ListView mListViewOutside = null;
     private ListViewAdapterOutside mAdapterOutside = null;
 
     @Override
@@ -133,10 +118,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // 스레드 생성하고 시작
         new ThreadPolicy();
         if (NetworkUtil.isNetworkConnected(this)) {
-            //공지 사항 리스트
-            String result = SendByHttp(" ","2"); // 메시지를 서버에 보냄
-            String[][] parsedData = jsonParserList1(result); // JSON 데이터 파싱
-
             //공지사항 더보기 터치시 공지사항 리스트 이동
             TextView1 = (TextView) findViewById(R.id.view_more);
             TextView1.setOnTouchListener(new View.OnTouchListener() {
@@ -166,14 +147,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mAdapter = new ListViewAdapter(this);
             mListView.setAdapter(mAdapter);
 
-            if (result.lastIndexOf("RESULT") > 0) {
-                mAdapter.addItem("등록된 공지가 없습니다 ","0000-00-00",getResources().getDrawable(R.mipmap.ic_new));
-            } else {
-                String sTitle = "";
-                String sDate = "";
-                String sDateInt = "";
-                if (parsedData.length > 0 && parsedData != null) {
-
+            //공지 사항 리스트
+            String[][] parsedData = jsonParserList("2"); // JSON 데이터 파싱
+            if(parsedData != null && parsedData.length > 0) {
+                if (parsedData[0][0] == "NO DATA") {
+                    mAdapter.addItem("등록된 공지가 없습니다 ","0000-00-00",getResources().getDrawable(R.mipmap.ic_new));
+                }else {
+                    String sTitle, sDate, sDateInt = "";
                     //현재 날짜 구함
                     long now = System.currentTimeMillis();
                     Date date = new Date(now);
@@ -185,8 +165,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     String strCurMonth = CurMonthFormat.format(date);
                     String strCurDay = CurDayFormat.format(date);
 
-                    String sIDateTmp ="";
-                    sIDateTmp = strCurYear+strCurMonth+strCurDay;
+                    String sIDateTmp = "";
+                    sIDateTmp = strCurYear + strCurMonth + strCurDay;
 
                     DateFormat sdFormat = new SimpleDateFormat("yyyyMMdd");
                     Date tempDate = null;
@@ -199,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             sTitle = parsedData[i][1];
                         }
                         sDate = parsedData[i][3].substring(0, 4) + "." + parsedData[i][3].substring(5, 7) + "." + parsedData[i][3].substring(8, 10);
-                        sDateInt =  parsedData[i][3].substring(0, 4) +parsedData[i][3].substring(5, 7) + parsedData[i][3].substring(8, 10);
+                        sDateInt = parsedData[i][3].substring(0, 4) + parsedData[i][3].substring(5, 7) + parsedData[i][3].substring(8, 10);
                         try {
                             tempDate = sdFormat.parse(sDateInt);
                             tempDate2 = sdFormat.parse(sIDateTmp);
@@ -209,48 +189,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         long diff = tempDate2.getTime() - tempDate.getTime();
                         long diffDays = diff / (24 * 60 * 60 * 1000);
 
-                        if((diffDays) <= 7 ){
-                            mAdapter.addItem(sTitle, sDate,getResources().getDrawable(R.mipmap.ic_new));
-                        }else{
-                            mAdapter.addItem(sTitle, sDate,null);
+                        if ((diffDays) <= 7) {
+                            mAdapter.addItem(sTitle, sDate, getResources().getDrawable(R.mipmap.ic_new));
+                        } else {
+                            mAdapter.addItem(sTitle, sDate, null);
                         }
                     }
-                }else{
-                    Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
                 }
+            }else{
+                mAdapter.addItem("등록된 공지가 없습니다 ","0000-00-00",getResources().getDrawable(R.mipmap.ic_new));
+                Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
             }
-            //휴가  리스트
-            result = SendByHttp(" ","3"); // 메시지를 서버에 보냄
-            parsedData = jsonParserList2(result); // JSON 데이터 파싱
 
+            //휴가  리스트
             // Xml에서 추가한 ListView 연결
             TextView = (TextView) findViewById(R.id.listLeave);
             TextView.setMovementMethod(new ScrollingMovementMethod());  //스크롤
 
             // ListView에 어댑터 연결
-            if (result.lastIndexOf("RESULT") > 0) {
-                TextView.setText("등록된 휴가 없습니다");
-            } else {
+            String[][] parsedData2 = jsonParserList("3"); // JSON 데이터 파싱
+            if(parsedData2 != null && parsedData2.length > 0) {
                 String tag = "";
                 int iTag = 2;
-                if(parsedData != null){
-                    if(parsedData.length > 0 ) {
-                        for (int i = 0; i < parsedData.length; i++) {
-                            if (iTag == i) {
-                                tag = "\n";
-                                iTag = iTag + 3;
-                            }
-                            TextView.append(" [" + parsedData[i][1] + parsedData[i][3] + "]" + " " + parsedData[i][2] + "  " + tag);
-                            tag = "";
-                        }
-                    }
+                if (parsedData2[0][0] == "NO DATA") {
+                    TextView.setText("등록된 휴가 없습니다");
                 }else{
-                    Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
+                    for (int i = 0; i < parsedData2.length; i++) {
+                        if (iTag == i) {
+                            tag = "\n";
+                            iTag = iTag + 3;
+                        }
+                        TextView.append(" [" + parsedData2[i][1] + parsedData2[i][3] + "]" + " " + parsedData2[i][2] + "  " + tag);
+                        tag = "";
+                    }
                 }
+            } else {
+                TextView.setText("등록된 휴가 없습니다");
+                Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
             }
             //외근  리스트
-            result = SendByHttp(" ","4"); // 메시지를 서버에 보냄
-            parsedData = jsonParserList1(result); // JSON 데이터 파싱
+//            result = SendByHttp(" ","4"); // 메시지를 서버에 보냄
+//            parsedData = jsonParserList1(result); // JSON 데이터 파싱
 
             // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
             m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.main_item_type02);
@@ -265,16 +244,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mAdapterOutside = new ListViewAdapterOutside(this);
             mListViewOutside.setAdapter(mAdapterOutside);
 
-            if (result.lastIndexOf("RESULT") > 0) {
-                mAdapterOutside.addItemOutside("", "등록된 외근 없습니다","");
-            } else {
-                if (parsedData.length > 0) {
-                    for (int i = 0; i < parsedData.length; i++) {
-                        mAdapterOutside.addItemOutside(parsedData[i][3], parsedData[i][1], parsedData[i][2]);
-                    }
+            String[][] parsedData3 = jsonParserList("4"); // JSON 데이터 파싱
+            if(parsedData3 != null && parsedData3.length > 0) {
+                if (parsedData3[0][0] == "NO DATA") {
+                    mAdapterOutside.addItemOutside("", "등록된 외근 없습니다","");
                 }else{
-                    Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
+                    for (int i = 0; i < parsedData3.length; i++) {
+                        mAdapterOutside.addItemOutside(parsedData3[i][3], parsedData3[i][1], parsedData3[i][2]);
+                    }
                 }
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
+                mAdapterOutside.addItemOutside("", "등록된 외근 없습니다","");
             }
         }else{
             Toast.makeText(MainActivity.this, R.string.network_error_retry,Toast.LENGTH_SHORT).show();
@@ -511,7 +492,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 //    자기 자신의 전화 번호 가기 오기 위한 권한 확인 및 오버레이 설정 창 이동(M 마시멜로우 위한 조치)
     public void onResume() {
-
         if (Build.VERSION.SDK_INT == 25) {
             if (isInMultiWindowMode() == true) {
                 Toast.makeText(this, R.string.T_multi_windowMode, Toast.LENGTH_SHORT).show();
@@ -547,7 +527,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},REQUEST_CODE_LOCATION );
                     }
                 }else {
-                    Log.i("디바이스 전화번호 : ", getPhoneNumber());
+                    Log.i("디바이스 전화번호111 : ", getPhoneNumber());
                     if(getPhoneNumber() != null){
                         if(getPhoneNumber().indexOf("+82") == -1){
                             if(getPhoneNumber().length() == 11 ){
@@ -567,7 +547,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Log.e("err10","length err: "+sTelephone);
                             }
                         }
-                        sTelephone = "010-6248-3985";
+                      //  sTelephone = "010-6248-3985";
                     }else{
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
@@ -585,18 +565,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     new ThreadPolicy();
                     if(sTelephone != null){
                         if (REQUEST_CODE_LOCATION == 2) {
-                            String result = SendByHttp(sTelephone,"1"); // 메시지를 서버에 보냄
-                            if (result != null) {
-                                String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
-                                if(parsedData != null){
-                                    if(parsedData[0][0].length() > 0) {
-                                        if (parsedData[0][0].toString().equals("N")) {
-                                            sMidx = "ERR";
-                                        } else {
-                                            sMidx = parsedData[0][0];
-                                        }
+                            String[][] parsedData = jsonParserList("1"); // JSON 데이터 파싱
+                            if(parsedData != null && parsedData.length > 0) {
+                                if(parsedData[0][0].length() > 0) {
+                                    if (parsedData[0][0].toString().equals("NO DATA")) {
+                                        sMidx = "ERR";
+                                    } else {
+                                        sMidx = parsedData[0][0];
                                     }
-                                }else{
+                                }
+                            }else{
+                                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                                alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish(); //종료
+                                    }
+                                });
+                                alert.setMessage(R.string.network_error_msg);
+                                alert.show();
+                                Log.e("JSON 데이터 파싱 에러", "");
+                            }
+                        }
+                        if(!sMidx.equals("ERR")){
+                            new ThreadPolicy();
+                            loadScore();
+                            Log.d("로그인  되었습니다.",sTelephone);
+                            String[][] parsedData = jsonParserList("1"); // JSON 데이터 파싱
+                            if (parsedData!= null && parsedData.length  > 0) {
+                                if (parsedData[0][0].toString().equals("NO DATA")) {
                                     AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                                     alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
                                         @Override
@@ -604,52 +601,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             finish(); //종료
                                         }
                                     });
-                                    alert.setMessage(R.string.network_error_msg);
+                                    alert.setMessage(R.string.D_account);
                                     alert.show();
-                                    Log.e("JSON 데이터 파싱 에러", "");
+                                } else {
+                                    for (int i = 0; i < parsedData.length; i++) {
+                                        psMidx = parsedData[i][0];
+                                        psMpath = parsedData[i][3] + parsedData[i][4];
+                                        psMid = parsedData[i][1];
+                                        psMdept = parsedData[i][5];
+                                        psMname = parsedData[i][2];
+                                    }
+                                    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                                    navigationView.setNavigationItemSelectedListener(this);
+                                    View nev_header_view = navigationView.getHeaderView(0);
+
+                                    //네비게이터 사진
+                                    ImageView nav_header_image = (ImageView) nev_header_view.findViewById(R.id.imageView);
+
+                                    bmp = getBitmapFromURL(psMpath);
+                                    int width = (int) (getWindowManager().getDefaultDisplay().getWidth() / 6.6); // 가로 사이즈 지정
+                                    int height = (int) (getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
+                                    Bitmap resizedbitmap = Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
+                                    nav_header_image.setImageBitmap(resizedbitmap);
+
+                                    //네비게이터 이름
+                                    TextView nav_header_nm_text = (TextView) nev_header_view.findViewById(R.id.loginName);
+                                    nav_header_nm_text.setText(psMname);
+                                    //네이게이터에 소속
+                                    TextView nav_header_id_text = (TextView) nev_header_view.findViewById(R.id.textView);
+                                    nav_header_id_text.setText(psMdept);
                                 }
-                            } else {
-                                Log.e("JSON 데이터 파싱 실패", "");
-                            }
-                        }
-                        if(!sMidx.equals("ERR")){
-                            new ThreadPolicy();
-                            loadScore();
-                            Log.d("로그인  되었습니다.",sTelephone);
-                            String result = SendByHttp(sTelephone,"1"); // 메시지를 서버에 보냄
-                            String[][] parsedData = jsonParserList(result); // JSON 데이터 파싱
-
-                            if (parsedData!= null && parsedData.length  > 0) {
-                                for (int i = 0; i < parsedData.length; i++) {
-                                    psMidx =parsedData[i][0];
-                                    psMpath = parsedData[i][3]+parsedData[i][4];
-                                    psMid = parsedData[i][1];
-                                    psMdept = parsedData[i][5];
-                                    psMname = parsedData[i][2];
-                                }
-                                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-                                navigationView.setNavigationItemSelectedListener(this);
-                                View nev_header_view = navigationView.getHeaderView(0);
-
-                                //네비게이터 사진
-                                ImageView nav_header_image = (ImageView) nev_header_view.findViewById(R.id.imageView);
-
-                                bmp = getBitmapFromURL(psMpath);
-                                int width=(int)(getWindowManager().getDefaultDisplay().getWidth()/6.6); // 가로 사이즈 지정
-                                int height=(int)(getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
-                                Bitmap resizedbitmap=Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
-                                nav_header_image.setImageBitmap(resizedbitmap);
-
-                                //네비게이터 이름
-                                TextView nav_header_nm_text = (TextView)nev_header_view.findViewById(R.id.loginName);
-                                nav_header_nm_text.setText(psMname);
-                                //네이게이터에 소속
-                                TextView nav_header_id_text = (TextView)nev_header_view.findViewById(R.id.textView);
-                                nav_header_id_text.setText(psMdept);
+                            }else{
+                                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                                alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish(); //종료
+                                    }
+                                });
+                                alert.setMessage(R.string.network_error_msg);
+                                alert.show();
                             }
                         }else{
                             Log.v("전화번호가 일치 하지 않습니다.", "");
-                            Log.i("디바이스 전화번호 : ", getPhoneNumber());
+                            Log.i("디바이스 전화번호222 : ", getPhoneNumber());
                             AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                             alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
                                 @Override
@@ -667,195 +662,96 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
-    /**
-     * 서버에 데이터를 보내는 메소드
-     * @param msg
-     * @return
-     */
-    private String SendByHttp(String msg, String type) {
-        if(msg == null)
-            msg = "";
-        String URL ="";
-        if(type.equals("1")){
-            URL ="http://www.eluocnc.com/GW_V3/app/loginProc.asp";
-        }else{
-            URL ="http://www.eluocnc.com/GW_V3/app/bbsList.asp";
-        }
-
-        DefaultHttpClient client = new DefaultHttpClient();
-        try {
-			/* 체크할 id와 pwd값 서버로 전송 */
-            String sRear = "";
+    //json으로 서버에서 메인에 보여줄 리스트 가져옴
+    private String[][] jsonParserList(String type) {
+        URL url = null;
+        HttpURLConnection urlConnection = null;
+        try{
+            //웹서버 URL 지정
             if(type.equals("1")){
-                if(sToken != null){
-                    sRear = "?hp="+msg+"&uugb=2&uuid="+sToken;
-                    sToken =null;
-                }else{
-                    sRear = "?hp="+msg;
-                }
+                url= new URL("http://www.eluocnc.com/GW_V3/app/loginProc.asp?hp="+sTelephone+"&uugb=2&uuid="+sToken);  // 1번
             }else{
                 if(type.equals("2")){
-                    sRear = "?gb=not&page=1&pageUnit=5";
+                    url= new URL("http://www.eluocnc.com/GW_V3/app/bbsList.asp?gb=not&page=1&pageUnit=5");
                 }else if(type.equals("3")){
-                    sRear ="?gb=vac&page=1&pageUnit=5";
-                }else if(type.equals("4")){
-                    sRear ="?gb=out&page=1&pageUnit=5";
+                    url= new URL("http://www.eluocnc.com/GW_V3/app/bbsList.asp?gb=vac&page=1&pageUnit=5");
+                }else if(type.equals("4")) {
+                    url = new URL("http://www.eluocnc.com/GW_V3/app/bbsList.asp?gb=out&page=1&pageUnit=5");
                 }else{
-                }
-            }
-            HttpPost post = new HttpPost(URL+sRear);
-			/* 지연시간 최대 3초 */
-            HttpParams params = client.getParams();
-            HttpConnectionParams.setConnectionTimeout(params, 3000);
-            HttpConnectionParams.setSoTimeout(params, 3000);
 
-			/* 데이터 보낸 뒤 서버에서 데이터를 받아오는 과정 */
-            HttpResponse response = null;
-            try{
-                ConnectivityManager conManager =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo netInfo = conManager.getActiveNetworkInfo();
-                if(netInfo != null && netInfo.isConnected()){
-                    response = client.execute(post);
                 }
-            }catch (Exception e){
-                e.printStackTrace();
             }
-            BufferedReader bufreader = new BufferedReader( new InputStreamReader(response.getEntity().getContent(),"utf-8"));
+            HttpURLConnection urlc =(HttpURLConnection)url.openConnection();
+            urlc.setConnectTimeout(3000);
+            urlc.connect();
+        }catch (Exception e){
+            FirebaseCrash.report(new Exception("메인  리스트 : 서버 연결 실패"));
+            return null;
+        }
+
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),"UTF-8"));
+            Log.d("line:",bufreader.toString());
             String line = null;
-            String result = "";
-            while ((line = bufreader.readLine()) != null) {
-                result += line;
+            String page = "";
+            while((line = bufreader.readLine())!=null){
+                Log.d("line:",line);
+                page+=line;
             }
-            return result;
+            JSONArray jArr = null;
+            String[][] parseredData = null;
+            JSONObject json = new JSONObject(page);
+            if(type.equals("1")) {
+                jArr = json.getJSONArray("member");
+                parseredData = new String[jArr.length()][6];
+            }else{
+                jArr = json.getJSONArray("bbs");
+                parseredData = new String[jArr.length()][4];
+            }
+
+            if(type.equals("1")){
+                for (int i=0; i<jArr.length(); i++){
+                    json = jArr.getJSONObject(i);
+                    parseredData[i][0] = json.getString("MIDX");
+                    parseredData[i][1] = json.getString("USERID");
+                    parseredData[i][2] = json.getString("USERNM");
+                    parseredData[i][3] = json.getString("USERPATH");
+                    parseredData[i][4] = json.getString("USERIMG");
+                    parseredData[i][5] = json.getString("DEPTNM");
+                }
+                return parseredData;
+            }else{
+                if(type.equals("2")||type.equals("4")){
+                    for (int i=0; i<jArr.length(); i++){
+                        json = jArr.getJSONObject(i);
+                        parseredData[i][0] = json.getString("IDX");
+                        parseredData[i][1] = json.getString("SUBJECT");
+                        parseredData[i][2] = json.getString("REGNM");
+                        parseredData[i][3] = json.getString("REGDT");
+                    }
+                    return parseredData;
+                }else{
+                    for (int i=0; i<jArr.length(); i++){
+                        json = jArr.getJSONObject(i);
+                        parseredData[i][0] = json.getString("IDX");
+                        parseredData[i][1] = json.getString("SUBJECT");
+                        parseredData[i][2] = json.getString("REGNM");
+                        parseredData[i][3] = json.getString("AP");
+                    }
+                    return parseredData;
+                }
+            }
+
         } catch (Exception e) {
-            e.printStackTrace();
-            client.getConnectionManager().shutdown();	// 연결 지연 종료
-            Toast.makeText(MainActivity.this, R.string.network_error_retry,Toast.LENGTH_SHORT).show();
-            return "";
-        }
-    }
-
-    /**
-     * 받은 JSON 객체를 파싱하는 메소드
-     * @param
-     * @return
-     */
-    private String[][] jsonParserList(String pRecvServerPage) {
-        Log.i("서버에서 받은 전체 내용 : ", pRecvServerPage);
-        try {
-            JSONObject json = new JSONObject(pRecvServerPage);
-            JSONArray jArr = json.getJSONArray("member");
-
-            // 받아온 pRecvServerPage를 분석하는 부분
-            String jsonName[];
-            if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
-                jsonName = new String[]{"RESULT"};
-            }else {
-                jsonName = new String[]{"MIDX", "USERID", "USERNM", "USERPATH", "USERIMG", "DEPTNM" };
-            }
-            String[][] parseredData = new String[jArr.length()][jsonName.length];
-            for (int i = 0; i < jArr.length(); i++) {
-                json = jArr.getJSONObject(i);
-                for(int j = 0; j < jsonName.length; j++) {
-                    try{
-                        if(parseredData[i][j] == null ){
-                            parseredData[i][j] = json.getString(jsonName[j]);
-                            Log.i("JSON을 분석한 데이터 " + i + " : ", parseredData[i][j] );
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-            // 분해 된 데이터를 확인하기 위한 부분
-            for(int i=0; i<parseredData.length; i++){
-                String sText = parseredData[i][0];
-            }
+            String[][] parseredData = new String[1][1];
+            parseredData[0][0] = "NO DATA";
+            Log.i("RESULT","데이터가 없음");
             return parseredData;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
+        }finally{
+            urlConnection.disconnect();
         }
     }
-
-    /**
-     * 받은 JSON 객체를 파싱하는 메소드
-     * 휴가자 리스트
-     * @param
-     * @return
-     */
-    private String[][] jsonParserList1(String pRecvServerPage){
-        try {
-            JSONObject json = new JSONObject(pRecvServerPage);
-            JSONArray jArr = json.getJSONArray("bbs");
-
-            // 받아온 pRecvServerPage를 분석하는 부분
-            String jsonName[];
-            if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
-                jsonName = new String[]{"RESULT"};
-            }else {
-                jsonName = new String[]{"IDX", "SUBJECT", "REGNM", "REGDT" };
-            }
-            String[][] parseredData = new String[jArr.length()][jsonName.length];
-            for (int i = 0; i < jArr.length(); i++) {
-                json = jArr.getJSONObject(i);
-                for(int j = 0; j < jsonName.length; j++) {
-                    try{
-                        if(parseredData[i][j] == null ){
-                            parseredData[i][j] = json.getString(jsonName[j]);
-                            Log.i("JSON을 분석한 데이터 " + i + " : ", parseredData[i][j] );
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-            return parseredData;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-    /**
-     * 받은 JSON 객체를 파싱하는 메소드
-     * 공지 리스트, 외근 리스트
-     * @param
-     * @return
-     */
-    private String[][] jsonParserList2(String pRecvServerPage){
-        try {
-            JSONObject json = new JSONObject(pRecvServerPage);
-            JSONArray jArr = json.getJSONArray("bbs");
-
-            // 받아온 pRecvServerPage를 분석하는 부분
-            String jsonName[];
-            if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
-                jsonName = new String[]{"RESULT"};
-            }else {
-                jsonName = new String[]{"IDX", "SUBJECT", "REGNM", "AP" };
-            }
-            String[][] parseredData = new String[jArr.length()][jsonName.length];
-            for (int i = 0; i < jArr.length(); i++) {
-                json = jArr.getJSONObject(i);
-                for(int j = 0; j < jsonName.length; j++) {
-                    try{
-                        if(parseredData[i][j] == null ){
-                            parseredData[i][j] = json.getString(jsonName[j]);
-                            Log.i("JSON을 분석한 데이터 " + i + " : ", parseredData[i][j] );
-                            //sIng = parseredData[i][3]+parseredData[i][4];
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-            return parseredData;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     // 아이템 터치 이벤트
     private AdapterView.OnItemClickListener onClickListItem = new AdapterView.OnItemClickListener() {
         @Override
@@ -865,28 +761,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (NetworkUtil.isNetworkConnected(MainActivity.this)) {
             String sMidx = "";
             int iChoice = arg2;
-            String result = SendByHttp(" ","2"); // 메시지를 서버에 보냄
-            if (result != null) {
-                String[][] parsedData = jsonParserList1(result); // JSON 데이터 파싱
-                if(parsedData.length > 0){
+            String[][] parsedData = jsonParserList("2"); // JSON 데이터 파싱
+            if(parsedData != null && parsedData.length > 0) {
+                if (parsedData[0][0] != "NO DATA") {
                     for (int i = 0; i < parsedData.length; i++) {
                         sMidx = parsedData[iChoice][0];
                         Log.i("JSON을 분석한 데이터 " + i + " : ", parsedData[i][0] );
                     }
-                }else {
-                    Toast.makeText(MainActivity.this, R.string.network_error_retry,Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, NoticeDetails.class);//리스트에서 상세 화면으로
+                    intent.putExtra("_id",sMidx); //조회 키 값을 넘겨준다
+                    intent.putExtra("idx",psMidx); //조회 키 값을 넘겨준다
+                    intent.putExtra("id",psMid);
+                    intent.putExtra("name",psMname);
+                    intent.putExtra("path",psMpath);
+                    intent.putExtra("dept",psMdept);
+                    intent.putExtra("sTelephone",sTelephone);
+                    intent.putExtra("sPast","M");
+                    startActivityForResult(intent, 1); // Sub_Activity 호출
+                    overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
+                    finish();
+                }else{
+                    Toast.makeText(MainActivity.this, R.string.T_no_data,Toast.LENGTH_SHORT).show();
                 }
-                Intent intent = new Intent(MainActivity.this, NoticeDetails.class);//리스트에서 상세 화면으로
-                intent.putExtra("_id",sMidx); //조회 키 값을 넘겨준다
-                intent.putExtra("idx",psMidx); //조회 키 값을 넘겨준다
-                intent.putExtra("id",psMid);
-                intent.putExtra("name",psMname);
-                intent.putExtra("path",psMpath);
-                intent.putExtra("dept",psMdept);
-                intent.putExtra("sTelephone",sTelephone);
-                startActivityForResult(intent, 1); // Sub_Activity 호출
-                overridePendingTransition(R.anim.anim_slide_in_left, R.anim.anim_slide_out_right);
-                finish();
+            }else{
+                Toast.makeText(MainActivity.this, R.string.network_error_retry,Toast.LENGTH_SHORT).show();
             }
         }else{
             Toast.makeText(MainActivity.this, R.string.network_error_chk,Toast.LENGTH_SHORT).show();
