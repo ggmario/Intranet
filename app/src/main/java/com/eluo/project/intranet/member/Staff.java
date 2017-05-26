@@ -215,23 +215,21 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                             mAdapter = new Staff.ListViewAdapter(Staff.this);
                             m_ListView.setAdapter(mAdapter);
 
-                            if (parsedData.length > 0) {
-                                if (parsedData[0][0] == "NO DATA") {
-                                    mAdapter.addItem(null, " ", "일치하는 정보가 없습니다", "");
-                                } else {
-                                    psViewsConditions = "Y";
-                                    for (int i = 0; i < parsedData.length; i++) {
-                                        bmp = getBitmapFromURL(parsedData[i][8] + parsedData[i][9]);
-                                        int width = (int) (getWindowManager().getDefaultDisplay().getWidth() / 6.6); // 가로 사이즈 지정
-                                        int height = (int) (getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
-                                        Bitmap resizedbitmap = Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
-                                        mAdapter.addItem(resizedbitmap, parsedData[i][3] + "  " + parsedData[i][7], parsedData[i][6], parsedData[i][4]);
-                                    }
-                                }
+                            if (parsedData[0][0] == "NO DATA") {
+                                mAdapter.addItem(null, " ", "일치하는 정보가 없습니다", "");
                             } else {
-                                Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
-                                psViewsConditions = "N";
+                                psViewsConditions = "Y";
+                                for (int i = 0; i < parsedData.length; i++) {
+                                    bmp = getBitmapFromURL(parsedData[i][8] + parsedData[i][9]);
+                                    int width = (int) (getWindowManager().getDefaultDisplay().getWidth() / 6.6); // 가로 사이즈 지정
+                                    int height = (int) (getWindowManager().getDefaultDisplay().getHeight() * 0.11); // 세로 사이즈 지정
+                                    Bitmap resizedbitmap = Bitmap.createScaledBitmap(bmp, width, height, true); // 이미지 사이즈 조정
+                                    mAdapter.addItem(resizedbitmap, parsedData[i][3] + "  " + parsedData[i][7], parsedData[i][6], parsedData[i][4]);
+                                }
                             }
+                        }else{
+                            Toast.makeText(Staff.this, R.string.network_error_chk, Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
+                            mAdapter.addItem(null, " ", "일치하는 정보가 없습니다", "");
                         }
                     } else {
                         Log.i("연결 안 됨" , "연결이 다시 한번 확인해주세요");
