@@ -66,6 +66,7 @@
     <string name="T_meeting_8floor">8th floor conference room reservation status.</string>
     <string name="T_meeting_not">There is no reserved meeting room.</string>
     <string name="T_search_complete">Your search is complete.</string>
+    <string name="T_no_data">No data found </string>
 
     <!-- 네트워크오류 문구 -->
     <string name="network_error">Network error</string>

@@ -66,6 +66,7 @@
     <string name="T_meeting_8floor">8층 회의실 예약 현황 입니다</string>
     <string name="T_meeting_not">예약된 회의실이 없습니다</string>
     <string name="T_search_complete">검색이 완료 되었습니다</string>
+    <string name="T_no_data">데이터가 없습니다.</string>
 
     <!-- 네트워크오류 문구 -->
     <string name="network_error">네트워크 오류</string>
