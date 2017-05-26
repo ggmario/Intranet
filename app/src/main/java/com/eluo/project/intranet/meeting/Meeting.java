@@ -158,47 +158,36 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                     ArrayAdapter adapter8 = (ArrayAdapter) m_ListView.getAdapter();
                     adapter8.notifyDataSetChanged();
                     m_ListView.setAdapter(m_Adapter);
-                    int icount = 0;
-                    for (int i = 0; i < parsedData8.length; i++) {
-                        if (!parsedData8[i][2].equals("")) {
-                            icount++;
-                            Resources res = getResources();
-                            String[] arrString = res.getStringArray(R.array.meeting_time);
-                            int iCk = 0;
-                            for (String s : arrString) {
-                                for (int is = 0; is < parsedData8.length; is++) {
-                                    if (s.equals(parsedData8[is][0])) {
-                                        if (!parsedData8[is][1].equals("")) {
-                                            m_Adapter.add(s + "\n" + parsedData8[is][2]);
-                                            iCk = 1;
-                                        }
-                                    }
+                    Resources res = getResources();
+                    String[] arrString = res.getStringArray(R.array.meeting_time);
+                    int iCk = 0;
+                    for (String s : arrString) {
+                        for (int is = 0; is < parsedData8.length; is++) {
+                            if (s.equals(parsedData8[is][0])) {
+                                if (!parsedData8[is][2].equals("")) {
+                                    m_Adapter.add(s + "\n" + parsedData8[is][2]);
+                                    iCk = 1;
                                 }
-                                if (iCk == 0) {
-                                    String sTmp = s.substring(0, 2);
-                                    String sTmp1 = s.substring(3, 5);
-                                    int iTime = Integer.parseInt(sTmp);
-                                    int iMinute = Integer.parseInt(sTmp1);
-                                    if (iToTime > iTime) {
-                                        m_Adapter.add(s + "\n 예약 불가");
-                                    } else if (iToTime == iTime) {
-                                        if (iToMinute <= iMinute) {
-                                            m_Adapter.add(s + "\n 예약 가능");
-                                        } else {
-                                            m_Adapter.add(s + "\n 예약 불가");
-                                        }
-                                    } else {
-                                        m_Adapter.add(s + "\n 예약 가능");
-                                    }
-                                }
-                                iCk = 0;
-                            }
-                        } else {
-                            if (icount == 0) {
-                                m_Adapter.add("예약된 회의실이 없습니다.");
-                                icount++;
                             }
                         }
+                        if (iCk == 0) {
+                            String sTmp = s.substring(0, 2);
+                            String sTmp1 = s.substring(3, 5);
+                            int iTime = Integer.parseInt(sTmp);
+                            int iMinute = Integer.parseInt(sTmp1);
+                            if (iToTime > iTime) {
+                                m_Adapter.add(s + "\n 예약 불가");
+                            } else if (iToTime == iTime) {
+                                if (iToMinute <= iMinute) {
+                                    m_Adapter.add(s + "\n 예약 가능");
+                                } else {
+                                    m_Adapter.add(s + "\n 예약 불가");
+                                }
+                            } else {
+                                m_Adapter.add(s + "\n 예약 가능");
+                            }
+                        }
+                        iCk = 0;
                     }
                     return true;
                 }else{
