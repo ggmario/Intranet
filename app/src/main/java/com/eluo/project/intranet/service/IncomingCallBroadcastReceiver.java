@@ -1,3 +1,15 @@
+/*
+ * Project	    : Eluo Intranet
+ * Program    : 표기 하지 않음
+ * Description	: 엘루오 씨엔시 리시버(전화 수신 리시버)
+ * Environment	:
+ * Notes	    : Developed by
+ *
+ * @(#) IncomingCallBroadcastReceiver.java
+ * @since 2017-03-14
+ * History	    : [DATE][Programmer][Description]
+ * 		        : [2017-03-14][ggmario@eluocnc.com][CREATE: STATEMENT]
+ */
 package com.eluo.project.intranet.service;
 
 import android.content.BroadcastReceiver;
@@ -53,7 +65,5 @@ public class IncomingCallBroadcastReceiver extends BroadcastReceiver {
             context.startService(serviceIntent);
         }
     }
-
-
 }
 
