@@ -673,10 +673,8 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
             String result = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS).get(0);
             // 이 부분에서 result 를 가지고 검색을 하거나, 명령을 실행 하면 됨
-//            Toast toast = Toast.makeText(Staff.this, result,Toast.LENGTH_SHORT);
             etMessage.setText(result);
             btnSend.callOnClick();
-//            toast.show();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
