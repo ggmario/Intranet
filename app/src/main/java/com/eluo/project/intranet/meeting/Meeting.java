@@ -146,7 +146,7 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                     }
                 }else{
                     Log.e("jsonParserList 7:" , "null");
-                    Toast.makeText(Meeting.this, R.string.network_error_chk, Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
+                    Toast.makeText(Meeting.this, R.string.T_no_data, Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
                 }
                 return true;
             case R.id.navigation_dashboard:
@@ -192,7 +192,7 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                     return true;
                 }else{
                     Log.e("jsonParserList 8:" , "null");
-                    Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.T_no_data, Toast.LENGTH_SHORT).show();
                 }
 //                case R.id.navigation_notifications:
 //                    Toast.makeText(Meeting.this, "준비 중...", Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
@@ -298,7 +298,6 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                     Snackbar.make(view, "["+sFloor+"층 회의실]  "+item,  Snackbar.LENGTH_LONG).setAction("닫기", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-//                            Toast.makeText(Meeting.this, "7층 회의실 예약", Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
                         }
                     }).show();
                 }
@@ -346,10 +345,9 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                         Log.e("jsonParserList 7:" , "null");
                         Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
                     }
-//                }
             }else{
-                Log.i("연결 안 됨" , "연결이 다시 한번 확인해주세요");
-                Toast.makeText(Meeting.this, R.string.network_error_chk, Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
+                Log.i("연결 안 됨" , "DATA가 없습니다");
+                Toast.makeText(Meeting.this, R.string.T_no_data, Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
             }
         }else {
             Log.i("연결 안 됨" , "연결이 다시 한번 확인해주세요");
