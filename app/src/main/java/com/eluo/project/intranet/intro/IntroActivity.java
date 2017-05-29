@@ -16,7 +16,6 @@ import com.eluo.project.intranet.MainActivity;
 import com.eluo.project.intranet.R;
 import com.eluo.project.intranet.network.NetworkUtil;
 import com.eluo.project.intranet.utils.ThreadPolicy;
-import com.google.firebase.crash.FirebaseCrash;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -202,7 +201,8 @@ public class IntroActivity extends Activity {
             }
             return parseredData;
         } catch (Exception e) {
-            FirebaseCrash.report(new Exception("앱 버전 정보 가져오기 실패"));
+            Log.e("err_v","앱버전 정보 가져오기 실패");
+            //FirebaseCrash.report(new Exception("앱 버전 정보 가져오기 실패"));
             return null;
         }finally{
             urlConnection.disconnect();      //URL 연결 해제
