@@ -138,10 +138,10 @@ public class CallingService extends Service {
             if (!TextUtils.isEmpty(call_number)) {
                 System.out.println("-------------------------->>"+sOverlay);
 
-                if(!call_nm.equals("") && sOverlay.equals("true")){
+                if(!call_nm.equals("") && (sOverlay.equals("true") || sOverlay.equals(""))){
                     tv_call_number.setText(call_nm+call_job+"\n"+call_part);
                 }else{
-                    if(!sOverlay.equals("true") ||  call_nm.equals("")) {
+                    if(sOverlay.equals("false") ||  call_nm.equals("")) {
                         call_tb = "Y";
                         removePopup();
                     }
@@ -164,8 +164,7 @@ public class CallingService extends Service {
         new ThreadPolicy();
         if(!call_number.equals("")) {
             loadScore();
-            if(sOverlay.equals("true")){
-
+            if(sOverlay.equals("true") || sOverlay.equals("")){
                 String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
                 if(parsedData != null && parsedData.length > 0) {
                     call_nm = "";
@@ -206,6 +205,7 @@ public class CallingService extends Service {
         HttpURLConnection urlConnection = null;
         try{
             //웹서버 URL 지정
+            Log.i("call_number:",call_number);
             url= new URL("http://www.eluocnc.com/GW_V3/app/memberList.asp?searchValue="+call_number+"&pageUnit=100");
             HttpURLConnection urlc =(HttpURLConnection)url.openConnection();
             urlc.setConnectTimeout(3000);
@@ -249,96 +249,6 @@ public class CallingService extends Service {
             urlConnection.disconnect();
         }
     }
-//
-//    /**
-//     * 서버에 데이터를 보내는 메소드
-//     * @param msg
-//     * @return
-//     */
-//    private String SendByHttp(String msg) {
-//        if(msg == null)
-//            msg = "";
-//        String URL ="http://www.eluocnc.com/GW_V3/app/memberList.asp";
-//
-//        DefaultHttpClient client = new DefaultHttpClient();
-//        try {
-//			/* 체크할 id와 pwd값 서버로 전송 */
-//            HttpPost post = new HttpPost(URL+"?searchValue="+msg+"&pageUnit=100");
-//
-//			/* 지연시간 최대 3초 */
-//            HttpParams params = client.getParams();
-//            HttpConnectionParams.setConnectionTimeout(params, 3000);
-//            HttpConnectionParams.setSoTimeout(params, 3000);
-//
-//			/* 데이터 보낸 뒤 서버에서 데이터를 받아오는 과정 */
-//            HttpResponse response = null;
-//            try{
-//                ConnectivityManager conManager =(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-//                NetworkInfo netInfo = conManager.getActiveNetworkInfo();
-//
-//                if(netInfo != null && netInfo.isConnected()){
-//                    response = client.execute(post);
-//                }
-//            }catch (Exception e){
-//                e.printStackTrace();
-//            }
-//            BufferedReader bufreader = new BufferedReader( new InputStreamReader(response.getEntity().getContent(),"utf-8"));
-//            String line = null;
-//            String result = "";
-//            while ((line = bufreader.readLine()) != null) {
-//                result += line;
-//            }
-//            return result;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            client.getConnectionManager().shutdown();	// 연결 지연 종료
-//            FirebaseCrash.report(new Exception("서버데이터 보내기 실패"));
-//            return "";
-//        }
-//    }
-//
-//    /**
-//     * 받은 JSON 객체를 파싱하는 메소드
-//     * @param
-//     * @return
-//     */
-//    private String[][] jsonParserList(String pRecvServerPage) {
-//        Log.i("서버에서 받은 전체 내용 : ", pRecvServerPage);
-//        try {
-//            JSONObject json = new JSONObject(pRecvServerPage);
-//            JSONArray jArr = json.getJSONArray("member");
-//
-//            // 받아온 pRecvServerPage를 분석하는 부분
-//            String jsonName[];
-//            if(pRecvServerPage.lastIndexOf("RESULT") > 0) {
-//                String[] jsonName1 = {"RESULT"};
-//                jsonName = jsonName1;
-//            }else{
-//                String[] jsonName1 = {"MIDX", "GUBUN", "USERID", "USERNM", "MOBILE", "EMAIL", "PART","JOB"};
-//                jsonName = jsonName1;
-//            }
-//
-//            String[][] parseredData = new String[jArr.length()][jsonName.length];
-//            for (int i = 0; i < jArr.length(); i++) {
-//                json = jArr.getJSONObject(i);
-//                for(int j = 0; j < jsonName.length; j++) {
-//                    try{
-//                        if(parseredData[i][j] == null ){
-//                            parseredData[i][j] = json.getString(jsonName[j]);
-//                            Log.i("JSON을 분석한 데이터!!!!!!!!!!!! " + i + " : ", parseredData[i][j] );
-//                        }
-//                    }catch (Exception e){
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//            return parseredData;
-//        } catch (JSONException e) {
-//            FirebaseCrash.report(new Exception("정보 조회 실패"));
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
 
     /* 프리퍼런스 가져오기*/
     private void loadScore() {
