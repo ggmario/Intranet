@@ -2,7 +2,7 @@
 <resources>
     <string name="prog_info">
         Service name:EluoC&#38;C Intranet\n\n
-        version: Release Version 1.7.1\n\n
+        version: Release Version 1.7.3\n\n
         Function:\n
         - Top 5 list of notices on main screen\n
         - Show holiday on Main Screen\n
@@ -26,6 +26,14 @@
         \n
         \n
         history\n
+
+        Version:  Release Version 1.7.3\n
+        1. Other error correction
+        \n\n
+
+        Version:  Release Version 1.7.2\n
+        1. Correct employee information notation error when employees receive calls
+        \n\n
 
         Version:  Release Version 1.7.1\n
         1. Change the query after entering more than 2 characters\n
