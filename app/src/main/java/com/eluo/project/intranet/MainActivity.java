@@ -104,8 +104,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-    requestWindowFeature(Window.FEATURE_NO_TITLE);  // 화면위 타이틀 없애기
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);  // 전체화면 만들기
+        requestWindowFeature(Window.FEATURE_NO_TITLE);  // 화면위 타이틀 없애기
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);  // 전체화면 만들기
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -228,9 +228,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
             }
             //외근  리스트
-//            result = SendByHttp(" ","4"); // 메시지를 서버에 보냄
-//            parsedData = jsonParserList1(result); // JSON 데이터 파싱
-
             // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
             m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.main_item_type02);
 
@@ -547,7 +544,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Log.e("err10","length err: "+sTelephone);
                             }
                         }
-
+//                        sTelephone = "010-6248-3985";
                     }else{
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
