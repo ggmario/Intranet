@@ -2,6 +2,7 @@ package com.eluo.project.intranet.intro;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Window;
 
@@ -69,44 +71,61 @@ public class IntroActivity extends Activity {
         if (NetworkUtil.isNetworkConnected(this)) {
             String sVersionName = "1.0.0";
             try {
-                sVersionName =  getPackageManager().getPackageInfo(getPackageName(),0).versionName;
-                new ThreadPolicy();
-                String sVer = "";
-                String[][] parsedData = jsonParserList();
-
-                if(parsedData != null && parsedData.length > 0) {
-                    sVer = parsedData[0][0];
-                } else {
-                    sVer = sVersionName;
-                    Log.i("버전 체크:", "앱 버전 체크 실패 하였습니다");
-                    //FirebaseCrash.report(new Exception("앱 버전 체크 실패 하였습니다"));
+                TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                if (tm.getSimState() == TelephonyManager.SIM_STATE_ABSENT){
+                    // 유심이 없는 경우
+                    Log.e("USIM :", "통신사가 없습니다");
+                    AlertDialog.Builder alert = new AlertDialog.Builder(IntroActivity.this);
+                    alert.setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    });
+                    alert.setMessage(R.string.D_aspiration_chip);
+                    alert.show();
                 }
-                if(!sVersionName.equals(sVer)){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    // 여기서 부터는 알림창의 속성 설정
-                    builder.setTitle(R.string.D_TitleName)
-                            .setMessage(R.string.D_Update)
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener(){
-                                // 확인 버튼 클릭시 설정
-                                public void onClick(DialogInterface dialog, int whichButton){
-                                    finish();
-                                    callBrowser("http://fs.eluocnc.com:8282/download.jsp");
-                                }
-                            })
-                            .setNegativeButton(R.string.D_Canceled, new DialogInterface.OnClickListener(){
-                                // 취소 버튼 클릭시 설정
-                                public void onClick(DialogInterface dialog, int whichButton){
-                                    finish();
-                                }
-                            });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                }else{
-                    requestWindowFeature(Window.FEATURE_NO_TITLE); //인트로화면이므로 타이틀바를 없앤다
-                    setContentView(R.layout.activity_intro);
-                    h = new Handler(); //딜래이를 주기 위해 핸들러 생성
-                    h.postDelayed(mrun, 2000); // 딜레이 ( 런어블 객체는 mrun, 시간 2초)
+                else {
+                    // 유심이 존재하는 경우
+                    sVersionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+                    new ThreadPolicy();
+                    String sVer = "";
+                    String[][] parsedData = jsonParserList();
+
+                    if (parsedData != null && parsedData.length > 0) {
+                        sVer = parsedData[0][0];
+                    } else {
+                        sVer = sVersionName;
+                        Log.i("버전 체크:", "앱 버전 체크 실패 하였습니다");
+                        //FirebaseCrash.report(new Exception("앱 버전 체크 실패 하였습니다"));
+                    }
+                    if (!sVersionName.equals(sVer)) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        // 여기서 부터는 알림창의 속성 설정
+                        builder.setTitle(R.string.D_TitleName)
+                                .setMessage(R.string.D_Update)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.D_Approval, new DialogInterface.OnClickListener() {
+                                    // 확인 버튼 클릭시 설정
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        finish();
+                                        callBrowser("http://fs.eluocnc.com:8282/download.jsp");
+                                    }
+                                })
+                                .setNegativeButton(R.string.D_Canceled, new DialogInterface.OnClickListener() {
+                                    // 취소 버튼 클릭시 설정
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        finish();
+                                    }
+                                });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    } else {
+                        requestWindowFeature(Window.FEATURE_NO_TITLE); //인트로화면이므로 타이틀바를 없앤다
+                        setContentView(R.layout.activity_intro);
+                        h = new Handler(); //딜래이를 주기 위해 핸들러 생성
+                        h.postDelayed(mrun, 2000); // 딜레이 ( 런어블 객체는 mrun, 시간 2초)
+                    }
                 }
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
