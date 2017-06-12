@@ -164,7 +164,7 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                     for (String s : arrString) {
                         for (int is = 0; is < parsedData8.length; is++) {
                             if (s.equals(parsedData8[is][0])) {
-                                if (!parsedData8[is][2].equals("")) {
+                                if (!parsedData8[is][2].equals("")){
                                     m_Adapter.add(s + "\n" + parsedData8[is][2]);
                                     iCk = 1;
                                 }
@@ -307,39 +307,37 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
             if(parsedData != null && parsedData.length > 0) {
                 // ListView 아이템 터치 시 이벤트
                 m_ListView.setOnItemLongClickListener(onClickListItem1);
-                    if(parsedData != null){
-                        if (parsedData.length > 0) {
-                            Resources res = getResources();
-                            String[] arrString = res.getStringArray(R.array.meeting_time);
-                            int iCk= 0;
-                            for(String s:arrString) {
-                                for (int i = 0; i < parsedData.length; i++) {
-                                    if (s.equals(parsedData[i][0])) {
-                                        if (!parsedData[i][1].equals("")) {
-                                            m_Adapter.add(s + "\n" + parsedData[i][1]);
-                                            iCk = 1;
-                                        }
+                    if (parsedData.length > 0 || parsedData != null) {
+                        Resources res = getResources();
+                        String[] arrString = res.getStringArray(R.array.meeting_time);
+                        int iCk= 0;
+                        for(String s:arrString) {
+                            for (int i = 0; i < parsedData.length; i++) {
+                                if (s.equals(parsedData[i][0])) {
+                                    if (!parsedData[i][1].equals("")) {
+                                        m_Adapter.add(s + "\n" + parsedData[i][1]);
+                                        iCk = 1;
                                     }
                                 }
-                                if(iCk == 0){
-                                    String sTmp = s.substring(0,2);
-                                    String sTmp1 = s.substring(3,5);
-                                    int iTime = Integer.parseInt(sTmp);
-                                    int iMinute = Integer.parseInt(sTmp1);
-                                    if(iToTime > iTime) {
-                                        m_Adapter.add(s+"\n 예약 불가");
-                                    }else if(iToTime == iTime){
-                                        if(iToMinute <= iMinute){
-                                            m_Adapter.add(s+"\n 예약 가능");
-                                        }else{
-                                            m_Adapter.add(s+"\n 예약 불가");
-                                        }
-                                    }else{
-                                        m_Adapter.add(s+"\n 예약 가능");
-                                    }
-                                }
-                                iCk = 0;
                             }
+                            if(iCk == 0){
+                                String sTmp = s.substring(0,2);
+                                String sTmp1 = s.substring(3,5);
+                                int iTime = Integer.parseInt(sTmp);
+                                int iMinute = Integer.parseInt(sTmp1);
+                                if(iToTime > iTime) {
+                                    m_Adapter.add(s+"\n 예약 불가");
+                                }else if(iToTime == iTime){
+                                    if(iToMinute <= iMinute){
+                                        m_Adapter.add(s+"\n 예약 가능");
+                                    }else{
+                                        m_Adapter.add(s+"\n 예약 불가");
+                                    }
+                                }else{
+                                    m_Adapter.add(s+"\n 예약 가능");
+                                }
+                            }
+                            iCk = 0;
                         }
                     }else{
                         Log.e("jsonParserList 7:" , "null");
@@ -405,7 +403,7 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
             }
             JSONObject json = new JSONObject(page);
             JSONArray jArr = json.getJSONArray("meeting");
-            String[][] parseredData = new String[jArr.length()][jArr.length()];
+            String[][] parseredData = new String[jArr.length()][jArr.length()+1];
             for (int i=0; i<jArr.length(); i++){
                 json = jArr.getJSONObject(i);
                 parseredData[i][0] = json.getString("MTIME");
