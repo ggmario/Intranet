@@ -101,7 +101,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
     //프로그레스 다이얼로그(데이터 서버 조회 후 리스트 생성 시간동안 노출)
     public void run(int i) {
         mProgressDialog = ProgressDialog.show(Staff.this, "리스트 생성 중..","잠시만 기다려 주세요.", true);
-        i=i*100;
+        i=i/3;
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -204,7 +204,6 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                         sMessage = sMessage.replaceAll(" ","");/*공백 제거*/
                         String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
                         if(parsedData != null && parsedData.length > 0) {
-                            run(parsedData.length); //ProgressDialog
                             // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
                             m_Adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.staff_item);
                             m_ListView = (ListView) findViewById(R.id.listview);
@@ -270,7 +269,6 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
 
                     String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
                     if(parsedData != null && parsedData.length > 0) {
-                        run(parsedData.length);
                         // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
                         m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.staff_item);
                         m_ListView = (ListView) findViewById(R.id.listview);
@@ -443,6 +441,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                 Log.d("line:",line);
                 page+=line;
             }
+            run(page.length()); //ProgressDialog
             JSONObject json = new JSONObject(page);
             JSONArray jArr = json.getJSONArray("member");
             String[][] parseredData = new String[jArr.length()][10];
