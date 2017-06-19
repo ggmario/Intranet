@@ -12,13 +12,26 @@
  */
 package com.eluo.project.intranet.service;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
+import android.os.Handler;
 import android.os.IBinder;
+import android.provider.CallLog;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
@@ -58,6 +71,7 @@ public class CallingService extends Service {
     String call_part = "";  //부서
     String call_nm = "";    //이름
     String call_tb = "";
+    String sReception = "";
 
     WindowManager.LayoutParams params;
     private WindowManager windowManager = null;
@@ -67,6 +81,7 @@ public class CallingService extends Service {
         // Not used
         return null;
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -92,6 +107,7 @@ public class CallingService extends Service {
         });
         setDraggable();
     }
+
     //서비스 실행 여부 확인
     public boolean isServiceRunningCheck() {
         ActivityManager manager = (ActivityManager) this.getSystemService(Activity.ACTIVITY_SERVICE);
@@ -114,59 +130,89 @@ public class CallingService extends Service {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN: initialX = params.x;
+                    case MotionEvent.ACTION_DOWN:
+                        initialX = params.x;
                         initialY = params.y;
                         initialTouchX = event.getRawX();
                         initialTouchY = event.getRawY();
                         return true;
-                    case MotionEvent.ACTION_UP: return true;
-                    case MotionEvent.ACTION_MOVE: params.x = initialX + (int) (event.getRawX() - initialTouchX);
+                    case MotionEvent.ACTION_UP:
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        params.x = initialX + (int) (event.getRawX() - initialTouchX);
                         params.y = initialY + (int) (event.getRawY() - initialTouchY);
                         if (rootView != null) windowManager.updateViewLayout(rootView, params);
                         return true;
-                } return false;
+                }
+                return false;
             }
         });
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(!intent.getStringExtra(EXTRA_CALL_NUMBER).equals("") ){
+        if (!intent.getStringExtra(EXTRA_CALL_NUMBER).equals("") && !intent.getStringExtra(EXTRA_CALL_NUMBER).equals("A")) {
             windowManager.addView(rootView, params);
             loadScore();
             setExtra(intent);
             if (!TextUtils.isEmpty(call_number)) {
-                System.out.println("-------------------------->>"+sOverlay);
-
-                if(!call_nm.equals("") && (sOverlay.equals("true") || sOverlay.equals(""))){
-                    tv_call_number.setText(call_nm+call_job+"\n"+call_part);
-                }else{
-                    if(sOverlay.equals("false") ||  call_nm.equals("")) {
+                //System.out.println("-------------------------->>" + sOverlay);
+                if (!call_nm.equals("") && (sOverlay.equals("true") || sOverlay.equals(""))) {
+                    tv_call_number.setText(call_nm + call_job + "\n" + call_part);
+                } else {
+                    if (sOverlay.equals("false") || call_nm.equals("")) {
                         call_tb = "Y";
                         removePopup();
                     }
                 }
             }
-        }else{
-            removePopup();
+        } else {
+            //removePopup();
+            if(intent.getStringExtra(EXTRA_CALL_NUMBER).equals("A") ){
+                new Handler().postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run(){
+                        getHistory();
+                        String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
+                        if (parsedData != null && parsedData.length > 0) {
+                            call_nm = "";
+                            call_part = "";
+                            call_job = "";
+                            call_tb = "Y";
+                            if (parsedData[0][0] == "NO DATA") {
+
+                            } else {
+                                call_nm = parsedData[0][3];
+                                call_part = parsedData[0][6];
+                                call_job = parsedData[0][7];
+                                if(sReception.equals("1")) {
+                                    NotificationSomethings();
+                                }
+                            }
+                        }
+                    }
+                }, 1000);
+            }
         }
         return START_REDELIVER_INTENT;
     }
+
     private void setExtra(Intent intent) {
         if (intent == null) {
 //            call_tb = "Y";
             removePopup();
             return;
-        }else {
+        } else {
             call_number = intent.getStringExtra(EXTRA_CALL_NUMBER);
         }
         // 스레드 생성하고 시작
         new ThreadPolicy();
-        if(!call_number.equals("")) {
+        if (!call_number.equals("")) {
             loadScore();
-            if(sOverlay.equals("true") || sOverlay.equals("")){
+            if (sOverlay.equals("true") || sOverlay.equals("")) {
                 String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
-                if(parsedData != null && parsedData.length > 0) {
+                if (parsedData != null && parsedData.length > 0) {
                     call_nm = "";
                     call_part = "";
                     call_job = "";
@@ -179,17 +225,18 @@ public class CallingService extends Service {
                         call_job = parsedData[0][7];
                     }
                 }
-            }else{
+            } else {
                 removePopup();
             }
-        }else{
-            if(intent.getStringExtra(EXTRA_CALL_NUMBER).equals("")){
-                if(call_tb.equals("Y")){
+        } else {
+            if (intent.getStringExtra(EXTRA_CALL_NUMBER).equals("")) {
+                if (call_tb.equals("Y")) {
                     removePopup();
                 }
             }
         }
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -198,37 +245,40 @@ public class CallingService extends Service {
 
     @OnClick(R.id.btn_close)
     public void removePopup() {
-        if (rootView != null && windowManager != null && call_tb.equals("Y")) windowManager.removeView(rootView); call_tb="";  //iCount = 0;
+        if (rootView != null && windowManager != null && call_tb.equals("Y"))
+            windowManager.removeView(rootView);
+        call_tb = "";  //iCount = 0;
     }
+
     private String[][] jsonParserList() {
         URL url = null;
         HttpURLConnection urlConnection = null;
-        try{
+        try {
             //웹서버 URL 지정
-            Log.i("call_number:",call_number);
-            url= new URL("http://www.eluocnc.com/GW_V3/app/memberList.asp?searchValue="+call_number+"&pageUnit=100");
-            HttpURLConnection urlc =(HttpURLConnection)url.openConnection();
+            Log.i("call_number:", call_number);
+            url = new URL("http://www.eluocnc.com/GW_V3/app/memberList.asp?searchValue=" + call_number + "&pageUnit=100");
+            HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
             urlc.setConnectTimeout(3000);
             urlc.connect();
-        }catch (Exception e){
+        } catch (Exception e) {
             FirebaseCrash.report(new Exception("수신전화 정보조회 : 서버 연결 실패"));
             return null;
         }
 
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
-            BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),"UTF-8"));
-            Log.d("line:",bufreader.toString());
+            BufferedReader bufreader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+            Log.d("line:", bufreader.toString());
             String line = null;
             String page = "";
-            while((line = bufreader.readLine())!=null){
-                Log.d("line:",line);
-                page+=line;
+            while ((line = bufreader.readLine()) != null) {
+                Log.d("line:", line);
+                page += line;
             }
             JSONObject json = new JSONObject(page);
             JSONArray jArr = json.getJSONArray("member");
             String[][] parseredData = new String[jArr.length()][8];
-            for (int i=0; i<jArr.length(); i++){
+            for (int i = 0; i < jArr.length(); i++) {
                 json = jArr.getJSONObject(i);
                 parseredData[i][0] = json.getString("MIDX");
                 parseredData[i][1] = json.getString("GUBUN");
@@ -243,9 +293,9 @@ public class CallingService extends Service {
         } catch (Exception e) {
             String[][] parseredData = new String[1][1];
             parseredData[0][0] = "NO DATA";
-            Log.i("RESULT","데이터가 없음");
+            Log.i("RESULT", "데이터가 없음");
             return parseredData;
-        }finally{
+        } finally {
             urlConnection.disconnect();
         }
     }
@@ -256,5 +306,68 @@ public class CallingService extends Service {
         sOverlay = pref.getString("switch", "");
     }
 
+    private void getHistory() {
+        String[] projection = {CallLog.Calls.CONTENT_TYPE, CallLog.Calls.NUMBER, CallLog.Calls.DURATION, CallLog.Calls.DATE};
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Cursor cur = getContentResolver().query(CallLog.Calls.CONTENT_URI, null, CallLog.Calls.TYPE + "= ?", new String[]{String.valueOf(CallLog.Calls.MISSED_TYPE)}, CallLog.Calls.DEFAULT_SORT_ORDER);
+        Log.d("db count=", String.valueOf(cur.getCount()));
+        Log.d("db count=", CallLog.Calls.CONTENT_ITEM_TYPE);
+        Log.d("db count=", CallLog.Calls.CONTENT_TYPE);
+        Log.d("db count=", CallLog.Calls.DATE);
+        int ii = 0;
+        if(cur.moveToFirst() && cur.getCount() > 0) {
+            while(cur.isAfterLast() == false) {
+                StringBuffer sb = new StringBuffer();
+            if(ii == 0){
+                String sTemp = String.valueOf(sb.append("").append(cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER))));
+                call_number = sTemp.substring(0,3)+"-"+sTemp.substring(3,7)+"-"+sTemp.substring(7,11);
+                sReception = cur.getString(cur.getColumnIndex(CallLog.Calls.NEW));
+            }
+                sb.append("call type=").append(cur.getString(cur.getColumnIndex(CallLog.Calls.TYPE)));
+                sb.append(", cashed name=").append(cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)));
+                sb.append(", content number=").append(cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER)));
+                sb.append(", duration=").append(cur.getString(cur.getColumnIndex(CallLog.Calls.DURATION)));
+                sb.append(", new=").append(cur.getString(cur.getColumnIndex(CallLog.Calls.NEW)));
+//                sb.append(", date=").append(timeToString(cur.getLong(cur.getColumnIndex(CallLog.Calls.DATE)))).append("]");
+                cur.moveToNext();
+                ii++;
+            }
+           // System.out.println("====>>>"+call_number);
+        }
+    }
+
+    public void NotificationSomethings() {
+        Resources res = getResources();
+        Intent notificationIntent = new Intent(this, CallingService.class);
+        notificationIntent.putExtra("notificationId", 9999); //전달할 값
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setContentTitle("Eluo 부재중 전화")
+                .setContentText(call_nm+" "+call_part)
+                .setTicker("상태바 한줄 메시지")
+                .setSmallIcon(R.mipmap.eluo_icon)
+                .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.eluo_icon))
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
+                .setWhen(System.currentTimeMillis())
+                .setDefaults(Notification.DEFAULT_ALL);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            builder.setCategory(Notification.CATEGORY_MESSAGE)
+                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
+
+        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(1234, builder.build());
+    }
 }
 

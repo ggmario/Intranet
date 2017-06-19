@@ -51,6 +51,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
     public void onMessageReceived(RemoteMessage remoteMessage) {
         /*화면 깨움*/
         /*참고URL: http://milkye.tistory.com/8*/
+        //화면 깨움
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE );
         PowerManager.WakeLock wakeLock = pm.newWakeLock( PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "TAG" );
         wakeLock.acquire(3000);

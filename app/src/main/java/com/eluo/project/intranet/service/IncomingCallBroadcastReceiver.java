@@ -55,7 +55,7 @@ public class IncomingCallBroadcastReceiver extends BroadcastReceiver {
         //통화종료 혹은 통화벨 종료
         if (TelephonyManager.EXTRA_STATE_IDLE.equals(state)) {
             Intent serviceIntent = new Intent(context, CallingService.class);
-            serviceIntent.putExtra(CallingService.EXTRA_CALL_NUMBER, "");
+            serviceIntent.putExtra(CallingService.EXTRA_CALL_NUMBER, "A");
             context.startService(serviceIntent);
         }
         //통화중
