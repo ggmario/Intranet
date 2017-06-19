@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -280,6 +281,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
+
     //디바이스 전화 번호 가져오기
     public String getPhoneNumber(){
         TelephonyManager mgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
@@ -489,6 +492,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 //    자기 자신의 전화 번호 가기 오기 위한 권한 확인 및 오버레이 설정 창 이동(M 마시멜로우 위한 조치)
     public void onResume() {
+
         if (Build.VERSION.SDK_INT == 25) {
             if (isInMultiWindowMode() == true) {
                 Toast.makeText(this, R.string.T_multi_windowMode, Toast.LENGTH_SHORT).show();
@@ -656,7 +660,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }else{
                     Toast.makeText(MainActivity.this, R.string.network_error_retry,Toast.LENGTH_SHORT).show();
                 }
+
             }
+        }
+
+        //전화 번호, 현재의 셀룰러 네트워크 정보, 진행중인 통화의 상태, 그리고 어떤이의 목록을 포함하여 전화 상태에 대한 액세스 권한 여부 확인
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+        if(permissionCheck== PackageManager.PERMISSION_DENIED){
+            // 권한 없음
+            System.out.println("권한이 없음~~");
+        }else{
+            // 권한 있음
+            //getHistory();
         }
     }
     //json으로 서버에서 메인에 보여줄 리스트 가져옴
