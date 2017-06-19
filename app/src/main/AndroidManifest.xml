@@ -15,6 +15,11 @@
     <!-- Keeps the processor from sleeping when a message is received. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" /><!--CPU_ON-->
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" /><!--잠김화면해제 권한-->
+    <!--<usee-permission android:name="android.permission.READ_CALENDAR"/>&lt;!&ndash;사용자의 연락처 데이터를 읽을 수 있도록 허용합니다.&ndash;&gt;-->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
     <category android:name="android.intent.category.BROWSABLE" />
 
 
