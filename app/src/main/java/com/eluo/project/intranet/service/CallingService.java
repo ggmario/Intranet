@@ -181,13 +181,14 @@ public class CallingService extends Service {
                             call_job = "";
                             call_tb = "Y";
                             if (parsedData[0][0] == "NO DATA") {
-
+                                removePopup();
                             } else {
                                 call_nm = parsedData[0][3];
                                 call_part = parsedData[0][6];
                                 call_job = parsedData[0][7];
                                 if(sReception.equals("1")) {
                                     NotificationSomethings();
+                                    removePopup();
                                 }
                             }
                         }
