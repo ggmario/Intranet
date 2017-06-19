@@ -84,8 +84,7 @@ public class IntroActivity extends Activity {
                     });
                     alert.setMessage(R.string.D_aspiration_chip);
                     alert.show();
-                }
-                else {
+                } else {
                     // 유심이 존재하는 경우
                     sVersionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
                     new ThreadPolicy();
