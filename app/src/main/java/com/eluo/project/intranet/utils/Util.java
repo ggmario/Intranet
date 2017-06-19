@@ -33,6 +33,8 @@ public class Util  extends Activity {
 
     public static final String CONNECTION_CONFIRM_CLIENT_URL = "http://clients3.google.com/generate_204";
 
+
+
     private static class CheckConnect extends Thread{
         private boolean success;
         private String host;
@@ -97,7 +99,6 @@ public class Util  extends Activity {
         String deviceId = deviceUuid.toString();
         return deviceId;
     }
-
 
 
 }
