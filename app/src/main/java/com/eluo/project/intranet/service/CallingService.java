@@ -27,6 +27,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.CallLog;
@@ -71,7 +72,9 @@ public class CallingService extends Service {
     String call_part = "";  //부서
     String call_nm = "";    //이름
     String call_tb = "";
+    String call_midx = "";
     String sReception = "";
+    String sMissedType = "";
 
     WindowManager.LayoutParams params;
     private WindowManager windowManager = null;
@@ -147,30 +150,30 @@ public class CallingService extends Service {
                 return false;
             }
         });
-    }
 
+    }
+//부재
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (!intent.getStringExtra(EXTRA_CALL_NUMBER).equals("") && !intent.getStringExtra(EXTRA_CALL_NUMBER).equals("A")) {
+        if (!intent.getStringExtra(EXTRA_CALL_NUMBER).equals("") && !intent.getStringExtra(EXTRA_CALL_NUMBER).equals("A")) {    //전화벨 울리는 중...
             windowManager.addView(rootView, params);
             loadScore();
             setExtra(intent);
             if (!TextUtils.isEmpty(call_number)) {
-                //System.out.println("-------------------------->>" + sOverlay);
                 if (!call_nm.equals("") && (sOverlay.equals("true") || sOverlay.equals(""))) {
                     tv_call_number.setText(call_nm + call_job + "\n" + call_part);
                 } else {
                     if (sOverlay.equals("false") || call_nm.equals("")) {
                         call_tb = "Y";
                         removePopup();
+
                     }
                 }
             }
         } else {
             //removePopup();
-            if(intent.getStringExtra(EXTRA_CALL_NUMBER).equals("A") ){
-                new Handler().postDelayed(new Runnable()
-                {
+            if(intent.getStringExtra(EXTRA_CALL_NUMBER).equals("A") ){ //전화 벨이 종료 통화 종료시..
+                new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run(){
                         getHistory();
@@ -179,16 +182,24 @@ public class CallingService extends Service {
                             call_nm = "";
                             call_part = "";
                             call_job = "";
-                            call_tb = "Y";
                             if (parsedData[0][0] == "NO DATA") {
-                                removePopup();
+                                if(call_tb.equals("Y")) {
+                                    removePopup();
+                                    call_tb = "";
+                                }
                             } else {
                                 call_nm = parsedData[0][3];
                                 call_part = parsedData[0][6];
                                 call_job = parsedData[0][7];
+                                call_midx = parsedData[0][0];
+
                                 if(sReception.equals("1")) {
-                                    NotificationSomethings();
+                                    call_tb = "Y";
+                                    NotificationSomethings(call_midx);
+                                }
+                                if(call_tb.equals("Y")) {
                                     removePopup();
+                                    call_tb = "";
                                 }
                             }
                         }
@@ -211,28 +222,35 @@ public class CallingService extends Service {
         new ThreadPolicy();
         if (!call_number.equals("")) {
             loadScore();
-            if (sOverlay.equals("true") || sOverlay.equals("")) {
+            if (sOverlay.equals("true") || sOverlay.equals("")) {   //오버레이 표기 여부
                 String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
                 if (parsedData != null && parsedData.length > 0) {
                     call_nm = "";
                     call_part = "";
                     call_job = "";
-                    call_tb = "Y";
                     if (parsedData[0][0] == "NO DATA") {
-                        removePopup();
+                        if (call_tb.equals("Y")) {
+                            removePopup();
+                            call_tb = "";
+                        }
                     } else {
                         call_nm = parsedData[0][3];
                         call_part = parsedData[0][6];
                         call_job = parsedData[0][7];
+                        call_tb = "Y";
                     }
                 }
             } else {
-                removePopup();
+                if (call_tb.equals("Y")) {
+                    removePopup();
+                    call_tb = "";
+                }
             }
         } else {
             if (intent.getStringExtra(EXTRA_CALL_NUMBER).equals("")) {
                 if (call_tb.equals("Y")) {
                     removePopup();
+                    call_tb = "";
                 }
             }
         }
@@ -330,8 +348,14 @@ public class CallingService extends Service {
                 StringBuffer sb = new StringBuffer();
             if(ii == 0){
                 String sTemp = String.valueOf(sb.append("").append(cur.getString(cur.getColumnIndex(CallLog.Calls.NUMBER))));
-                call_number = sTemp.substring(0,3)+"-"+sTemp.substring(3,7)+"-"+sTemp.substring(7,11);
+                if(sTemp.length()  == 11){
+                    call_number = sTemp.substring(0,3)+"-"+sTemp.substring(3,7)+"-"+sTemp.substring(7,11);
+                }else if(sTemp.length() == 10){
+                    call_number = sTemp.substring(0,3)+"-"+sTemp.substring(3,6)+"-"+sTemp.substring(6,10);
+                }else{
+                }
                 sReception = cur.getString(cur.getColumnIndex(CallLog.Calls.NEW));
+                sMissedType = cur.getString(cur.getColumnIndex(CallLog.Calls.TYPE));
             }
                 sb.append("call type=").append(cur.getString(cur.getColumnIndex(CallLog.Calls.TYPE)));
                 sb.append(", cashed name=").append(cur.getString(cur.getColumnIndex(CallLog.Calls.CACHED_NAME)));
@@ -342,24 +366,25 @@ public class CallingService extends Service {
                 cur.moveToNext();
                 ii++;
             }
-           // System.out.println("====>>>"+call_number);
         }
     }
 
-    public void NotificationSomethings() {
+    public void NotificationSomethings(String call_midx) {
         Resources res = getResources();
-        Intent notificationIntent = new Intent(this, CallingService.class);
+        Intent notificationIntent = new Intent(Intent.ACTION_DIAL, Uri.parse(call_number));
+
         notificationIntent.putExtra("notificationId", 9999); //전달할 값
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle("Eluo 부재중 전화")
-                .setContentText(call_nm+" "+call_part)
-                .setTicker("상태바 한줄 메시지")
-                .setSmallIcon(R.mipmap.eluo_icon)
+                .setContentText(call_nm+" "+call_job+" "+call_part)
+                .setTicker("애타게 전화를 기다리고 있을 꺼에요~")
+                .setSmallIcon(R.mipmap.eluo_icon)   //아이콘
                 .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.eluo_icon))
-                .setContentIntent(contentIntent)
-                .setAutoCancel(true)
-                .setWhen(System.currentTimeMillis())
+                .setContentIntent(contentIntent)//터치시 이동 할 앱 메뉴
+                .setAutoCancel(true)    //터치시 사라짐
+                .setWhen(System.currentTimeMillis())    //시간
+
                 .setDefaults(Notification.DEFAULT_ALL);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             builder.setCategory(Notification.CATEGORY_MESSAGE)
@@ -367,8 +392,11 @@ public class CallingService extends Service {
                     .setVisibility(Notification.VISIBILITY_PUBLIC);
         }
 
-        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(1234, builder.build());
+//        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//        nm.notify(1234, builder.build());
+        int iId = Integer.parseInt(call_midx);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(iId /* ID of notification */, builder.build());
     }
 }
 
