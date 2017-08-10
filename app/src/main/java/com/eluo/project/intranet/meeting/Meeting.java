@@ -149,65 +149,99 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                     Toast.makeText(Meeting.this, R.string.T_no_data, Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
                 }
                 return true;
-            case R.id.navigation_dashboard:
-                sFloor = "8";
-                String[][] parsedData8 = jsonParserList();
-                if(parsedData8 != null && parsedData8.length > 0) {
-                    m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
-                    m_ListView = (ListView) findViewById(R.id.meeting_list_view);
-                    ArrayAdapter adapter8 = (ArrayAdapter) m_ListView.getAdapter();
-                    adapter8.notifyDataSetChanged();
-                    m_ListView.setAdapter(m_Adapter);
-                    Resources res = getResources();
-                    String[] arrString = res.getStringArray(R.array.meeting_time);
-                    int iCk = 0;
-                    for (String s : arrString) {
-                        for (int is = 0; is < parsedData8.length; is++) {
-                            if (s.equals(parsedData8[is][0])) {
-                                if (!parsedData8[is][2].equals("")){
-                                    m_Adapter.add(s + "\n" + parsedData8[is][2]);
-                                    iCk = 1;
+//            case R.id.navigation_dashboard:
+//                sFloor = "8";
+//                String[][] parsedData8 = jsonParserList();
+//                if(parsedData8 != null && parsedData8.length > 0) {
+//                    m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
+//                    m_ListView = (ListView) findViewById(R.id.meeting_list_view);
+//                    ArrayAdapter adapter8 = (ArrayAdapter) m_ListView.getAdapter();
+//                    adapter8.notifyDataSetChanged();
+//                    m_ListView.setAdapter(m_Adapter);
+//                    Resources res = getResources();
+//                    String[] arrString = res.getStringArray(R.array.meeting_time);
+//                    int iCk = 0;
+//                    for (String s : arrString) {
+//                        for (int is = 0; is < parsedData8.length; is++) {
+//                            if (s.equals(parsedData8[is][0])) {
+//                                if (!parsedData8[is][2].equals("")){
+//                                    m_Adapter.add(s + "\n" + parsedData8[is][2]);
+//                                    iCk = 1;
+//                                }
+//                            }
+//                        }
+//                        if (iCk == 0) {
+//                            String sTmp = s.substring(0, 2);
+//                            String sTmp1 = s.substring(3, 5);
+//                            int iTime = Integer.parseInt(sTmp);
+//                            int iMinute = Integer.parseInt(sTmp1);
+//                            if (iToTime > iTime) {
+//                                m_Adapter.add(s + "\n 예약 불가");
+//                            } else if (iToTime == iTime) {
+//                                if (iToMinute <= iMinute) {
+//                                    m_Adapter.add(s + "\n 예약 가능");
+//                                } else {
+//                                    m_Adapter.add(s + "\n 예약 불가");
+//                                }
+//                            } else {
+//                                m_Adapter.add(s + "\n 예약 가능");
+//                            }
+//                        }
+//                        iCk = 0;
+//                    }
+//                    return true;
+//                }else{
+//                    Log.e("jsonParserList 8:" , "null");
+//                    Toast.makeText(getApplicationContext(), R.string.T_no_data, Toast.LENGTH_SHORT).show();
+//                }
+//                return true;
+                case R.id.navigation_notifications:
+//                    Toast.makeText(Meeting.this, "준비 중...", Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
+                    sFloor = "4";
+                    String[][] parsedData4 = jsonParserList();
+                    if(parsedData4 != null && parsedData4.length > 0) {
+                        m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
+                        m_ListView = (ListView) findViewById(R.id.meeting_list_view);
+                        ArrayAdapter adapter4 = (ArrayAdapter) m_ListView.getAdapter();
+                        adapter4.notifyDataSetChanged();
+                        m_ListView.setAdapter(m_Adapter);
+                        Resources res = getResources();
+                        String[] arrString = res.getStringArray(R.array.meeting_time);
+                        int iCk = 0;
+                        for (String s : arrString) {
+                            for (int is = 0; is < parsedData4.length; is++) {
+                                if (s.equals(parsedData4[is][0])) {
+                                    if (!parsedData4[is][3].equals("")){
+                                        m_Adapter.add(s + "\n" + parsedData4[is][3]);
+                                        iCk = 1;
+                                    }
                                 }
                             }
-                        }
-                        if (iCk == 0) {
-                            String sTmp = s.substring(0, 2);
-                            String sTmp1 = s.substring(3, 5);
-                            int iTime = Integer.parseInt(sTmp);
-                            int iMinute = Integer.parseInt(sTmp1);
-                            if (iToTime > iTime) {
-                                m_Adapter.add(s + "\n 예약 불가");
-                            } else if (iToTime == iTime) {
-                                if (iToMinute <= iMinute) {
-                                    m_Adapter.add(s + "\n 예약 가능");
-                                } else {
+                            if (iCk == 0) {
+                                String sTmp = s.substring(0, 2);
+                                String sTmp1 = s.substring(3, 5);
+                                int iTime = Integer.parseInt(sTmp);
+                                int iMinute = Integer.parseInt(sTmp1);
+                                if (iToTime > iTime) {
                                     m_Adapter.add(s + "\n 예약 불가");
+                                } else if (iToTime == iTime) {
+                                    if (iToMinute <= iMinute) {
+                                        m_Adapter.add(s + "\n 예약 가능");
+                                    } else {
+                                        m_Adapter.add(s + "\n 예약 불가");
+                                    }
+                                } else {
+                                    m_Adapter.add(s + "\n 예약 가능");
                                 }
-                            } else {
-                                m_Adapter.add(s + "\n 예약 가능");
                             }
+                            iCk = 0;
                         }
-                        iCk = 0;
+                        return true;
+                    }else{
+                        Log.e("jsonParserList 4:" , "null");
+                        Toast.makeText(getApplicationContext(), R.string.T_no_data, Toast.LENGTH_SHORT).show();
                     }
                     return true;
-                }else{
-                    Log.e("jsonParserList 8:" , "null");
-                    Toast.makeText(getApplicationContext(), R.string.T_no_data, Toast.LENGTH_SHORT).show();
-                }
-//                case R.id.navigation_notifications:
-//                    Toast.makeText(Meeting.this, "준비 중...", Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
-//                    sFloor = "4";
-//                    String result4 = SendByHttp("1");
-//                    String[][] parsedData4 = jsonParserList(result4);
-//                    m_Adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.notice_item);
-//
-//                    m_ListView = (ListView) findViewById(R.id.meeting_list_view);
-//
-//                    ArrayAdapter adapter4 = (ArrayAdapter) m_ListView.getAdapter();
-//                    adapter4.notifyDataSetChanged();
-//                    m_ListView.setAdapter(m_Adapter);
-//                    m_Adapter.add("예약된 회의실이 없습니다.");
-//                    return true;
         }
         return false;
         }
@@ -409,6 +443,7 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
                 parseredData[i][0] = json.getString("MTIME");
                 parseredData[i][1] = json.getString("M7F");
                 parseredData[i][2] = json.getString("M8F");
+                parseredData[i][3] = json.getString("M4F");
             }
             return parseredData;
         } catch (Exception e) {
