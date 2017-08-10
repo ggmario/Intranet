@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Window;
+import android.view.WindowManager;
 
 import com.eluo.project.intranet.MainActivity;
 import com.eluo.project.intranet.R;
@@ -44,6 +45,8 @@ public class IntroActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);  // 화면위 타이틀 없애기
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);  // 전체화면 만들기
 
         //앱 설치시 home 화면에 바로가기 앱 아이콘 생성 기능
         SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
