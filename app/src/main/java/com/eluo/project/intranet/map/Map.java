@@ -164,20 +164,29 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Naviga
     public void onMapReady(GoogleMap googleMap) {
         if (NetworkUtil.isNetworkConnected(this)) {
             mMap = googleMap;
-
             // Add a marker in Sydney and move the camera
-            LatLng sydney = new LatLng(37.5541964, 126.9305259); //좌표
+            LatLng sydney = null;
+            String sTitle = "엘루오 씨엔씨";
+            String sSubTitle = "서울 마포구 서강로9길 ";
+
+            //디자인팀 본사 건너편 4층
+            sydney = new LatLng(37.5545719, 126.9307007); //좌표
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 18)); //좌표에 의해 표시되는 확대 레벨
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+            Marker melbourne1 = mMap.addMarker(new MarkerOptions().position(sydney).title(sTitle).snippet(sSubTitle+"56(디자인팀, 4층)"));
+            melbourne1.showInfoWindow();
+            Toast.makeText(this, "회사 위치\n"+sSubTitle+"55(7층,8층), 56(4층)", Toast.LENGTH_SHORT).show();
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+            //본사 건물 위치 정보
+            sydney = new LatLng(37.5541964, 126.9305259); //좌표
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 18)); //좌표에 의해 표시되는 확대 레벨
             googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
             // mMap.addMarker(new MarkerOptions().position(sydney).title("엘루오 씨엔씨").snippet("서울시 마포구 서강로9길 55(창전동7,8층)").draggable(true)); //구글 마커에 터치시 말풍선 출력
-
             // 구글 마커 터치 하지 않아도 말 풍선 출력(https://developers.google.com/maps/documentation/android-api/infowindows?hl=ko 참조)
-            Marker melbourne = mMap.addMarker(new MarkerOptions()
-                    .position(sydney)
-                    .title("엘루오 씨엔씨").snippet("서울시 마포구 서강로9길 55(창전동7,8층)"));
+            Marker melbourne = mMap.addMarker(new MarkerOptions().position(sydney).title(sTitle).snippet(sSubTitle+"55(창전동7,8층)"));
             melbourne.showInfoWindow();
 
-            Toast.makeText(this, "회사 위치\n서울시 마포구 서강로9길 55(7,8층)", Toast.LENGTH_SHORT).show();
             mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         }else{
             Log.i("연결 안 됨" , "연결이 다시 한번 확인해주세요");
