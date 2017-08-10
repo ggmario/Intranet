@@ -276,6 +276,7 @@ public class CallingService extends Service {
             //웹서버 URL 지정
             Log.i("call_number:", call_number);
             url = new URL("http://www.eluocnc.com/GW_V3/app/memberList.asp?searchValue=" + call_number + "&pageUnit=100");
+//            url = new URL("http://www.eluocnc.com/GW_V3/app/memberList.asp?searchValue=010-6248-3985&pageUnit=100");
             HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
             urlc.setConnectTimeout(3000);
             urlc.connect();
