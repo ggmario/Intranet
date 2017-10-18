@@ -2,7 +2,7 @@
 <resources>
     <string name="prog_info">
         서비스명:EluoC&#38;C Intranet\n\n
-        버전: Release Version 1.7.3\n\n
+        버전: Release Version 1.7.6\n\n
         기능:\n
         - 메인 화면에서 공지사항 확인5개 리스트 방식 출력\n
         - 메인 화면에서 공지 리스트에 신규 공지는 7일간 New 표시 함\n
@@ -26,6 +26,21 @@
         \n\n
 
         히스토리\n
+        버전:  Release Version 1.7.6\n
+        1. 구글 전화번호 가공API 변경 따른 대응
+        \n\n
+
+        버전:  Release Version 1.7.5\n
+        1. 오타 수정\n
+        2. 회사위치 디자인팀 위치 같이 표기
+        \n\n
+
+        버전:  Release Version 1.7.4\n
+        1. 부재중 전화 발생(회사 직원)시 푸시 알림으로 표기\n
+        2. Intro 전체 화면으로 수정\n
+        3. 회의실 예약 4층 예약 정보 추가\n
+        \n\n
+
         버전:  Release Version 1.7.3\n
         1. 버그 수정\n\n
         버전:  Release Version 1.7.2\n

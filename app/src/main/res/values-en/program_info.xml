@@ -2,7 +2,7 @@
 <resources>
     <string name="prog_info">
         Service name:EluoC&#38;C Intranet\n\n
-        version: Release Version 1.7.3\n\n
+        version: Release Version 1.7.6\n\n
         Function:\n
         - Top 5 list of notices on main screen\n
         - Show holiday on Main Screen\n
@@ -26,6 +26,18 @@
         \n
         \n
         history\n
+        Version:  Release Version 1.7.6\n
+        1. Google phone number processing API change correspondence correspondence
+        \n\n
+        Version:  Release Version 1.7.5\n
+        1. Fix notation error\n
+        2. Team 4 floor address location added to company location added
+        \n\n
+        Version:  Release Version 1.7.4\n
+        1. Notification of a missed call (company employee) as a push notification\n
+        2. Edit Intro full screen\n
+        3. Conference room reservation 4th floor Add reservation information
+        \n\n
 
         Version:  Release Version 1.7.3\n
         1. Other error correction

@@ -87,7 +87,7 @@
     <string name="com_eluo">eluo</string>
     <string name="search_text">ID, phone, name</string>
     <string name="search">Search</string>
-    <string name="appInfo">Ver: 1.7.3</string>
+    <string name="appInfo">Ver: 1.7.6</string>
     <string name="view_more">[View more]</string>
 
     <!-- 메인 화면 -->
@@ -96,7 +96,7 @@
     <string name="main_outside">Outside</string>
 
     <!-- 정보 -->
-    <string name="app_info_v">앱 정보 Alpha 1.4(Development Test Version)</string>
+    <string name="app_info_v">앱 정보 Alpha 1.7.6(Development Test Version)</string>
 
     <!-- 정보 표기 -->
     <string name="info_name">name</string>

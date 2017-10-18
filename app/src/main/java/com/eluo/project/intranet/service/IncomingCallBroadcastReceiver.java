@@ -17,7 +17,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -47,9 +46,17 @@ public class IncomingCallBroadcastReceiver extends BroadcastReceiver {
         //통화벨 울리면 실행
         if (TelephonyManager.EXTRA_STATE_RINGING.equals(state)) {
             String incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-            final String phone_number = PhoneNumberUtils.formatNumber(incomingNumber);
+
+            if(incomingNumber.length()  == 11){
+                incomingNumber = incomingNumber.substring(0,3)+"-"+incomingNumber.substring(3,7)+"-"+incomingNumber.substring(7,11);
+            }else if(incomingNumber.length() == 10){
+                incomingNumber = incomingNumber.substring(0,3)+"-"+incomingNumber.substring(3,6)+"-"+incomingNumber.substring(6,10);
+            }else{
+            }
+
+            //final String phone_number = PhoneNumberUtils.formatNumber(incomingNumber); //전화번호 자동 가공 방법 3-3-4으로 되어서 위 코드로 추가
             Intent serviceIntent = new Intent(context, CallingService.class);
-            serviceIntent.putExtra(CallingService.EXTRA_CALL_NUMBER, phone_number);
+            serviceIntent.putExtra(CallingService.EXTRA_CALL_NUMBER, incomingNumber);
             context.startService(serviceIntent);
         }
         //통화종료 혹은 통화벨 종료
