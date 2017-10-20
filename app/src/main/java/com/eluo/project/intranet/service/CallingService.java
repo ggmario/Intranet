@@ -75,6 +75,7 @@ public class CallingService extends Service {
     String call_midx = "";
     String sReception = "";
     String sMissedType = "";
+    String sExtraCallNumber="";
 
     WindowManager.LayoutParams params;
     private WindowManager windowManager = null;
@@ -111,17 +112,6 @@ public class CallingService extends Service {
         setDraggable();
     }
 
-    //서비스 실행 여부 확인
-    public boolean isServiceRunningCheck() {
-        ActivityManager manager = (ActivityManager) this.getSystemService(Activity.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if ("com.eluo.project.intranet.service.CallingService".equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     //수신 팝업 드레그
     private void setDraggable() {
         rootView.setOnTouchListener(new View.OnTouchListener() {
@@ -150,12 +140,13 @@ public class CallingService extends Service {
                 return false;
             }
         });
-
     }
 //부재
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (!intent.getStringExtra(EXTRA_CALL_NUMBER).equals("") && !intent.getStringExtra(EXTRA_CALL_NUMBER).equals("A")) {    //전화벨 울리는 중...
+        sExtraCallNumber = intent.getStringExtra(EXTRA_CALL_NUMBER);
+        if (!sExtraCallNumber.equals("") && !sExtraCallNumber.equals("A")) {    //전화벨 울리는 중...
+            sExtraCallNumber = "";
             windowManager.addView(rootView, params);
             loadScore();
             setExtra(intent);
@@ -166,13 +157,13 @@ public class CallingService extends Service {
                     if (sOverlay.equals("false") || call_nm.equals("")) {
                         call_tb = "Y";
                         removePopup();
-
                     }
                 }
             }
         } else {
             //removePopup();
-            if(intent.getStringExtra(EXTRA_CALL_NUMBER).equals("A") ){ //전화 벨이 종료 통화 종료시..
+            if(sExtraCallNumber.equals("A") ){ //전화 벨이 종료 통화 종료시..
+                sExtraCallNumber ="";
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run(){
@@ -267,7 +258,9 @@ public class CallingService extends Service {
         if (rootView != null && windowManager != null && call_tb.equals("Y"))
             windowManager.removeView(rootView);
         call_tb = "";  //iCount = 0;
+        stopSelf();
     }
+
 
     private String[][] jsonParserList() {
         URL url = null;
@@ -281,7 +274,7 @@ public class CallingService extends Service {
             urlc.setConnectTimeout(3000);
             urlc.connect();
         } catch (Exception e) {
-            FirebaseCrash.report(new Exception("수신전화 정보조회 : 서버 연결 실패"));
+            FirebaseCrash.report(new Exception("수신전화 정보조회 : 서버 연결 실패:"+call_number));
             return null;
         }
 
@@ -399,5 +392,18 @@ public class CallingService extends Service {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(iId /* ID of notification */, builder.build());
     }
+
+
+    //서비스 실행 여부 확인
+    public  boolean isServiceRunningCheck() {
+        ActivityManager manager = (ActivityManager) this.getSystemService(Activity.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("com.eluo.project.intranet.service.CallingService".equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 

@@ -66,6 +66,7 @@ public class IntroActivity extends Activity {
             intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
 
             sendBroadcast(intent);
+
         }
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("check", "exist");

@@ -660,7 +660,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }else{
                     Toast.makeText(MainActivity.this, R.string.network_error_retry,Toast.LENGTH_SHORT).show();
                 }
-
             }
         }
 

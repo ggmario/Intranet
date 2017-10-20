@@ -196,7 +196,6 @@ public class Meeting  extends AppCompatActivity implements NavigationView.OnNavi
 //                }
 //                return true;
                 case R.id.navigation_notifications:
-//                    Toast.makeText(Meeting.this, "준비 중...", Toast.LENGTH_SHORT ).show(); //토스트 알림 메시지 출력
                     sFloor = "4";
                     String[][] parsedData4 = jsonParserList();
                     if(parsedData4 != null && parsedData4.length > 0) {

@@ -47,11 +47,22 @@ public class IncomingCallBroadcastReceiver extends BroadcastReceiver {
         if (TelephonyManager.EXTRA_STATE_RINGING.equals(state)) {
             String incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
 
-            if(incomingNumber.length()  == 11){
-                incomingNumber = incomingNumber.substring(0,3)+"-"+incomingNumber.substring(3,7)+"-"+incomingNumber.substring(7,11);
-            }else if(incomingNumber.length() == 10){
-                incomingNumber = incomingNumber.substring(0,3)+"-"+incomingNumber.substring(3,6)+"-"+incomingNumber.substring(6,10);
-            }else{
+            if(incomingNumber.indexOf("+82") == -1){
+                if(incomingNumber.length() == 11 ){
+                    incomingNumber = incomingNumber.substring(0, 3) + "-" + incomingNumber.substring(3, 7) + "-" + incomingNumber.substring(7, 11);
+                }else if (incomingNumber.length() == 10) {
+                    incomingNumber = incomingNumber.substring(0, 3) + "-" + incomingNumber.substring(3, 6) + "-" + incomingNumber.substring(6, 10);
+                }else{
+                    Log.e("err82","length err: "+incomingNumber);
+                }
+            }else {
+                if (incomingNumber.length() == 11) {
+                    incomingNumber = incomingNumber.substring(0, 3) + "-" + incomingNumber.substring(3, 7) + "-" + incomingNumber.substring(7, 11);
+                } else if (incomingNumber.length() == 10) {
+                    incomingNumber = incomingNumber.substring(0, 3) + "-" + incomingNumber.substring(3, 6) + "-" + incomingNumber.substring(6, 10);
+                } else {
+                    Log.e("err10","length err: "+incomingNumber);
+                }
             }
 
             //final String phone_number = PhoneNumberUtils.formatNumber(incomingNumber); //전화번호 자동 가공 방법 3-3-4으로 되어서 위 코드로 추가

@@ -99,6 +99,4 @@ public class Util  extends Activity {
         String deviceId = deviceUuid.toString();
         return deviceId;
     }
-
-
 }
