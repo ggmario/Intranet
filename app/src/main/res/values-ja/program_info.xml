@@ -2,7 +2,7 @@
 <resources>
     <string name="prog_info">
         サービス名:EluoC&#38;C Intranet\n\n
-        バージョン: Release Version 1.7.6\n\n
+        バージョン: Release Version 1.7.7\n\n
         機能:\n
         - メイン画面でお知らせ確認5つのリスト方式。\n
         - メイン画面での休暇者見せる。\n
@@ -26,6 +26,9 @@
         \n
         \n
         ヒストリー\n
+        バージョン:  Release Version 1.7.7\n
+        1. スタッフの電話着信通知機能の改善
+        \n\n
 
         バージョン:  Release Version 1.7.6\n
         1. Googleの携帯電話番号加工APIの変更による対応
