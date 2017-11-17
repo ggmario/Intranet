@@ -66,6 +66,7 @@
     <string name="T_meeting_8floor">8th floor conference room reservation status.</string>
     <string name="T_meeting_not">There is no reserved meeting room.</string>
     <string name="T_search_complete">Your search is complete.</string>
+    <string name="T_search_log">The data takes a lot of time..</string>
     <string name="T_no_data">No data found </string>
 
     <!-- 네트워크오류 문구 -->
@@ -87,7 +88,7 @@
     <string name="com_eluo">eluo</string>
     <string name="search_text">ID, phone, name</string>
     <string name="search">Search</string>
-    <string name="appInfo">Ver: 1.7.7</string>
+    <string name="appInfo">Ver: 1.7.10</string>
     <string name="view_more">[View more]</string>
 
     <!-- 메인 화면 -->
@@ -96,7 +97,7 @@
     <string name="main_outside">Outside</string>
 
     <!-- 정보 -->
-    <string name="app_info_v">앱 정보 Alpha 1.7.7(Development Test Version)</string>
+    <string name="app_info_v">앱 정보 Alpha 1.7.10(Development Test Version)</string>
 
     <!-- 정보 표기 -->
     <string name="info_name">name</string>

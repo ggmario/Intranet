@@ -67,6 +67,7 @@
     <string name="T_meeting_7floor">7階の会議室の予約状況です。</string>
     <string name="T_meeting_8floor">8階の会議室の予約状況です。</string>
     <string name="T_meeting_not">予約された会議室がありません。</string>
+    <string name="T_search_log">データの時間が長いこと。</string>
     <string name="T_search_complete">検索が完了しました。</string>
 
 
@@ -89,7 +90,7 @@
     <string name="com_mail">master@eluocnc.com</string>
     <string name="com_eluo">eluo</string>
     <string name="search_text">ID,電話,名前</string>
-    <string name="appInfo">Ver: 1.7.7</string>
+    <string name="appInfo">Ver: 1.7.10</string>
     <string name="view_more">[もっと見る]</string>
 
 
@@ -99,7 +100,7 @@
     <string name="main_outside">外勤の現状</string>
 
     <!-- 정보 -->
-    <string name="app_info_v">アプリ情報 Alpha 1.7.7(Development Test Version)</string>
+    <string name="app_info_v">アプリ情報 Alpha 1.7.10(Development Test Version)</string>
 
     <!-- 정보 표기 -->
     <string name="info_name">名前</string>

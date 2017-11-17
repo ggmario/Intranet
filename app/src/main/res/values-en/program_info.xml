@@ -2,7 +2,7 @@
 <resources>
     <string name="prog_info">
         Service name:EluoC&#38;C Intranet\n\n
-        version: Release Version 1.7.7\n\n
+        version: Release Version 1.7.10\n\n
         Function:\n
         - Top 5 list of notices on main screen\n
         - Show holiday on Main Screen\n
@@ -26,6 +26,15 @@
         \n
         \n
         history\n
+        Version:  Release Version 1.7.10\n
+        1. Fixed data display bug
+         \n\n
+        Version:  Release Version 1.7.9\n
+        1. Adding a special character exception
+         \n\n
+        Version:  Release Version 1.7.8\n
+        1. Improved call alert for employee absence
+         \n\n
         Version:  Release Version 1.7.7\n
         1. Improved employee call notification
         \n\n
