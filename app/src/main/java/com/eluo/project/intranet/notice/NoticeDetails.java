@@ -104,7 +104,7 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
                 sName = sREGNM;
                 sDate = sREGDT;
             }
-            if (sNoData.equals("NO DATA")) {
+            if (sNoData!= null && sNoData.equals("NO DATA")) {
                 textView =(TextView)findViewById(R.id.textWordView);
                 textView.setText("");
                 //제목
