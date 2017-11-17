@@ -1,5 +1,6 @@
 package com.eluo.project.intranet.member;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ClipboardManager;
@@ -108,7 +109,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
                 try {
                     if (mProgressDialog != null && mProgressDialog.isShowing()) {
                         mProgressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(), R.string.T_search_complete, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), R.string.T_search_complete, Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -118,6 +119,7 @@ public class Staff  extends AppCompatActivity implements NavigationView.OnNaviga
     }
 
     /** Called when the activity is first created. */
+    @SuppressLint("MissingPermission")
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);

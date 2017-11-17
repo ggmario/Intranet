@@ -1,11 +1,13 @@
 package com.eluo.project.intranet.notice;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -69,6 +71,7 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
     private String psMid, psMidx, psMpath, psMdept, psMname, sTelephone = null;
 
     /** Called when the activity is first created. */
+    @SuppressLint("MissingPermission")
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -123,12 +126,18 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
             m_ListView.setOnItemClickListener(onClickListItem);
             String[][] parsedData = jsonParserList(); // JSON 데이터 파싱
             if(parsedData != null && parsedData.length > 0) {
-                if (parsedData.length > 0) {
-                    for (int i = 0; i < parsedData.length; i++) {
-                        m_Adapter.add(parsedData[i][1]);
+                if (parsedData[0][0] == "NO DATA") {
+                    Calendar cal = Calendar.getInstance();
+                    m_Adapter.add("데이터 가져오기 실패!!");
+                    Toast.makeText(Notice.this, "지속적으로 발생시 앱 담당자 문의",Toast.LENGTH_LONG).show();
+                }else {
+                    if (parsedData.length > 0) {
+                        for (int i = 0; i < parsedData.length; i++) {
+                            m_Adapter.add(parsedData[i][1]);
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
                     }
-                }else{
-                    Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
                 }
             }
         }else {
@@ -194,6 +203,7 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
             String line = null;
             String page = "";
             while((line = bufreader.readLine())!=null){
+//                line = line.replace("\"엘루오시안\"","엘루오시안");
                 Log.d("line:",line);
                 page+=line;
             }
@@ -209,6 +219,8 @@ public class Notice extends AppCompatActivity implements NavigationView.OnNaviga
             }
             return parseredData;
         } catch (Exception e) {
+            String[][] parseredData = new String[1][1];
+            parseredData[0][0] = "NO DATA";
             Log.i("RESULT","데이터가 없음");
             return null;
         }finally{

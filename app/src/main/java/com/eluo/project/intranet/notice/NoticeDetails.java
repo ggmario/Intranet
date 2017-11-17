@@ -1,5 +1,6 @@
 package com.eluo.project.intranet.notice;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -67,8 +68,9 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
     private TextView textView, textView3, textView4;
     private Bitmap bmp;
     private String psMid, psMidx, psMpath, psMdept, psMname, sTelephone, sPast = null;
-    private String sIDX, sSUBJECT, sCONTENT, sREGNM, sREGDT = null;
+    private String sIDX, sSUBJECT, sCONTENT, sREGNM, sREGDT, sNoData = null;
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +90,7 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
             psMdept =intent.getStringExtra("dept");
             sTelephone =intent.getStringExtra("sTelephone");
             sPast =intent.getStringExtra("sPast");
-            System.out.println(">>>>>>>>>>>>>>>"+sPast);
+
             new ThreadPolicy();;
             jsonParserList();
             String sContent = "";
@@ -102,17 +104,28 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
                 sName = sREGNM;
                 sDate = sREGDT;
             }
-            //작성자
-            textView =(TextView)findViewById(R.id.textWordView);
-            textView.setText(sName+" / "+sDate);
-            //제목
-            textView3 =(TextView)findViewById(R.id.textTitleView);
-            textView3.setText(sTitle);
-            //내용
-            textView4 =(TextView)findViewById(R.id.textContentView);
-            textView4.setMovementMethod(new ScrollingMovementMethod());
-            textView4.setText(sContent);
-
+            if (sNoData.equals("NO DATA")) {
+                textView =(TextView)findViewById(R.id.textWordView);
+                textView.setText("");
+                //제목
+                textView3 =(TextView)findViewById(R.id.textTitleView);
+                textView3.setText("데이터 가져오기 실패");
+                //내용
+                textView4 =(TextView)findViewById(R.id.textContentView);
+                textView4.setMovementMethod(new ScrollingMovementMethod());
+                textView4.setText("지속적으로 발생시 앱 담당자 문의 해주세요");
+            }else{
+                //작성자
+                textView =(TextView)findViewById(R.id.textWordView);
+                textView.setText(sName+" / "+sDate);
+                //제목
+                textView3 =(TextView)findViewById(R.id.textTitleView);
+                textView3.setText(sTitle);
+                //내용
+                textView4 =(TextView)findViewById(R.id.textContentView);
+                textView4.setMovementMethod(new ScrollingMovementMethod());
+                textView4.setText(sContent);
+            }
             //옵션 메뉴
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -376,6 +389,7 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
             String line = null;
             String page = "";
             while((line = bufreader.readLine())!=null){
+               // line = line.replace("\"엘루오시안\"","엘루오시안");
                 Log.d("line:",line);
                 page+=line;
             }
@@ -390,6 +404,7 @@ public class NoticeDetails extends AppCompatActivity  implements NavigationView.
             sREGDT= json.getString("REGDT");
             return null;
         } catch (Exception e) {
+            sNoData = "NO DATA";
             Log.i("RESULT","데이터가 없음");
             return null;
         }finally{
