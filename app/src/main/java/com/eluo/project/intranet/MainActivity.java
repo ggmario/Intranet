@@ -1,6 +1,7 @@
 package com.eluo.project.intranet;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -152,7 +154,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String[][] parsedData = jsonParserList("2"); // JSON 데이터 파싱
             if(parsedData != null && parsedData.length > 0) {
                 if (parsedData[0][0] == "NO DATA") {
-                    mAdapter.addItem("등록된 공지가 없습니다 ","0000-00-00",getResources().getDrawable(R.mipmap.ic_new));
+                    Calendar cal = Calendar.getInstance();
+                    mAdapter.addItem("데이터 가져오기 실패",+cal.get(Calendar.YEAR)+"-"+cal.get(Calendar.MARCH)+"-"+cal.get(Calendar.DATE),getResources().getDrawable(R.mipmap.ic_new));
+                    Toast.makeText(MainActivity.this, "지속적으로 발생시 앱 담당자 문의",Toast.LENGTH_LONG).show();
                 }else {
                     String sTitle, sDate, sDateInt = "";
                     //현재 날짜 구함
@@ -198,8 +202,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
             }else{
-                mAdapter.addItem("등록된 공지가 없습니다 ","0000-00-00",getResources().getDrawable(R.mipmap.ic_new));
-                Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_SHORT).show();
+                Calendar cal = Calendar.getInstance();
+                mAdapter.addItem("데이터 가져오기 실패",+cal.get(Calendar.YEAR)+"-"+cal.get(Calendar.MARCH)+"-"+cal.get(Calendar.DATE),getResources().getDrawable(R.mipmap.ic_new));
+                Toast.makeText(getApplicationContext(), R.string.network_error_retry, Toast.LENGTH_LONG).show();
             }
 
             //휴가  리스트
@@ -284,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     //디바이스 전화 번호 가져오기
+    @SuppressLint("MissingPermission")
     public String getPhoneNumber(){
         TelephonyManager mgr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
         return mgr.getLine1Number();
@@ -708,7 +714,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String page = "";
             while((line = bufreader.readLine())!=null){
                 Log.d("line:",line);
+//                line = line.replace("\"엘루오시안\"","엘루오시안");
+//                line = line.replace("?","");
                 page+=line;
+                Log.d("line:",line);
             }
             JSONArray jArr = null;
             String[][] parseredData = null;
@@ -753,7 +762,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     return parseredData;
                 }
             }
-
         } catch (Exception e) {
             String[][] parseredData = new String[1][1];
             parseredData[0][0] = "NO DATA";
